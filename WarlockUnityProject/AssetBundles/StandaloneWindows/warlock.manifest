@@ -1,0 +1,232 @@
+ManifestFileVersion: 0
+CRC: 2469525082
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 0c02062b548bf100def982654259d252
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 42d2694ece3e6464c0822cad42100938
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 96
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f8258ea15b8f74c4889ce485d21cbbb1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2334069450a65d042a95a873e5229b20, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fef0780b96a0f12448b6dd86f9c8139b, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 120
+  Script: {instanceID: 0}
+- Class: 135
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+- Class: 144
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+- Class: 319
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Interrogator/Projectiles/texRampCrocoDiseaseDark.png
+- Assets/Interrogator/Animations/animInterrogatorCSS.controller
+- Assets/Interrogator/Animations/Armature_Point.anim
+- Assets/Interrogator/VFX/CritLightningMonsoon.prefab
+- Assets/Interrogator/VFX/Materials/matAnimeShapes.mat
+- Assets/Interrogator/interrogator_emoteskeleton.prefab
+- Assets/Interrogator/VFX/Textures/texPunchImpactShadow.png
+- Assets/Interrogator/VFX/Textures/texHenrySwing2.png
+- Assets/Interrogator/Animations/Armature_CSSIdle.anim
+- Assets/Interrogator/Textures/texGuilty.png
+- Assets/Interrogator/VFX/BloodSpurtEffect.prefab
+- Assets/Interrogator/VFX/Badass 1/WoodHitEffect.prefab
+- Assets/Interrogator/HUD/ChargeBar.prefab
+- Assets/Interrogator/VFX/Textures/texLightning.tif
+- Assets/Interrogator/VFX/CritLightning.prefab
+- Assets/Interrogator/VFX/Textures/texFire.tga
+- Assets/Interrogator/Animations/Armature_CSSIdleIn.anim
+- Assets/Interrogator/VFX/matShockwave.mat
+- Assets/Interrogator/VFX/Materials/matSmoke.mat
+- Assets/Interrogator/Projectiles/meshSapper.mesh
+- Assets/Interrogator/Animations/Armature_BatSwing1.anim
+- Assets/Interrogator/VFX/Textures/texSwingEffect.png
+- Assets/Interrogator/VFX/Badass 1/SmallExplosion.prefab
+- Assets/Interrogator/VFX/Badass/BigExplosion.prefab
+- Assets/Interrogator/Meshes/meshBat.mesh
+- Assets/Interrogator/VFX/Badass/MetalHitEffect.prefab
+- Assets/Interrogator/VFX/Materials/matHenrySwing2.mat
+- Assets/Interrogator/Projectiles/CoinImpactHit.prefab
+- Assets/Interrogator/VFX/Textures/texRipple.png
+- Assets/Interrogator/VFX/texCloudDifferenceBW1.png
+- Assets/Interrogator/HUD/Textures/texBulletIndicator.png
+- Assets/Interrogator/VFX/Badass 1/MetalHitEffect.prefab
+- Assets/Interrogator/Icons/Skill/texFalsifyIcon.png
+- Assets/Interrogator/VFX/Badass 1/StoneHitEffect.prefab
+- Assets/Interrogator/Animations/Armature_AimPitch.anim
+- Assets/Interrogator/VFX/Badass/StoneHitEffect.prefab
+- Assets/Interrogator/Projectiles/CoinTracer.prefab
+- Assets/Interrogator/VFX/Textures/texFistSwing.png
+- Assets/Interrogator/Animations/maskInterrogatorAim.mask
+- Assets/Interrogator/Animations/Armature_BatSwingCleaver.anim
+- Assets/Interrogator/Textures/texGuiltyBuff.png
+- Assets/Interrogator/VFX/NoGrab.png
+- Assets/Interrogator/Projectiles/CoinProjectile.prefab
+- Assets/Interrogator/VFX/Badass 1/TinyExplosion.prefab
+- Assets/Interrogator/VFX/Materials/matPunchImpact.mat
+- Assets/Interrogator/Animations/Armature_Sprint.anim
+- Assets/Interrogator/Animations/Armature_IdleIn.anim
+- Assets/Interrogator/VFX/texCloudOrganicNormal.png
+- Assets/Interrogator/Materials/matInterrogator.mat
+- Assets/Interrogator/Animations/Armature_RunB.anim
+- Assets/Interrogator/Animations/Armature_SprintFast.anim
+- Assets/Interrogator/Animations/animInterrogator.controller
+- Assets/Interrogator/VFX/texRampWarlock.png
+- Assets/Interrogator/Icons/Skill/texInterrogatorPassive.png
+- Assets/Interrogator/Textures/texInterrogatorEmission.png
+- Assets/Interrogator/Textures/texRampConvicted.png
+- Assets/Interrogator/Textures/texInterrogator.png
+- Assets/Interrogator/Icons/Skill/texConvictIcon.png
+- Assets/Interrogator/Textures/texCloudPixel2.png
+- Assets/Interrogator/VFX/texBehemothTileMask.png
+- Assets/Interrogator/VFX/Textures/texDust.png
+- Assets/Interrogator/VFX/texShockwave.png
+- Assets/Interrogator/VFX/Textures/texHitSpark.png
+- Assets/Interrogator/VFX/texSeamSlashMaskSharp.png
+- Assets/Interrogator/VFX/BloodSpurtEffect 1.prefab
+- Assets/Interrogator/Meshes/meshJacket.mesh
+- Assets/Interrogator/VFX/Grab.png
+- Assets/Interrogator/Meshes/meshInterrogator.mesh
+- Assets/Interrogator/VFX/Materials/matPunchImpactShadow.mat
+- Assets/Interrogator/VFX/Badass 1/BigExplosion.prefab
+- Assets/Interrogator/Projectiles/CoinOrbEffect.prefab
+- Assets/Interrogator/Meshes/meshCleaver.mesh
+- Assets/Interrogator/Animations/Armature_AimYaw.anim
+- Assets/Interrogator/VFX/Materials/matFistSwing.mat
+- Assets/Interrogator/Projectiles/texAlphaGradient6Mask.png
+- Assets/Interrogator/Textures/texInterrogatorNormal.png
+- Assets/Interrogator/VFX/Materials/matTrail.mat
+- Assets/Interrogator/Materials/matVisor.mat
+- Assets/Interrogator/VFX/Materials/matHitSpark.mat
+- Assets/Interrogator/Icons/Skill/texSwingIcon.png
+- Assets/Interrogator/Meshes/meshVisor.mesh
+- Assets/Interrogator/Animations/Armature_LightImpact.anim
+- Assets/Interrogator/Animations/Armature_Dash.anim
+- Assets/Interrogator/VFX/texRampWarlockTrail.png
+- Assets/Interrogator/Animations/Armature_Jump.anim
+- Assets/Interrogator/HUD/WeaponChargeBar.prefab
+- Assets/Interrogator/mdlInterrogator.prefab
+- Assets/Interrogator/VFX/texSpyStreak.png
+- Assets/Interrogator/Animations/Armature_BatSwing2.anim
+- Assets/Interrogator/VFX/Materials/matSwingShadow.mat
+- Assets/Interrogator/Textures/texConvictBuff.png
+- Assets/Interrogator/VFX/matSpyDefault.mat
+- Assets/Interrogator/VFX/Materials/matPunchEffect.mat
+- Assets/Interrogator/Icons/texDefaultSkin.png
+- Assets/Interrogator/VFX/Textures/texPunchImpact.png
+- Assets/Interrogator/interrogatorCleaver.prefab
+- Assets/Interrogator/Animations/Armature_RunR.anim
+- Assets/Interrogator/VFX/Badass/TinyExplosion.prefab
+- Assets/Interrogator/VFX/Badass/SandHitEffect.prefab
+- Assets/Interrogator/VFX/Materials/matHitSparkPunch.mat
+- Assets/Interrogator/HUD/ChargeRing.prefab
+- Assets/Interrogator/VFX/texBlackLightning.png
+- Assets/Interrogator/Projectiles/texRampCoin.png
+- Assets/Interrogator/VFX/Materials/matSwingEffect.mat
+- Assets/Interrogator/Projectiles/CoinProjectileGhost.prefab
+- Assets/Interrogator/VFX/matShockwave2.mat
+- Assets/Interrogator/Projectiles/coin.asset
+- Assets/Interrogator/Animations/Armature_Idle.anim
+- Assets/Interrogator/Meshes/meshExtra.mesh
+- Assets/Interrogator/Animations/maskInterrogatorLeftArm.mask
+- Assets/Interrogator/VFX/Materials/matEmbers.mat
+- Assets/Interrogator/Animations/Armature_DescendFast.anim
+- Assets/Interrogator/InterrogatorDisplay.prefab
+- Assets/Interrogator/HUD/Textures/texChargeRing.png
+- Assets/Interrogator/Projectiles/DriverStunGrenadeImpact.prefab
+- Assets/Interrogator/VFX/matSpyStreak.mat
+- Assets/Interrogator/VFX/Materials/matSlash.mat
+- Assets/Interrogator/VFX/Materials/matDust.mat
+- Assets/Interrogator/VFX/Textures/texSmoke.png
+- Assets/Interrogator/VFX/Textures/texEmbers.png
+- Assets/Interrogator/Icons/Skill/texInterrogatorCleaverIcon.png
+- Assets/Interrogator/Projectiles/mdlSapper.prefab
+- Assets/Interrogator/VFX/Materials/matRipple.mat
+- Assets/Interrogator/VFX/texRampImp.png
+- Assets/Interrogator/Animations/Armature_RunL.anim
+- Assets/Interrogator/Animations/Armature_Ascend.anim
+- Assets/Interrogator/Icons/texInterrogatorIcon.png
+- Assets/Interrogator/Projectiles/DriverStunGrenadeGhost.prefab
+- Assets/Interrogator/VFX/Materials/matFire.mat
+- Assets/Interrogator/Projectiles/texRampCoin2.png
+- Assets/Interrogator/VFX/Badass/WoodHitEffect.prefab
+- Assets/Interrogator/VFX/Badass/SmallExplosion.prefab
+- Assets/Interrogator/VFX/texSeamSlashMask 1.png
+- Assets/Interrogator/Animations/Armature_Descend.anim
+- Assets/Interrogator/Materials/matSword.mat
+- Assets/Interrogator/Animations/animInterrogatorEmotes.controller
+- Assets/Interrogator/Animations/Armature_RunF.anim
+- Assets/Interrogator/HUD/Textures/texSniperBulletIndicator.png
+- Assets/Interrogator/Icons/texMonsoonSkin.png
+- Assets/Interrogator/Meshes/meshSword.mesh
+- Assets/Interrogator/VFX/Badass 1/SandHitEffect.prefab
+- Assets/Interrogator/VFX/texSeamSlashMask.png
+- Assets/Interrogator/Animations/maskInterrogatorImpact.mask
+- Assets/Interrogator/Textures/texGuiltyDebuff.png
+- Assets/Interrogator/Animations/Armature_JumpSprint.anim
+- Assets/Interrogator/VFX/matBlackLightning.mat
+- Assets/Interrogator/VFX/Textures/texSlash.png
+- Assets/Interrogator/Animations/maskInterrogatorGesture.mask
+- Assets/Interrogator/Icons/Skill/texConvictScepter.png
+- Assets/Interrogator/HUD/Textures/texWhite.png
+Dependencies: []

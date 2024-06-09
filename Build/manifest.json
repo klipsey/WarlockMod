@@ -1,0 +1,23 @@
+{
+    "name": "Interrogator",
+    "author": "tsuyoikenko",
+    "version_number": "0.5.6",
+    "website_url": "https://github.com/klipsey/InterrogatorMod",
+    "description": "Adds the Interrogator. Hit your friends!",
+    "dependencies": [
+        "bbepis-BepInExPack-5.4.1905",
+        "RiskofThunder-R2API_Core-5.0.3",
+        "RiskofThunder-R2API_Prefab-1.0.3",
+        "RiskofThunder-R2API_RecalculateStats-1.3.0",
+	"RiskofThunder-R2API_TempVisualEffect-1.0.2",
+        "RiskofThunder-R2API_Language-1.0.1",
+	"RiskofThunder-R2API_Unlockable-1.0.2",
+        "RiskofThunder-R2API_Sound-1.0.2",
+        "RiskofThunder-R2API_Dot-1.0.1",
+        "RiskofThunder-R2API_Orb-1.0.1",
+        "RiskofThunder-R2API_Deployable-1.0.1",
+	"RiskofThunder-R2API_DamageType-1.0.4",
+	"RiskofThunder-R2API_Networking-1.0.2",
+	"Smooth_Salad-ShaderSwapper-1.0.1"
+    ]
+}
