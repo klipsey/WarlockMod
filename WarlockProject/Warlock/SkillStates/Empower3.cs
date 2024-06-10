@@ -35,7 +35,7 @@ namespace WarlockMod.Warlock.SkillStates
             this.skillLocator.primary.UnsetSkillOverride(this.gameObject, WarlockSurvivor.m1EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
             this.skillLocator.secondary.UnsetSkillOverride(this.gameObject, WarlockSurvivor.m2EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
             this.skillLocator.utility.UnsetSkillOverride(this.gameObject, WarlockSurvivor.utilityEmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
-            this.skillLocator.special.UnsetSkillOverride(this.gameObject, WarlockSurvivor.cancelSkillDef, GenericSkill.SkillOverridePriority.Network);
+            this.skillLocator.special.UnsetSkillOverride(this.gameObject, WarlockSurvivor.empowerSkillDef, GenericSkill.SkillOverridePriority.Network);
 
             if (base.isAuthority)
             {
@@ -44,22 +44,43 @@ namespace WarlockMod.Warlock.SkillStates
 
             if (NetworkServer.active)
             {
-                characterBody.RemoveBuff(WarlockBuffs.warlockBloodMagicFullStack);
+                characterBody.RemoveBuff(WarlockBuffs.warlockCrimsonManaFullStack);
                 characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredUtilityBuff, WarlockStaticValues.utilityDuration);
             }
 
-            skillLocator.utility.stock = skillLocator.utility.maxStock;
-
             warlockController.jamTimer = 0f;
+
+            EntityStateMachine entityStateMachine = EntityStateMachine.FindByCustomName(base.gameObject, "MetaMenu");
+            if (entityStateMachine)
+            {
+                entityStateMachine.SetNextStateToMain();
+            }
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (base.isAuthority && base.fixedAge >= 0.25f)
+            if (base.isAuthority && base.fixedAge >= 0.1f)
             {
                 this.outer.SetNextStateToMain();
             }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            this.skillLocator.primary.UnsetSkillOverride(this.gameObject, WarlockSurvivor.m1EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            this.skillLocator.secondary.UnsetSkillOverride(this.gameObject, WarlockSurvivor.m2EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            this.skillLocator.utility.UnsetSkillOverride(this.gameObject, WarlockSurvivor.utilityEmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+
+            if (base.isAuthority)
+            {
+                this.warlockController.ReturnSavedStocks();
+            }
+
+            skillLocator.utility.stock = skillLocator.utility.maxStock;
+
+            warlockController.jamTimer = 0f;
         }
         public override InterruptPriority GetMinimumInterruptPriority()
         {

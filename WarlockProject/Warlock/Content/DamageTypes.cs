@@ -20,12 +20,14 @@ namespace WarlockMod.Warlock.Content
         public static DamageAPI.ModdedDamageType Default;
         public static DamageAPI.ModdedDamageType BloodExplosionDamage;
         public static DamageAPI.ModdedDamageType HexMask;
+        public static DamageAPI.ModdedDamageType WarlockBleed;
 
         internal static void Init()
         {
             Default = DamageAPI.ReserveDamageType();
             BloodExplosionDamage = DamageAPI.ReserveDamageType();
             HexMask = DamageAPI.ReserveDamageType();
+            WarlockBleed = DamageAPI.ReserveDamageType();
             Hook();
         }
         private static void Hook()
@@ -50,45 +52,56 @@ namespace WarlockMod.Warlock.Content
             {
                 if (iController && attackerBody.baseNameToken == "KENKO_WARLOCK_NAME")
                 {
-                    if(victimBody.HasBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff) && !damageInfo.HasModdedDamageType(HexMask))
+                    if(victimBody.HasBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff) && !damageInfo.HasModdedDamageType(HexMask) && damageInfo.dotIndex == DotIndex.None)
                     {
-                        BlastAttack obj = new BlastAttack
+                        Util.PlaySound("Play_bleedOnCritAndExplode_explode", victimBody.gameObject);
+                        GameObject obj8 = UnityEngine.Object.Instantiate(WarlockAssets.warlockHexExplodeEffect, victimBody.corePosition, Quaternion.identity);
+                        DelayBlastWarlock obj = obj8.GetComponent<DelayBlastWarlock>();
+                        obj.position = victimBody.corePosition;
+                        obj.baseDamage = (damageInfo.damage / 2f) * victimBody.GetBuffCount(WarlockBuffs.warlockHexxedEmpoweredDebuff);
+                        obj.baseForce = 0f;
+                        obj.radius = 16f;
+                        obj.attacker = damageInfo.attacker;
+                        obj.inflictor = victim.gameObject;
+                        obj.crit = damageInfo.crit;
+                        obj.maxTimer = 0f;
+                        obj.damageColorIndex = DamageColorIndex.Sniper;
+                        obj.falloffModel = BlastAttack.FalloffModel.None;
+                        obj.moddedDamageTypeHolder.Add(HexMask);
+                        if(victimBody.HasBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff))
                         {
-                            radius = 15f,
-                            procCoefficient = damageInfo.procCoefficient,
-                            position = victimBody.corePosition,
-                            attacker = attackerObject,
-                            crit = damageInfo.crit,
-                            baseDamage = damageInfo.damage / 2f,
-                            falloffModel = BlastAttack.FalloffModel.None,
-                            damageColorIndex = DamageColorIndex.Sniper,
-                            baseForce = 500f
-                        };
-                        obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
-                        obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
-                        obj.AddModdedDamageType(HexMask);
-                        obj.Fire();
-                        EffectManager.SpawnEffect(Content.WarlockAssets.bloodExplosionEffect2, new EffectData
-                        {
-                            origin = victimBody.corePosition,
-                            rotation = Quaternion.identity,
-                            scale = 0.5f
-                        }, false);
+                            obj.moddedDamageTypeHolder.Add(WarlockBleed);
+                        }
+                        obj8.GetComponent<TeamFilter>().teamIndex = damageReport.attackerTeamIndex;
+                        NetworkServer.Spawn(obj8);
                     }
-                    else if(victimBody.HasBuff(WarlockBuffs.warlockHexxedDebuff) && !damageInfo.HasModdedDamageType(HexMask))
+                    else if(victimBody.HasBuff(WarlockBuffs.warlockHexxedDebuff) && !damageInfo.HasModdedDamageType(HexMask) && damageInfo.dotIndex == DotIndex.None)
                     {
                         DamageInfo obj2 = new DamageInfo
                         {
                             procCoefficient = damageInfo.procCoefficient,
                             position = victimBody.corePosition,
                             attacker = attackerObject,
+                            inflictor = victim.gameObject,
                             crit = damageInfo.crit,
-                            damage = damageInfo.damage / 2f,
+                            damage = (damageInfo.damage / 2f) * victimBody.GetBuffCount(WarlockBuffs.warlockHexxedDebuff),
                             damageColorIndex = DamageColorIndex.Sniper,
                             damageType = DamageType.Stun1s,
                         };
                         obj2.AddModdedDamageType(HexMask);
+                        if (victimBody.HasBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff))
+                        {
+                            obj2.AddModdedDamageType(WarlockBleed);
+                        }
                         victimBody.healthComponent.TakeDamage(obj2);
+                    }
+
+                    if(damageInfo.HasModdedDamageType(WarlockBleed) && damageInfo.inflictor)
+                    {
+                        for(int i = 0; i < damageInfo.inflictor.GetComponent<CharacterBody>().GetBuffCount(WarlockBuffs.warlockHexxedMetaMagicDebuff);  i++) 
+                        {
+                            DotController.InflictDot(victimBody.gameObject, attackerBody.gameObject, RoR2.DotController.DotIndex.Bleed, WarlockStaticValues.bleedDuration, damageInfo.procCoefficient * 0.2f);
+                        }
                     }
                 }
             }

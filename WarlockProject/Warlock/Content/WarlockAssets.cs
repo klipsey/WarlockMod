@@ -38,6 +38,8 @@ namespace WarlockMod.Warlock.Content
         internal static GameObject clipSlashEffect;
         internal static GameObject clipSlashEffect2;
 
+        internal static GameObject consumeOrb;
+
         internal static GameObject pickupScissorEffect;
         internal static GameObject pickupScissorEffect2;
 
@@ -64,7 +66,10 @@ namespace WarlockMod.Warlock.Content
         internal static GameObject insatiableEndEffect;
         internal static GameObject insatiableEndEffect2;
 
-        internal static GameObject scissorsHitImpactEffect;
+        internal static GameObject warlockHitImpactEffect;
+
+        internal static GameObject warlockHexExplodeEffect;
+
         internal static GameObject scissorsHitImpactEffect2;
 
         internal static GameObject slamEffect;
@@ -136,7 +141,7 @@ namespace WarlockMod.Warlock.Content
         internal static GameObject scissorLPrefab2;
 
         //Colors
-        internal static Color warlockColor = new Color(84f / 255f, 0f / 255f, 11f / 255f);
+        internal static Color warlockColor = new Color(155f / 255f, 55f / 255f, 55f / 255f);
         internal static Color warlockSpecialRed = new Color(36f / 255f, 22f / 255f, 22f / 255f);
         internal static Color warlockSecondaryColor = Color.black;
 
@@ -195,7 +200,7 @@ namespace WarlockMod.Warlock.Content
         private static void CreateEffects()
         {
             Material fakeMerc = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matMercExposed.mat").WaitForCompletion());
-            fakeMerc.SetColor("_TintColor", Color.red);
+            fakeMerc.SetColor("_TintColor", WarlockAssets.warlockColor);
             warlockHexConsume = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercExposeConsumeEffect.prefab").WaitForCompletion().InstantiateClone("WarlockHexed", true);
             warlockHexConsume.AddComponent<NetworkIdentity>();
             warlockHexConsume.transform.Find("Visual, Consumed").Find("PulseEffect, Ring (1)").gameObject.GetComponent<ParticleSystemRenderer>().material = fakeMerc;
@@ -208,7 +213,7 @@ namespace WarlockMod.Warlock.Content
             warlockTracerEffect.AddComponent<NetworkIdentity>();
             var tracerCOL = warlockTracerEffect.transform.Find("SmokeBeam").gameObject.GetComponent<ParticleSystem>().colorOverLifetime;
             Gradient grad = new Gradient();
-            grad.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.black, 0.0f), new GradientColorKey(Color.black, 0.1f), new GradientColorKey(Color.red, 0.34f), new GradientColorKey(Color.black, 1.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 0.5f), new GradientAlphaKey(0.75f, 1.0f) });
+            grad.SetKeys(new GradientColorKey[] { new GradientColorKey(Color.black, 0.0f), new GradientColorKey(Color.black, 0.1f), new GradientColorKey(WarlockAssets.warlockColor, 0.34f), new GradientColorKey(Color.black, 1.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 0.5f), new GradientAlphaKey(0.75f, 1.0f) });
             tracerCOL.color = grad;
             warlockTracerEffect.transform.Find("SmokeBeam").gameObject.GetComponent<ParticleSystemRenderer>().material.SetTexture("_RemapTex", null);
 
@@ -506,31 +511,38 @@ namespace WarlockMod.Warlock.Content
             Object.Destroy(uppercutEffect2.GetComponent<EffectComponent>());
 
 
-            scissorsHitImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("ScissorImpact", false);
-            scissorsHitImpactEffect.AddComponent<NetworkIdentity>();
-            scissorsHitImpactEffect.GetComponent<OmniEffect>().enabled = false;
+            warlockHitImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("ScissorImpact", false);
+            warlockHitImpactEffect.AddComponent<NetworkIdentity>();
+            warlockHitImpactEffect.GetComponent<OmniEffect>().enabled = false;
             Material material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());
-            material.SetColor("_TintColor", Color.red);
-            scissorsHitImpactEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = material;
-            scissorsHitImpactEffect.transform.GetChild(2).localScale = Vector3.one * 1.5f;
-            scissorsHitImpactEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFireCorrupted.mat").WaitForCompletion());
+            material.SetColor("_TintColor", WarlockAssets.warlockColor);
+            warlockHitImpactEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystemRenderer>().material = material;
+            warlockHitImpactEffect.transform.GetChild(2).localScale = Vector3.one * 1.5f;
+            warlockHitImpactEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFireCorrupted.mat").WaitForCompletion());
             material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpSlashImpact.mat").WaitForCompletion());
-            scissorsHitImpactEffect.transform.GetChild(5).gameObject.GetComponent<ParticleSystemRenderer>().material = material;
-            scissorsHitImpactEffect.transform.GetChild(4).localScale = Vector3.one * 3f;
-            scissorsHitImpactEffect.transform.GetChild(4).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDust.mat").WaitForCompletion());
-            scissorsHitImpactEffect.transform.GetChild(6).GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion());
-            scissorsHitImpactEffect.transform.GetChild(6).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark2Void.mat").WaitForCompletion());
-            scissorsHitImpactEffect.transform.GetChild(1).localScale = Vector3.one * 1.5f;
-            scissorsHitImpactEffect.transform.GetChild(1).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(2).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(3).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(4).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(5).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(6).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(6).GetChild(0).gameObject.SetActive(true);
-            scissorsHitImpactEffect.transform.GetChild(6).transform.localScale = new Vector3(1f, 1f, 3f);
-            scissorsHitImpactEffect.transform.localScale = Vector3.one * 1.5f;
-            Modules.Content.CreateAndAddEffectDef(scissorsHitImpactEffect);
+            warlockHitImpactEffect.transform.GetChild(5).gameObject.GetComponent<ParticleSystemRenderer>().material = material;
+            warlockHitImpactEffect.transform.GetChild(4).localScale = Vector3.one * 3f;
+            warlockHitImpactEffect.transform.GetChild(4).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Imp/matImpDust.mat").WaitForCompletion());
+            warlockHitImpactEffect.transform.GetChild(6).GetChild(0).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat").WaitForCompletion());
+            warlockHitImpactEffect.transform.GetChild(6).gameObject.GetComponent<ParticleSystemRenderer>().material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Common/Void/matOmniHitspark2Void.mat").WaitForCompletion());
+            warlockHitImpactEffect.transform.GetChild(1).localScale = Vector3.one * 1.5f;
+            warlockHitImpactEffect.transform.GetChild(1).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(2).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(3).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(4).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(5).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(6).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(6).GetChild(0).gameObject.SetActive(true);
+            warlockHitImpactEffect.transform.GetChild(6).transform.localScale = new Vector3(1f, 1f, 3f);
+            warlockHitImpactEffect.transform.localScale = Vector3.one * 1.5f;
+            Modules.Content.CreateAndAddEffectDef(warlockHitImpactEffect);
+
+            warlockHexExplodeEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BleedOnHitAndExplode/BleedOnHitAndExplodeDelay.prefab").WaitForCompletion().InstantiateClone("WarlockExplodeEffect", true);
+            warlockHexExplodeEffect.AddComponent<NetworkIdentity>();
+            DelayBlastWarlock delayButAwesome = warlockHexExplodeEffect.AddComponent<DelayBlastWarlock>();
+            delayButAwesome.explosionEffect = warlockHexExplodeEffect.GetComponent<DelayBlast>().explosionEffect;
+            delayButAwesome.timerStagger = warlockHexExplodeEffect.GetComponent<DelayBlast>().timerStagger;
+            Component.Destroy(warlockHexExplodeEffect.GetComponent<DelayBlast>());
 
             scissorsHitImpactEffect2 = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("ScissorImpact2", false);
             scissorsHitImpactEffect2.AddComponent<NetworkIdentity>();
@@ -574,12 +586,12 @@ namespace WarlockMod.Warlock.Content
             var fart = insatiableEndEffect.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().main;
             fart.startColor = Color.black;
             fart = insatiableEndEffect.transform.GetChild(1).gameObject.GetComponent<ParticleSystem>().main;
-            fart.startColor = Color.red;
-            insatiableEndEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.red);
+            fart.startColor = WarlockAssets.warlockColor;
+            insatiableEndEffect.transform.GetChild(2).gameObject.GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", WarlockAssets.warlockColor);
             insatiableEndEffect.transform.GetChild(3).gameObject.SetActive(false);
-            insatiableEndEffect.transform.GetChild(4).gameObject.GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", Color.red);
+            insatiableEndEffect.transform.GetChild(4).gameObject.GetComponent<ParticleSystemRenderer>().material.SetColor("_TintColor", WarlockAssets.warlockColor);
             material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/LunarSkillReplacements/matLunarNeedleImpactEffect.mat").WaitForCompletion());
-            material.SetColor("_TintColor", Color.red);
+            material.SetColor("_TintColor", WarlockAssets.warlockColor);
             insatiableEndEffect.transform.GetChild(5).gameObject.GetComponent<ParticleSystemRenderer>().material = material;
             insatiableEndEffect.transform.GetChild(6).gameObject.SetActive(false);
             Object.Destroy(insatiableEndEffect.GetComponent<EffectComponent>());
@@ -675,7 +687,7 @@ namespace WarlockMod.Warlock.Content
             TeamAreaIndicator teamArea = PrefabAPI.InstantiateClone(impThing.transform.Find("ImpactEffect/TeamAreaIndicator, FullSphere").gameObject, "WarlockTeamIndicator", false).GetComponent<TeamAreaIndicator>();
 
             teamArea.teamMaterialPairs[1].sharedMaterial = new Material(teamArea.teamMaterialPairs[1].sharedMaterial);
-            teamArea.teamMaterialPairs[1].sharedMaterial.SetColor("_TintColor", Color.red);
+            teamArea.teamMaterialPairs[1].sharedMaterial.SetColor("_TintColor", WarlockAssets.warlockColor);
 
             WarlockTeamAreaIndicator = teamArea;
 
@@ -745,7 +757,22 @@ namespace WarlockMod.Warlock.Content
         #region projectiles
         private static void CreateProjectiles()
         {
+            consumeOrb = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/InfusionOrbEffect"), "ImpConsumeOrbEffect", true);
+            if (!consumeOrb.GetComponent<NetworkIdentity>()) consumeOrb.AddComponent<NetworkIdentity>();
 
+            TrailRenderer trail = consumeOrb.transform.Find("TrailParent").Find("Trail").GetComponent<TrailRenderer>();
+            trail.widthMultiplier = 0.35f;
+            trail.material = Addressables.LoadAssetAsync<Material>("RoR2/Base/moon2/matBloodSiphon.mat").WaitForCompletion();
+
+            consumeOrb.transform.Find("VFX").Find("Core").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matBloodHumanLarge.mat").WaitForCompletion();
+            consumeOrb.transform.Find("VFX").localScale = Vector3.one * 0.5f;
+
+            consumeOrb.transform.Find("VFX").Find("Core").localScale = Vector3.one * 4.5f;
+
+            consumeOrb.transform.Find("VFX").Find("PulseGlow").GetComponent<ParticleSystemRenderer>().material = Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/VFX/matOmniRing2Generic.mat").WaitForCompletion();
+
+
+            WarlockMod.Modules.Content.CreateAndAddEffectDef(consumeOrb);
         }
         #endregion
 

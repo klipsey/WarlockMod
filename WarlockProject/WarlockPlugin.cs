@@ -50,7 +50,7 @@ namespace WarlockMod
             Modules.Language.Init();
 
             // character initialization
-            WarlockAssets.Init(Assets.LoadAssetBundle("interrogator"));
+            WarlockAssets.Init(Assets.LoadAssetBundle("warlock"));
             StartCoroutine(WarlockAssets.mainAssetBundle.UpgradeStubbedShadersAsync());
 
             new WarlockMod.Warlock.WarlockSurvivor().Initialize();

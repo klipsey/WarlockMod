@@ -6,35 +6,43 @@ namespace WarlockMod.Warlock.Content
 {
     public static class WarlockBuffs
     {
-        public static BuffDef warlockBloodMagicStack;
-        public static BuffDef warlockBloodMagicFullStack;
+        public static BuffDef warlockCrimsonManaStack;
+        public static BuffDef warlockCrimsonManaFullStack;
         public static BuffDef warlockHexxedDebuff;
         public static BuffDef warlockHexxedEmpoweredDebuff;
+        public static BuffDef warlockHexxedMetaMagicDebuff;
         public static BuffDef warlockEmpoweredM1Buff;
         public static BuffDef warlockEmpoweredM2Buff;
         public static BuffDef warlockEmpoweredUtilityBuff;
+        public static BuffDef warlockMetaMagicBuff;
         public static void Init(AssetBundle assetBundle)
         {
-            warlockBloodMagicStack = Modules.Content.CreateAndAddBuff("WarlockBloodMagicStack", Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/VoidSurvivor/texBuffVoidSurvivorCorruptionIcon.tif").WaitForCompletion(),
-                WarlockAssets.warlockSpecialRed, true, false, false);
+            warlockCrimsonManaStack = Modules.Content.CreateAndAddBuff("WarlockCrimsonManaStack", assetBundle.LoadAsset<Sprite>("texMetaMagicStackingBuff"),
+                Color.white, true, false, false);
 
-            warlockBloodMagicFullStack = Modules.Content.CreateAndAddBuff("WarlockBloodMagicFullStack", Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/VoidSurvivor/texBuffVoidSurvivorCorruptionIcon.tif").WaitForCompletion(),
-                Color.red, true, false, false);
+            warlockCrimsonManaFullStack = Modules.Content.CreateAndAddBuff("WarlockCrimsonManaFullStack", assetBundle.LoadAsset<Sprite>("texMetaMagicBuff"),
+                Color.white, true, false, false);
 
             warlockHexxedDebuff = Modules.Content.CreateAndAddBuff("WarlockHexxed", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/DeathMark/texBuffDeathMarkIcon.tif").WaitForCompletion(),
                 WarlockAssets.warlockSpecialRed, true, true, false);
 
             warlockHexxedEmpoweredDebuff = Modules.Content.CreateAndAddBuff("WarlockHexxedEmpowered", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/DeathMark/texBuffDeathMarkIcon.tif").WaitForCompletion(),
-                Color.red, true, true, false);
+                WarlockAssets.warlockColor, true, true, false);
+
+            warlockHexxedMetaMagicDebuff = Modules.Content.CreateAndAddBuff("WarlockHexxedMetaMagic", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/LaserTurbine/texLaserTurbineKillChargeBuffIcon.tif").WaitForCompletion(),
+                WarlockAssets.warlockColor, true, false, false);
 
             warlockEmpoweredM1Buff = Modules.Content.CreateAndAddBuff("WarlockQuickenPrimary", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/AttackSpeedOnCrit/texBuffAttackSpeedOnCritIcon.tif").WaitForCompletion(),
-                Color.red, true, false, false);
+                WarlockAssets.warlockColor, true, false, false);
 
             warlockEmpoweredM2Buff = Modules.Content.CreateAndAddBuff("WarlockEmpoweredSecondary", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/DeathMark/texBuffDeathMarkIcon.tif").WaitForCompletion(),
-                Color.red, true, false, false);
+                WarlockAssets.warlockColor, true, false, false);
 
             warlockEmpoweredUtilityBuff = Modules.Content.CreateAndAddBuff("WarlockQuickenUtility", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texMovespeedBuffIcon.tif").WaitForCompletion(),
-                Color.red, true, false, false);
+                WarlockAssets.warlockColor, true, false, false);
+
+            warlockMetaMagicBuff = Modules.Content.CreateAndAddBuff("WarlockMetaMagicEmpower", assetBundle.LoadAsset<Sprite>("texEmpoweredMetaMagicBuff"),
+                Color.white, true, false, false);
         }
     }
 }

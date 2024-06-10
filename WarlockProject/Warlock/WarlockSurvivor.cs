@@ -42,7 +42,7 @@ namespace WarlockMod.Warlock
         public static WarlockSkillDef m1EmpowerSkillDef;
         public static WarlockSkillDef m2EmpowerSkillDef;
         public static WarlockSkillDef utilityEmpowerSkillDef;
-        public static SkillDef cancelSkillDef;
+        public static SkillDef empowerSkillDef;
 
         public override BodyInfo bodyInfo => new BodyInfo
         {
@@ -52,20 +52,14 @@ namespace WarlockMod.Warlock
 
             characterPortrait = assetBundle.LoadAsset<Texture>("texInterrogatorIcon"),
             bodyColor = WarlockAssets.warlockColor,
-            sortPosition = 6f,
+            sortPosition = 99f,
 
             crosshair = Modules.Assets.LoadCrosshair("Standard"),
             podPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
 
-            maxHealth = 160f,
-            healthRegen = 2.5f,
-            regenGrowth = 2.5f * 0.2f,
-            armor = 20f,
+            maxHealth = 100f,
+            armor = 0f,
             damage = 12f,
-
-            damageGrowth = 2.4f,
-            healthGrowth = 160f * 0.3f,
-
 
             jumpCount = 1,
         };
@@ -244,14 +238,14 @@ namespace WarlockMod.Warlock
                 skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower1)),
-                activationStateMachineName = "Weapon",
+                activationStateMachineName = "MetaMenu",
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = InterruptPriority.Any,
+                interruptPriority = InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = true,
@@ -270,14 +264,14 @@ namespace WarlockMod.Warlock
                 skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower2)),
-                activationStateMachineName = "Weapon",
+                activationStateMachineName = "MetaMenu",
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = InterruptPriority.Any,
+                interruptPriority = InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = true,
@@ -296,14 +290,14 @@ namespace WarlockMod.Warlock
                 skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower3)),
-                activationStateMachineName = "Weapon",
+                activationStateMachineName = "MetaMenu",
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = InterruptPriority.Any,
+                interruptPriority = InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = true,
@@ -313,23 +307,23 @@ namespace WarlockMod.Warlock
                 stockToConsume = 0
             });
 
-            cancelSkillDef = Skills.CreateSkillDef(new SkillDefInfo
+            empowerSkillDef = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "Cancel",
-                skillNameToken = INTERROGATOR_PREFIX + "SPECIAL_CANCEL_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "SPECIAL_Cancel_DESCRIPTION",
+                skillName = "Empower",
+                skillNameToken = INTERROGATOR_PREFIX + "SPECIAL_EMPOWER_NAME",
+                skillDescriptionToken = INTERROGATOR_PREFIX + "SPECIAL_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(Cancel)),
-                activationStateMachineName = "Weapon",
+                activationState = new EntityStates.SerializableEntityStateType(typeof(Empower)),
+                activationStateMachineName = "MetaMenu",
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = InterruptPriority.Any,
+                interruptPriority = InterruptPriority.PrioritySkill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = true,
@@ -446,17 +440,17 @@ namespace WarlockMod.Warlock
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
                 beginSkillCooldownOnSkillEnd = true,
-                canceledFromSprinting = false,
+                canceledFromSprinting = true,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
-                mustKeyPress = true,
-                cancelSprintingOnActivation = false,
+                mustKeyPress = false,
+                cancelSprintingOnActivation = true,
                 rechargeStock = 1,
                 requiredStock = 1,
-                stockToConsume = 0
+                stockToConsume = 1
             });
 
             Skills.AddSpecialSkills(bodyPrefab, invoke);
@@ -473,7 +467,7 @@ namespace WarlockMod.Warlock
                 skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(RitualPrep)),
-                activationStateMachineName = "Weapon",
+                activationStateMachineName = "MetaMenu",
                 baseMaxStock = 1,
                 baseRechargeInterval = 5f,
                 beginSkillCooldownOnSkillEnd = true,
@@ -661,27 +655,26 @@ namespace WarlockMod.Warlock
             {
                 if(attackerBody.baseNameToken == "KENKO_WARLOCK_NAME")
                 {
-                    if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
-                    {
-                        new SyncBloodExplosion(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
-                    }
-
                     if(NetworkServer.active)
                     {
-                        if (attackerBody.GetBuffCount(WarlockBuffs.warlockBloodMagicStack) < WarlockStaticValues.requiredBloodMagic - 1)
+                        if (attackerBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaStack) < WarlockStaticValues.requiredCrimsonMana - 1)
                         {
-                            attackerBody.AddBuff(WarlockBuffs.warlockBloodMagicStack);
+                            attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaStack);
                         }
                         else
                         {
-                            attackerBody.SetBuffCount(WarlockBuffs.warlockBloodMagicStack.buffIndex, 0);
-                            attackerBody.AddBuff(WarlockBuffs.warlockBloodMagicFullStack);
-                        }
-                    }
+                            attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, 0);
 
-                    if(attackerBody.TryGetComponent<WarlockController>(out var warCock))
-                    {
-                        if (warCock.utilityEmpowered) attackerBody.skillLocator.utility.Reset();
+                            ConsumeOrb orb = new ConsumeOrb();
+                            orb.origin = damageReport.victim.transform.position;
+                            orb.target = Util.FindBodyMainHurtBox(attackerBody);
+                            RoR2.Orbs.OrbManager.instance.AddOrb(orb);
+
+                            if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
+                            {
+                                new SyncBloodExplosion(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+                            }
+                        }
                     }
                 }
             }

@@ -16,8 +16,8 @@ namespace WarlockMod.Warlock.SkillStates
 
         public Material destealthMaterial = WarlockAssets.destealthMaterial;
         // for AOE stun
-        public static float blastAttackRadius = 10f;
-		public static float blastAttackDamageCoefficient = 1.5f;
+        public static float blastAttackRadius = 15f;
+		public static float blastAttackDamageCoefficient = 2f;
 		public static float blastAttackProcCoefficient = 1f;
 		public static float blastAttackForce = 1;
 
@@ -120,6 +120,11 @@ namespace WarlockMod.Warlock.SkillStates
             {
 				FireAOEStun();
             }
+			if(base.skillLocator.utility.stock == 0 && this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
+			{
+				base.skillLocator.utility.Reset();
+				this.characterBody.RemoveBuff(WarlockBuffs.warlockMetaMagicBuff);
+			}
             if (!outer.destroying)
 			{
 				Util.PlaySound(EntityStates.ImpMonster.BlinkState.endSoundString, base.gameObject);

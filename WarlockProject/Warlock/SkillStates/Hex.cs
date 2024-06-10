@@ -52,7 +52,19 @@ namespace WarlockMod.Warlock.SkillStates
 
                     if (NetworkServer.active)
                     {
-                        if (!this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM2Buff)) victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedDebuff, WarlockStaticValues.hexDuration);
+                        if(this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
+                        {
+                            for(int i = 0; i < this.characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff); i++) 
+                            {
+                                this.victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff, WarlockStaticValues.hexDuration);
+                            }
+                            this.characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex, 0);
+                        }
+
+                        if (!this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM2Buff))
+                        {
+                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedDebuff, WarlockStaticValues.hexDuration);
+                        }
                         else
                         {
                             victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff, WarlockStaticValues.hexDuration);

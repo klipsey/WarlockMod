@@ -25,7 +25,7 @@ namespace WarlockMod.Warlock.Components
 
         private static bool HasTarget([NotNull] GenericSkill skillSlot)
         {
-            if (!(((InstanceData)skillSlot.skillInstanceData).characterBody.HasBuff(WarlockBuffs.warlockBloodMagicFullStack)))
+            if (!(((InstanceData)skillSlot.skillInstanceData).characterBody.HasBuff(WarlockBuffs.warlockCrimsonManaFullStack)))
             {
                 return false;
             }

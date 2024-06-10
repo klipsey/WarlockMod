@@ -16,14 +16,14 @@ namespace WarlockMod.Warlock.Content
             Modules.Content.AddEntityState(typeof(CrimsonSurgePrep));
             Modules.Content.AddEntityState(typeof(Hex));
             Modules.Content.AddEntityState(typeof(RitualPrep));
+
+            Modules.Content.AddEntityState(typeof(Empower));
+
             Modules.Content.AddEntityState(typeof(Empower1));
 
             Modules.Content.AddEntityState(typeof(Empower2));
 
             Modules.Content.AddEntityState(typeof(Empower3));
-
-            Modules.Content.AddEntityState(typeof(Cancel));
-
         }
     }
 }

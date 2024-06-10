@@ -17,12 +17,16 @@ namespace WarlockMod.Warlock.SkillStates
         public float selfKnockbackForce = 2250f;
         public float damageCoefficient = WarlockStaticValues.crimsonSurgeDamageCoefficient;
         private float duration;
+        private float fireInterval;
+        private float maxShots;
+        private float shotCounter;
+        private float fireTimer;
         private Ray aimRay;
-        private bool hasFiredEmpowered;
+        private bool hasFiredFirstShot;
 
         private static List<CharacterBody> _enemiesHit = new List<CharacterBody>();
 
-        public GameObject hitEffectPrefab = WarlockAssets.scissorsHitImpactEffect;
+        public GameObject hitEffectPrefab = WarlockAssets.warlockHitImpactEffect;
         public GameObject tracerEffectPrefab = WarlockAssets.warlockTracerEffect;
 
         public override void OnEnter()
@@ -30,7 +34,21 @@ namespace WarlockMod.Warlock.SkillStates
             RefreshState();
             base.OnEnter();
             this.duration = this.baseDuration / base.attackSpeedStat;
-            if (this.primaryEmpowered) this.duration *= 0.85f;
+            if (this.primaryEmpowered)
+            {
+                this.duration *= 0.85f;
+            }
+            if (this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
+            {
+                this.maxShots = this.characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff) + 1;
+                this.fireInterval = this.duration / this.maxShots;
+                this.fireTimer = this.fireInterval;
+                this.characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex, 0);
+            }
+            else
+            {
+                fireTimer = baseDuration;
+            }
             aimRay = base.GetAimRay();
             base.StartAimMode(aimRay, 2f, false);
             //base.PlayAnimation("Gesture Additive, Right", "FirePistol, Right");
@@ -74,7 +92,11 @@ namespace WarlockMod.Warlock.SkillStates
             _enemiesHit.Clear();
             bulletAttack.Fire();
 
-            if (!characterMotor.isGrounded && !hasFiredEmpowered) base.characterBody.characterMotor.ApplyForce((0f - selfKnockbackForce) * aimRay.direction, true);
+            if (!characterMotor.isGrounded && !hasFiredFirstShot)
+            {
+                hasFiredFirstShot = true;
+                base.characterBody.characterMotor.ApplyForce((0f - selfKnockbackForce) * aimRay.direction, true);
+            }
         }
         public override void OnExit()
         {
@@ -84,9 +106,9 @@ namespace WarlockMod.Warlock.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (base.fixedAge >= this.duration / 2f && this.primaryEmpowered && !hasFiredEmpowered)
+            if (base.fixedAge >= this.fireTimer && this.fireTimer < this.duration)
             {
-                hasFiredEmpowered = true;
+                this.fireTimer += this.fireInterval;
                 aimRay = base.GetAimRay();
                 base.StartAimMode(aimRay, 2f, false);
                 Util.PlaySound("Play_imp_overlord_teleport_end", base.gameObject);

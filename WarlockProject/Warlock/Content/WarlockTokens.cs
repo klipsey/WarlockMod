@@ -46,29 +46,31 @@ namespace WarlockMod.Warlock.Content
             #endregion
 
             #region Passive
-            Language.Add(prefix + "PASSIVE_NAME", "Meta Magic");
-            Language.Add(prefix + "PASSIVE_DESCRIPTION", $"<color=#9B3737>Warlock</color> must restore skills using blood magic to cast abilities other than his primary. Gain a stack of blood magic after 3 kills.");
+            Language.Add(prefix + "PASSIVE_NAME", "Crimson Mana");
+            Language.Add(prefix + "PASSIVE_DESCRIPTION", $"<color=#9B3737>Warlock</color> can empower or restore certain skills using <color=#9B3737>Crimson Mana</color>. Gain a stack of <color=#9B3737>Crimson Mana</color> after 3 kills.");
             #endregion
 
             #region Primary
-            Language.Add(prefix + "PRIMARY_SURGE_NAME", "Crimson Surge");
-            Language.Add(prefix + "PRIMARY_SURGE_DESCRIPTION", $"Fire a <style=cIsUtility>piercing</style> beam for <style=cIsDamage>{WarlockStaticValues.crimsonSurgeDamageCoefficient * 100f}% damage</style>. <color=#9B3737>\nMETAMAGIC: Increased fire rate and fire twice per shot.</color>");
+            Language.Add(prefix + "PRIMARY_SURGE_NAME", "Eldritch Surge");
+            Language.Add(prefix + "PRIMARY_SURGE_DESCRIPTION", $"Fire a <style=cIsUtility>piercing</style> beam for <style=cIsDamage>{WarlockStaticValues.crimsonSurgeDamageCoefficient * 100f}% damage</style>. <color=#9B3737>\nCRIMSON MANA: Increased fire rate for 7 seconds.</color> " +
+                $"<color=#FF0000>\nMETA MAGIC: Gain an additional shot per Meta Magic stack.</color>");
             #endregion
 
             #region Secondary
             Language.Add(prefix + "SECONDARY_HEX_NAME", "Hex");
-            Language.Add(prefix + "SECONDARY_HEX_DESCRIPTION", $"Curse an enemy for {WarlockStaticValues.hexDuration} seconds. Skills deal bonus damage to this enemy.<color=#9B3737> \nMETAMAGIC: Bonus damage becomes AOE.</color>");
+            Language.Add(prefix + "SECONDARY_HEX_DESCRIPTION", $"Curse an enemy for {WarlockStaticValues.hexDuration} seconds. Skills deal bonus damage to this enemy per stack.<color=#9B3737> \nCRIMSON MANA: Bonus damage becomes AOE.</color>" +
+                $"<color=#FF0000>\nMETA MAGIC: Apply a stack of bleed per stack of Meta Magic.</color>");
             #endregion
 
             #region Utility 
             Language.Add(prefix + "UTILITY_BLOOD_DASH_NAME", "Blood Dash");
-            Language.Add(prefix + "UTILITY_BLOOD_DASH_DESCRIPTION", $"<style=cIsDamage>Stunning</style>. Deal <style=cIsDamage>150% damage</style>, then <style=cIsUtility>disappear</style> and <style=cIsUtility>teleport</style> a short distance. <color=#9B3737>\nMETAMAGIC: Reset on kill and deals damage at both the end and the start</color>.");
-
+            Language.Add(prefix + "UTILITY_BLOOD_DASH_DESCRIPTION", $"<style=cIsDamage>Stunning</style>. Deal <style=cIsDamage>150% damage</style>, then <style=cIsUtility>disappear</style> and <style=cIsUtility>teleport</style> a short distance.<color=#9B3737>\nCRIMSON MANA: Deals damage at both the end and the start for 7 seconds.</color> " +
+                $"<color=#FF0000>\nMETA MAGIC: Reset all stocks when depleted at the cost of a Meta Magic stack.</color>");
             #endregion
 
             #region Special
             Language.Add(prefix + "SPECIAL_RITUAL_NAME", "Ritual");
-            Language.Add(prefix + "SPECIAL_RITUAL_DESCRIPTION", $"Open a menu allowing you to restore the stocks of a certain skill and empowering it. Press again to cancel.");
+            Language.Add(prefix + "SPECIAL_RITUAL_DESCRIPTION", $"Open a menu allowing you to restore the stocks of a selected skill additionally empowering it. Recast Ritual to gain a stack of Meta Magic at the cost of 1 Crimson Mana.");
 
             Language.Add(prefix + "SPECIAL_SCEPTER_RITUAL_NAME", "Ritual2");
             Language.Add(prefix + "SPECIAL_SCEPTER_RITUAL_DESCRIPTION", $"Target a <color=#9B3737>Guilty</color> enemy and force them to fight you for 10 seconds. Your primary can no longer hit you but will continuously add <color=#9B3737>Guilty's</color> buff to you. " +
