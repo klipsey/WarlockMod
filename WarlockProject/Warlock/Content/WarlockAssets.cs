@@ -10,6 +10,7 @@ using R2API;
 using UnityEngine.Rendering.PostProcessing;
 using ThreeEyedGames;
 using WarlockMod.Warlock.Components;
+using System.Linq.Expressions;
 
 namespace WarlockMod.Warlock.Content
 {
@@ -98,6 +99,8 @@ namespace WarlockMod.Warlock.Content
         internal static GameObject warlockHexConsume;
 
         internal static GameObject warlockTracerEffect;
+
+        internal static GameObject warlockPortalPrefab;
 
         //Misc Prefabs
         internal static TeamAreaIndicator WarlockTeamAreaIndicator;
@@ -199,6 +202,9 @@ namespace WarlockMod.Warlock.Content
         #region effects
         private static void CreateEffects()
         {
+            warlockPortalPrefab = mainAssetBundle.LoadAsset<GameObject>("EldritchBlastPortal");
+            warlockPortalPrefab.AddComponent<ObjectScaleCurve>();
+
             Material fakeMerc = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matMercExposed.mat").WaitForCompletion());
             fakeMerc.SetColor("_TintColor", WarlockAssets.warlockColor);
             warlockHexConsume = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercExposeConsumeEffect.prefab").WaitForCompletion().InstantiateClone("WarlockHexed", true);
@@ -222,6 +228,10 @@ namespace WarlockMod.Warlock.Content
             spawnPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossDeathEffect.prefab").WaitForCompletion().InstantiateClone("SpawnEffect");
             spawnPrefab.AddComponent<NetworkIdentity>();
             spawnPrefab.GetComponent<EffectComponent>().applyScale = true;
+            spawnPrefab.GetComponent<EffectComponent>().positionAtReferencedTransform = true;
+            spawnPrefab.GetComponent<EffectComponent>().parentToReferencedTransform = true;
+            spawnPrefab.GetComponent<EffectComponent>().soundName = "";
+
             spawnPrefab.transform.Find("DashRings").localScale *= 0.75f;
             Modules.Content.CreateAndAddEffectDef(spawnPrefab);
 
@@ -511,7 +521,7 @@ namespace WarlockMod.Warlock.Content
             Object.Destroy(uppercutEffect2.GetComponent<EffectComponent>());
 
 
-            warlockHitImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("ScissorImpact", false);
+            warlockHitImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("WarlockHitImpact", false);
             warlockHitImpactEffect.AddComponent<NetworkIdentity>();
             warlockHitImpactEffect.GetComponent<OmniEffect>().enabled = false;
             Material material = Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat").WaitForCompletion());

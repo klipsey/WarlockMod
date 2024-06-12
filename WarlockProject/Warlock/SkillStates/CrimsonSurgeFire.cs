@@ -56,7 +56,7 @@ namespace WarlockMod.Warlock.SkillStates
             base.AddRecoil(-0.6f, 0.6f, -0.6f, 0.6f);
             if (FireLaser.effectPrefab)
             {
-                EffectManager.SimpleMuzzleFlash(FireLaser.effectPrefab, base.gameObject, "MuzzleRight", false);
+                EffectManager.SimpleMuzzleFlash(FireLaser.effectPrefab, base.gameObject, "EldritchMuzzle", false);
             }
 
             if (base.isAuthority)
@@ -81,7 +81,7 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.force = selfKnockbackForce;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
             bulletAttack.tracerEffectPrefab = this.tracerEffectPrefab;
-            bulletAttack.muzzleName = "MuzzleRight";
+            bulletAttack.muzzleName = "EldritchMuzzle";
             bulletAttack.hitEffectPrefab = this.hitEffectPrefab;
             bulletAttack.isCrit = base.RollCrit();
             bulletAttack.HitEffectNormal = false;

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2919104950
+CRC: 3501224277
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 890f5da9c1e87a0268f2add6058f054d
+    Hash: 1469509000f4eb8bf015155d0a28355c
   TypeTreeHash:
     serializedVersion: 2
     Hash: 42d2694ece3e6464c0822cad42100938
@@ -93,7 +93,9 @@ Assets:
 - Assets/Warlock/VFX/BloodSpurtEffect.prefab
 - Assets/Warlock/VFX/Badass 1/WoodHitEffect.prefab
 - Assets/Warlock/HUD/ChargeBar.prefab
+- Assets/Warlock/VFX/EldritchBlastPortal.prefab
 - Assets/Warlock/VFX/Textures/texLightning.tif
+- Assets/Warlock/VFX/texEldritchPortal.png
 - Assets/Warlock/VFX/CritLightning.prefab
 - Assets/Warlock/VFX/Textures/texFire.tga
 - Assets/Warlock/Animations/Armature_CSSIdleIn.anim
@@ -172,6 +174,7 @@ Assets:
 - Assets/Warlock/Animations/Armature_BatSwing2.anim
 - Assets/Warlock/VFX/Materials/matSwingShadow.mat
 - Assets/Warlock/Textures/texConvictBuff.png
+- Assets/Warlock/VFX/matMagicPortal2.mat
 - Assets/Warlock/VFX/matSpyDefault.mat
 - Assets/Warlock/VFX/Materials/matPunchEffect.mat
 - Assets/Warlock/Icons/texDefaultSkin.png
@@ -188,6 +191,7 @@ Assets:
 - Assets/Warlock/Projectiles/CoinProjectileGhost.prefab
 - Assets/Warlock/VFX/matShockwave2.mat
 - Assets/Warlock/Projectiles/coin.asset
+- Assets/Warlock/VFX/matWarlockChargeUp.mat
 - Assets/Warlock/Animations/Armature_Idle.anim
 - Assets/Warlock/Meshes/meshExtra.mesh
 - Assets/Warlock/Animations/maskInterrogatorLeftArm.mask
@@ -204,8 +208,10 @@ Assets:
 - Assets/Warlock/Icons/Skill/texInterrogatorCleaverIcon.png
 - Assets/Warlock/Projectiles/mdlSapper.prefab
 - Assets/Warlock/VFX/Materials/matRipple.mat
+- Assets/Warlock/Meshes/Circle.mesh
 - Assets/Warlock/VFX/texRampImp.png
 - Assets/Warlock/Animations/Armature_RunL.anim
+- Assets/Warlock/VFX/matMagicPortal1.mat
 - Assets/Warlock/Animations/Armature_Ascend.anim
 - Assets/Warlock/Icons/texInterrogatorIcon.png
 - Assets/Warlock/Projectiles/DriverStunGrenadeGhost.prefab
