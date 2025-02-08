@@ -72,14 +72,12 @@ namespace WarlockMod.Warlock.Content
             Language.Add(prefix + "SPECIAL_RITUAL_NAME", "Ritual");
             Language.Add(prefix + "SPECIAL_RITUAL_DESCRIPTION", $"Open a menu allowing you to restore the stocks of a selected skill additionally empowering it. Recast Ritual to gain a stack of Meta Magic at the cost of 1 Crimson Mana.");
 
-            Language.Add(prefix + "SPECIAL_SCEPTER_RITUAL_NAME", "Ritual2");
-            Language.Add(prefix + "SPECIAL_SCEPTER_RITUAL_DESCRIPTION", $"Target a <color=#9B3737>Guilty</color> enemy and force them to fight you for 10 seconds. Your primary can no longer hit you but will continuously add <color=#9B3737>Guilty's</color> buff to you. " +
-                $"During this time all external <style=cIsDamage>damage</style> is negated but all your <style=cIsDamage>damage</style> dealt to others is <style=cIsUtility>negated</style>." + Tokens.ScepterDescription("Convict can target enemies without Guilty and damage you deal is no longer negated but is reduced by 75%."));
+     
             #endregion
 
             #region Achievements
-            Language.Add(Tokens.GetAchievementNameToken(WarlockMasterAchievement.identifier), "Interrogator: Mastery");
-            Language.Add(Tokens.GetAchievementDescriptionToken(WarlockMasterAchievement.identifier), "As Interrogator, beat the game or obliterate on Monsoon.");
+            Language.Add(Tokens.GetAchievementNameToken(WarlockMasterAchievement.identifier), "Warlock: Mastery");
+            Language.Add(Tokens.GetAchievementDescriptionToken(WarlockMasterAchievement.identifier), "As Warlock, beat the game or obliterate on Monsoon.");
             /*
             Language.Add(Tokens.GetAchievementNameToken(SpyUnlockAchievement.identifier), "Dressed to Kill");
             Language.Add(Tokens.GetAchievementDescriptionToken(SpyUnlockAchievement.identifier), "Get a Backstab.");
