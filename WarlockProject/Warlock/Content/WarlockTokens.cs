@@ -1,7 +1,7 @@
 ﻿using System;
 using WarlockMod.Modules;
 using WarlockMod.Warlock;
-using WarlockMod.Warlock.Achievements;
+//using WarlockMod.Warlock.Achievements;
 using UnityEngine.UIElements;
 
 namespace WarlockMod.Warlock.Content
@@ -76,8 +76,8 @@ namespace WarlockMod.Warlock.Content
             #endregion
 
             #region Achievements
-            Language.Add(Tokens.GetAchievementNameToken(WarlockMasterAchievement.identifier), "Warlock: Mastery");
-            Language.Add(Tokens.GetAchievementDescriptionToken(WarlockMasterAchievement.identifier), "As Warlock, beat the game or obliterate on Monsoon.");
+            //Language.Add(Tokens.GetAchievementNameToken(WarlockMasterAchievement.identifier), "Warlock: Mastery");
+            //Language.Add(Tokens.GetAchievementDescriptionToken(WarlockMasterAchievement.identifier), "As Warlock, beat the game or obliterate on Monsoon.");
             /*
             Language.Add(Tokens.GetAchievementNameToken(SpyUnlockAchievement.identifier), "Dressed to Kill");
             Language.Add(Tokens.GetAchievementDescriptionToken(SpyUnlockAchievement.identifier), "Get a Backstab.");

@@ -50,10 +50,12 @@ namespace WarlockMod
             Modules.Language.Init();
 
             // character initialization
-            WarlockAssets.Init(Assets.LoadAssetBundle("warlock"));
-            StartCoroutine(WarlockAssets.mainAssetBundle.UpgradeStubbedShadersAsync());
+            //WarlockAssets.Init(Assets.LoadAssetBundle("warlock"));
 
             new WarlockMod.Warlock.WarlockSurvivor().Initialize();
+
+            //stubbed coroutine because idk what kenko was cookin
+            StartCoroutine(WarlockAssets.mainAssetBundle.UpgradeStubbedShadersAsync());
 
             // make a content pack and add it. this has to be last
             new Modules.ContentPacks().Initialize();

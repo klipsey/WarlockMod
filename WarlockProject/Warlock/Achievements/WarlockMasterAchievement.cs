@@ -1,4 +1,4 @@
-﻿using RoR2;
+﻿/*using RoR2;
 using WarlockMod.Modules.Achievements;
 using WarlockMod.Warlock;
 
@@ -16,4 +16,4 @@ namespace WarlockMod.Warlock.Achievements
         //difficulty coeff 3 is monsoon. 3.5 is typhoon for grandmastery skins
         public override float RequiredDifficultyCoefficient => 3;
     }
-}
+}*/

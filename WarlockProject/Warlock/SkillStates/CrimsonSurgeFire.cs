@@ -88,7 +88,7 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.stopperMask = LayerIndex.world.mask;
             bulletAttack.smartCollision = true;
             bulletAttack.maxDistance = 500f;
-            bulletAttack.damageType |= DamageType.Generic;
+            bulletAttack.damageType |= DamageTypeCombo.GenericPrimary;
             _enemiesHit.Clear();
             bulletAttack.Fire();
 
