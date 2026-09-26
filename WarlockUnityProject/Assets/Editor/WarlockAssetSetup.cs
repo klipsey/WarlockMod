@@ -14,6 +14,11 @@ public static class WarlockAssetSetup
 {
     private const string Root = "Assets/Warlock/";
     private static readonly string[] PhysicsRoots = { "cloak.l", "cloak.r", "cloak.x", "hood.x", "c_feeler_00.l", "c_feeler_00.r" };
+    private static readonly string[] SkillIconNames =
+    {
+        "texWarlockPassive", "texWarlockPrimary", "texWarlockPrimaryEmpowered", "texWarlockSecondary",
+        "texWarlockSecondaryEmpowered", "texWarlockSpecial", "texWarlockUtility", "texWarlockUtilityEmpowered"
+    };
 
     [MenuItem("Tools/Warlock/Setup and Build")]
     public static void SetupAndBuild()
@@ -385,9 +390,8 @@ public static class WarlockAssetSetup
     [MenuItem("Tools/Warlock/Validate Assets")]
     public static void Validate()
     {
-        Require<Sprite>(Root + "Icons/Skill/texWarlockPassive.png");
-        Require<Sprite>(Root + "Icons/Skill/texWarlockPrimary.png");
-        Require<Sprite>(Root + "Icons/Skill/texWarlockMetaMagic.png");
+        foreach (string name in SkillIconNames)
+            Require<Sprite>(Root + "Icons/Skill/" + name + ".png");
         var model = Require<GameObject>(Root + "mdlWarlock.prefab");
         if (model.GetComponentsInChildren<SkinnedMeshRenderer>().Length != 5) throw new InvalidOperationException("Expected five Warlock renderers.");
         if (model.GetComponents<DynamicBone>().Length != PhysicsRoots.Length) throw new InvalidOperationException("Missing secondary-motion chains.");
@@ -638,9 +642,8 @@ public static class WarlockAssetSetup
         {
             "mdlWarlock.prefab", "WarlockDisplay.prefab", "warlock_emoteskeleton.prefab",
             "Icons/texWarlockIcon.png", "Textures/texMetaMagicStackingBuff.png", "Textures/texMetaMagicBuff.png", "Textures/texEmpoweredMetaMagicBuff.png",
-            "Icons/Skill/texWarlockPassive.png", "Icons/Skill/texWarlockPrimary.png", "Icons/Skill/texWarlockMetaMagic.png",
             "VFX/Grab.png"
-        }.Select(p => Root + p).ToArray();
+        }.Concat(SkillIconNames.Select(name => "Icons/Skill/" + name + ".png")).Select(p => Root + p).ToArray();
         foreach (string asset in assets) Require<Object>(asset);
         foreach (string dependency in AssetDatabase.GetDependencies(assets, true))
         {

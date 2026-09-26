@@ -2,13 +2,13 @@
 
 # Overview
 
-### The Warlock (Insert blurb here)
+### The Warlock
 
 [![icon.png](https://i.postimg.cc/26hvx3F5/icon.png)](https://postimg.cc/tZRYqqc0)
 
 # Skills
 
-[![Screenshot-2026-09-26-032041.png](https://i.postimg.cc/jjS0YJkd/Screenshot-2026-09-26-032041.png)](https://postimg.cc/tswmh7jL)
+[![Screenshot-2026-09-26-053214.png](https://i.postimg.cc/yYpqFT15/Screenshot-2026-09-26-053214.png)](https://postimg.cc/QH7nD1Wk)
 
 [![concept1.png](https://i.postimg.cc/2yF2501m/concept1.png)](https://postimg.cc/XBqwHcKD)
 
@@ -26,8 +26,10 @@ tsuyoikenko - Reworked Kit, Code, Animations (So far)
 
 Ragon - Model
 
-Goodguy - Icons (So far)
+Goodguy - Icons 
 
 Popobawa - Concept Art
 
 Blur - Original Concept and Kit
+
+KoalaWalls - Koala

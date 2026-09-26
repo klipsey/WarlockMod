@@ -19,10 +19,10 @@ namespace WarlockMod.Warlock.Content
             string prefix = WarlockSurvivor.WARLOCK_PREFIX;
 
             string desc = "Warlock <color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > Combine <color=#9B3737>Crimson Mana</color> and <color=#FF0000>Meta Magic</color> together for even stronger effects." + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > Combine <color=#981e33>Crimson Mana</color> and <color=#b97f8a>Meta Magic</color> together for even stronger effects." + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Eldritch Surge is a great way to move around the map but remember that it's your only damaging skill!" + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Hex is a great way to give utility to your damaging skills." + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > You can build up infinite <color=#9B3737>Crimson Mana</color>, so saving it to unleash a massive barrage of abilities can be extremely powerful." + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > You can build up infinite <color=#981e33>Crimson Mana</color>, so saving it to unleash a massive barrage of abilities can be extremely powerful." + Environment.NewLine + Environment.NewLine;
 
             string lore = "Warlock";
             string outro = "..and so he left, warlock.";
@@ -41,31 +41,31 @@ namespace WarlockMod.Warlock.Content
 
             #region Passive
             Language.Add(prefix + "PASSIVE_NAME", "Crimson Mana");
-            Language.Add(prefix + "PASSIVE_DESCRIPTION", $"<color=#9B3737>Warlock</color> can empower or restore certain skills using <color=#9B3737>Crimson Mana</color>. Gain a stack of <color=#9B3737>Crimson Mana</color> after {WarlockConfig.KillsPerCrimsonMana} {(WarlockConfig.KillsPerCrimsonMana == 1 ? "kill" : "kills")}.");
+            Language.Add(prefix + "PASSIVE_DESCRIPTION", $"<color=#981e33>Warlock</color> can empower or restore certain skills using <color=#981e33>Crimson Mana</color>. Gain a stack of <color=#981e33>Crimson Mana</color> after {WarlockConfig.KillsPerCrimsonMana} {(WarlockConfig.KillsPerCrimsonMana == 1 ? "kill" : "kills")}.");
             #endregion
 
             #region Primary
             Language.Add(prefix + "PRIMARY_SURGE_NAME", "Eldritch Surge");
-            Language.Add(prefix + "PRIMARY_SURGE_DESCRIPTION", $"Fire a <style=cIsUtility>piercing</style> beam for <style=cIsDamage>{WarlockConfig.CrimsonSurgeDamage * 100f:0.###}% damage</style>. <color=#9B3737>\nCRIMSON MANA: Increased fire rate for {WarlockConfig.PrimaryEmpowerDuration:0.###} seconds.</color> " +
-                $"<color=#FF0000>\nMETA MAGIC: Gain an additional shot per Meta Magic stack.</color>");
+            Language.Add(prefix + "PRIMARY_SURGE_DESCRIPTION", $"Fire a <style=cIsUtility>piercing</style> beam for <style=cIsDamage>{WarlockConfig.CrimsonSurgeDamage * 100f:0.###}% damage</style>. <color=#981e33>\nCRIMSON MANA: Increased fire rate for {WarlockConfig.PrimaryEmpowerDuration:0.###} seconds.</color> " +
+                $"<color=#b97f8a>\nMETA MAGIC: Gain an additional shot per Meta Magic stack.</color>");
             Language.Add(prefix + "PRIMARY_EMPOWER1_NAME", "Empower Eldritch Surge");
-            Language.Add(prefix + "PRIMARY_EMPOWER1_DESCRIPTION", $"Spend <color=#9B3737>1 Crimson Mana</color> to empower Eldritch Surge for <style=cIsUtility>{WarlockConfig.PrimaryEmpowerDuration:0.###} seconds</style>, reducing its charge and firing times by <style=cIsUtility>15%</style>.");
+            Language.Add(prefix + "PRIMARY_EMPOWER1_DESCRIPTION", $"Spend <color=#981e33>1 Crimson Mana</color> to empower Eldritch Surge for <style=cIsUtility>{WarlockConfig.PrimaryEmpowerDuration:0.###} seconds</style>, reducing its charge and firing times by <style=cIsUtility>15%</style>.");
             #endregion
 
             #region Secondary
             Language.Add(prefix + "SECONDARY_HEX_NAME", "Hex");
-            Language.Add(prefix + "SECONDARY_HEX_DESCRIPTION", $"Curse an enemy for {WarlockConfig.HexDuration:0.###} seconds. Skills deal <style=cIsDamage>{WarlockConfig.HexDamage * 100f:0.###}% bonus damage</style> to this enemy per stack.<color=#9B3737> \nCRIMSON MANA: Bonus damage becomes AOE for {WarlockConfig.EmpoweredHexDamage * 100f:0.###}% of the triggering hit's damage per stack.</color>" +
-                $"<color=#FF0000>\nMETA MAGIC: Apply a {WarlockConfig.BleedDuration:0.###}-second stack of bleed per stack of Meta Magic.</color>");
+            Language.Add(prefix + "SECONDARY_HEX_DESCRIPTION", $"Curse an enemy for {WarlockConfig.HexDuration:0.###} seconds. Skills deal <style=cIsDamage>{WarlockConfig.HexDamage * 100f:0.###}% bonus damage</style> to this enemy per stack.<color=#981e33> \nCRIMSON MANA: Bonus damage becomes AOE for {WarlockConfig.EmpoweredHexDamage * 100f:0.###}% of the triggering hit's damage per stack.</color>" +
+                $"<color=#b97f8a>\nMETA MAGIC: Apply a {WarlockConfig.BleedDuration:0.###}-second stack of bleed per stack of Meta Magic.</color>");
             Language.Add(prefix + "SECONDARY_EMPOWER_NAME", "Empower Hex");
-            Language.Add(prefix + "SECONDARY_EMPOWER_DESCRIPTION", "Spend <color=#9B3737>1 Crimson Mana</color> to <style=cIsUtility>restore all Hex charges</style> and gain empowered casts equal to half its maximum charges, rounded down. Empowered Hex turns its bonus damage into an <style=cIsDamage>explosion around the cursed enemy</style>.");
+            Language.Add(prefix + "SECONDARY_EMPOWER_DESCRIPTION", "Spend <color=#981e33>1 Crimson Mana</color> to <style=cIsUtility>restore all Hex charges</style> and gain empowered casts equal to half its maximum charges, rounded down. Empowered Hex turns its bonus damage into an <style=cIsDamage>explosion around the cursed enemy</style>.");
             #endregion
 
             #region Utility 
             Language.Add(prefix + "UTILITY_BLOOD_DASH_NAME", "Blood Dash");
-            Language.Add(prefix + "UTILITY_BLOOD_DASH_DESCRIPTION", $"<style=cIsDamage>Stunning</style>. Deal <style=cIsDamage>{WarlockConfig.BloodDashDamage * 100f:0.###}% damage</style>, then <style=cIsUtility>disappear</style> and <style=cIsUtility>teleport</style> a short distance.<color=#9B3737>\nCRIMSON MANA: Deals damage at both the end and the start for {WarlockConfig.UtilityEmpowerDuration:0.###} seconds.</color> " +
-                $"<color=#FF0000>\nMETA MAGIC: Reset all stocks when depleted at the cost of a Meta Magic stack.</color>");
+            Language.Add(prefix + "UTILITY_BLOOD_DASH_DESCRIPTION", $"<style=cIsDamage>Stunning</style>. Deal <style=cIsDamage>{WarlockConfig.BloodDashDamage * 100f:0.###}% damage</style>, then <style=cIsUtility>disappear</style> and <style=cIsUtility>teleport</style> a short distance.<color=#981e33>\nCRIMSON MANA: Deals damage at both the end and the start for {WarlockConfig.UtilityEmpowerDuration:0.###} seconds.</color> " +
+                $"<color=#b97f8a>\nMETA MAGIC: Reset all stocks when depleted at the cost of a Meta Magic stack.</color>");
             Language.Add(prefix + "UTILITY_EMPOWER_NAME", "Empower Blood Dash");
-            Language.Add(prefix + "UTILITY_EMPOWER_DESCRIPTION", $"Spend <color=#9B3737>1 Crimson Mana</color> to <style=cIsUtility>restore all Blood Dash charges</style> and empower it for <style=cIsUtility>{WarlockConfig.UtilityEmpowerDuration:0.###} seconds</style>. Each dash deals <style=cIsDamage>stunning damage at both departure and arrival</style>.");
+            Language.Add(prefix + "UTILITY_EMPOWER_DESCRIPTION", $"Spend <color=#981e33>1 Crimson Mana</color> to <style=cIsUtility>restore all Blood Dash charges</style> and empower it for <style=cIsUtility>{WarlockConfig.UtilityEmpowerDuration:0.###} seconds</style>. Each dash deals <style=cIsDamage>stunning damage at both departure and arrival</style>.");
             #endregion
 
             #region Special
@@ -73,7 +73,7 @@ namespace WarlockMod.Warlock.Content
             string ritualDescription = "Open a menu allowing you to restore the stocks of a selected skill additionally empowering it. Recast Ritual to gain a stack of Meta Magic at the cost of 1 Crimson Mana.";
             Language.Add(prefix + "SPECIAL_RITUAL_DESCRIPTION", ritualDescription);
             Language.Add(prefix + "SPECIAL_EMPOWER_NAME", "Gain Meta Magic");
-            Language.Add(prefix + "SPECIAL_EMPOWER_DESCRIPTION", "Spend <color=#9B3737>1 Crimson Mana</color> to gain <color=#FF0000>1 stack of Meta Magic</color>. Each stack adds a shot to your next Eldritch Surge or adds bleed to your next Hex. Blood Dash consumes one stack to restore its charges when depleted.");
+            Language.Add(prefix + "SPECIAL_EMPOWER_DESCRIPTION", "Spend <color=#981e33>1 Crimson Mana</color> to gain <color=#b97f8a>1 stack of Meta Magic</color>. Each stack adds a shot to your next Eldritch Surge or adds bleed to your next Hex. Blood Dash consumes one stack to restore its charges when depleted.");
             Language.Add(prefix + "SPECIAL_SCEPTER_RITUAL_NAME", "Ritual (Scepter)");
             Language.Add(prefix + "SPECIAL_SCEPTER_RITUAL_DESCRIPTION", ritualDescription);
 

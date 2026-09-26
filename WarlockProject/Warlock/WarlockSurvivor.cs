@@ -183,6 +183,9 @@ namespace WarlockMod.Warlock
             if (WarlockPlugin.scepterInstalled) InitializeScepter();
         }
 
+        private Sprite LoadSkillIcon(string name) => assetBundle.LoadAsset<Sprite>(name)
+            ?? throw new InvalidOperationException($"Missing {name} sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll.");
+
         private void AddPassiveSkills()
         {
             WarlockPassive passive = bodyPrefab.GetComponent<WarlockPassive>();
@@ -196,8 +199,7 @@ namespace WarlockMod.Warlock
                 skillName = WARLOCK_PREFIX + "PASSIVE_NAME",
                 skillNameToken = WARLOCK_PREFIX + "PASSIVE_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "PASSIVE_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive")
-                    ?? throw new InvalidOperationException("Missing texWarlockPassive sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll."),
+                skillIcon = LoadSkillIcon("texWarlockPassive"),
                 keywordTokens = new string[] { },
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "",
@@ -219,16 +221,13 @@ namespace WarlockMod.Warlock
 
             Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, passive.interrogatorPassive);
 
-            Sprite metaMagicIcon = assetBundle.LoadAsset<Sprite>("texWarlockMetaMagic")
-                ?? throw new InvalidOperationException("Missing texWarlockMetaMagic sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll.");
-
             m1EmpowerSkillDef = Skills.CreateSkillDef<WarlockSkillDef>(new SkillDefInfo
             {
                 skillName = "Empower1",
                 skillNameToken = WARLOCK_PREFIX + "PRIMARY_EMPOWER1_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "PRIMARY_EMPOWER1_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = metaMagicIcon,
+                skillIcon = LoadSkillIcon("texWarlockPrimaryEmpowered"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower1)),
                 activationStateMachineName = "MetaMenu",
@@ -254,7 +253,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "SECONDARY_EMPOWER_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "SECONDARY_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = metaMagicIcon,
+                skillIcon = LoadSkillIcon("texWarlockSecondaryEmpowered"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower2)),
                 activationStateMachineName = "MetaMenu",
@@ -280,7 +279,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "UTILITY_EMPOWER_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "UTILITY_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = metaMagicIcon,
+                skillIcon = LoadSkillIcon("texWarlockUtilityEmpowered"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower3)),
                 activationStateMachineName = "MetaMenu",
@@ -306,7 +305,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "SPECIAL_EMPOWER_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "SPECIAL_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = passive.interrogatorPassive.icon,
+                skillIcon = LoadSkillIcon("texWarlockSpecial"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower)),
                 activationStateMachineName = "MetaMenu",
@@ -335,8 +334,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "PRIMARY_SURGE_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "PRIMARY_SURGE_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPrimary")
-                    ?? throw new InvalidOperationException("Missing texWarlockPrimary sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll."),
+                skillIcon = LoadSkillIcon("texWarlockPrimary"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(CrimsonSurgePrep)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -366,7 +364,7 @@ namespace WarlockMod.Warlock
                 skillName = "Hex",
                 skillNameToken = WARLOCK_PREFIX + "SECONDARY_HEX_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "SECONDARY_HEX_DESCRIPTION",
-                skillIcon = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/DeathMark/texBuffDeathMarkIcon.tif").WaitForCompletion(),
+                skillIcon = LoadSkillIcon("texWarlockSecondary"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Hex)),
                 activationStateMachineName = "Weapon2",
                 baseMaxStock = 2,
@@ -396,7 +394,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "UTILITY_BLOOD_DASH_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "UTILITY_BLOOD_DASH_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Huntress/HuntressBody.prefab").WaitForCompletion().GetComponent<SkillLocator>().utility.skillFamily.variants[0].skillDef.icon,
+                skillIcon = LoadSkillIcon("texWarlockUtility"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(BloodDash)),
                 activationStateMachineName = "Weapon2",
                 baseMaxStock = 2,
@@ -427,7 +425,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "SPECIAL_RITUAL_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "SPECIAL_RITUAL_DESCRIPTION",
                 keywordTokens = new string[] { Tokens.metaMagicKeyword },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive"),
+                skillIcon = LoadSkillIcon("texWarlockSpecial"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(RitualPrep)),
                 activationStateMachineName = "MetaMenu",
@@ -459,7 +457,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "SPECIAL_SCEPTER_RITUAL_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "SPECIAL_SCEPTER_RITUAL_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive"),
+                skillIcon = LoadSkillIcon("texWarlockSpecial"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(RitualPrep)),
                 activationStateMachineName = "MetaMenu",
