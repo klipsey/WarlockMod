@@ -35,7 +35,13 @@ namespace WarlockMod.Modules
             {
                 characterModel = display.AddComponent<CharacterModel>();
             }
-            characterModel.baseRendererInfos = prefab.GetComponentInChildren<CharacterModel>().baseRendererInfos;
+            var bodyRenderers = prefab.GetComponentInChildren<CharacterModel>().baseRendererInfos;
+            var displayRenderers = display.GetComponentsInChildren<Renderer>(true);
+            characterModel.baseRendererInfos = bodyRenderers.Select(info =>
+            {
+                info.renderer = displayRenderers.Single(renderer => renderer.name == info.renderer.name);
+                return info;
+            }).ToArray();
 
             Modules.Assets.ConvertAllRenderersToHopooShader(display);
 
@@ -52,7 +58,7 @@ namespace WarlockMod.Modules
                 Log.Error($"could not load model prefab {modelName}. Make sure this prefab exists in assetbundle {assetBundle.name}");
                 return null;
             }
-            return model;
+            return PrefabAPI.InstantiateClone(model, modelName, false);
         }
 
         public static GameObject LoadCharacterBody(AssetBundle assetBundle, string bodyName)
@@ -313,7 +319,7 @@ namespace WarlockMod.Modules
 
             characterModel.autoPopulateLightInfos = true;
             characterModel.invisibilityCount = 0;
-            characterModel.temporaryOverlays = new List<TemporaryOverlay>();
+            characterModel.temporaryOverlays = new List<TemporaryOverlayInstance>();
 
             if (!preattached)
             {
@@ -611,6 +617,7 @@ namespace WarlockMod.Modules
 
             NetworkStateMachine networkMachine = bodyPrefab.GetComponent<NetworkStateMachine>();
             networkMachine.stateMachines = Array.Empty<EntityStateMachine>();
+            bodyPrefab.GetComponent<CharacterBody>().vehicleIdleStateMachine = Array.Empty<EntityStateMachine>();
 
             CharacterDeathBehavior deathBehavior = bodyPrefab.GetComponent<CharacterDeathBehavior>();
             if (deathBehavior)
@@ -704,6 +711,9 @@ namespace WarlockMod.Modules
             }
 
             CharacterDeathBehavior deathBehavior = prefab.GetComponent<CharacterDeathBehavior>();
+            CharacterBody characterBody = prefab.GetComponent<CharacterBody>();
+            if (characterBody)
+                characterBody.vehicleIdleStateMachine = characterBody.vehicleIdleStateMachine.Append(entityStateMachine).ToArray();
             if (deathBehavior)
             {
                 deathBehavior.idleStateMachine = deathBehavior.idleStateMachine.Append(entityStateMachine).ToArray();

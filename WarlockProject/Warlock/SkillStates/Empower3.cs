@@ -45,13 +45,13 @@ namespace WarlockMod.Warlock.SkillStates
             if (NetworkServer.active)
             {
                 characterBody.RemoveBuff(WarlockBuffs.warlockCrimsonManaFullStack);
-                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredUtilityBuff, WarlockStaticValues.utilityDuration);
+                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredUtilityBuff, WarlockConfig.UtilityEmpowerDuration);
             }
 
             warlockController.jamTimer = 0f;
 
             EntityStateMachine entityStateMachine = EntityStateMachine.FindByCustomName(base.gameObject, "MetaMenu");
-            if (entityStateMachine)
+            if (entityStateMachine && isAuthority)
             {
                 entityStateMachine.SetNextStateToMain();
             }
@@ -78,7 +78,7 @@ namespace WarlockMod.Warlock.SkillStates
                 this.warlockController.ReturnSavedStocks();
             }
 
-            skillLocator.utility.stock = skillLocator.utility.maxStock;
+            if (isAuthority) skillLocator.utility.stock = skillLocator.utility.maxStock;
 
             warlockController.jamTimer = 0f;
         }

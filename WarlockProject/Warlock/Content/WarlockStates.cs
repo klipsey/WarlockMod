@@ -8,9 +8,7 @@ namespace WarlockMod.Warlock.Content
     {
         public static void Init()
         {
-            Modules.Content.AddEntityState(typeof(BaseWarlockSkillState));
             Modules.Content.AddEntityState(typeof(MainState));
-            Modules.Content.AddEntityState(typeof(BaseWarlockState));
             Modules.Content.AddEntityState(typeof(BloodDash));
             Modules.Content.AddEntityState(typeof(CrimsonSurgeFire));
             Modules.Content.AddEntityState(typeof(CrimsonSurgePrep));

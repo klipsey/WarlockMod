@@ -36,11 +36,11 @@ namespace WarlockMod.Warlock.SkillStates
             if (NetworkServer.active)
             {
                 characterBody.RemoveBuff(WarlockBuffs.warlockCrimsonManaFullStack);
-                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredM1Buff, WarlockStaticValues.m1Duration);
+                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredM1Buff, WarlockConfig.PrimaryEmpowerDuration);
             }
 
             EntityStateMachine entityStateMachine = EntityStateMachine.FindByCustomName(base.gameObject, "MetaMenu");
-            if (entityStateMachine)
+            if (entityStateMachine && isAuthority)
             {
                 entityStateMachine.SetNextStateToMain();
             }

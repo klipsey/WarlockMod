@@ -32,6 +32,11 @@ namespace WarlockMod.Modules {
             ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
         }
 
+        internal void Shutdown()
+        {
+            ContentManager.collectContentPackProviders -= ContentManager_collectContentPackProviders;
+        }
+
         private void ContentManager_collectContentPackProviders(ContentManager.AddContentPackProviderDelegate addContentPackProvider)
         {
             addContentPackProvider(this);

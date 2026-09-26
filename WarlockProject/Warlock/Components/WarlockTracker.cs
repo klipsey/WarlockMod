@@ -64,7 +64,7 @@ namespace WarlockMod.Warlock.Components
         }
         private void OnEnable()
         {
-            indicator.active = true;
+            indicator.active = false;
         }
 
         private void OnDisable()
@@ -74,6 +74,13 @@ namespace WarlockMod.Warlock.Components
 
         private void FixedUpdate()
         {
+            if (!characterBody.hasEffectiveAuthority)
+            {
+                trackingTarget = null;
+                indicator.active = false;
+                return;
+            }
+            indicator.active = true;
             trackerUpdateStopwatch += Time.fixedDeltaTime;
             if (trackerUpdateStopwatch >= 1f / trackerUpdateFrequency)
             {
@@ -115,4 +122,3 @@ namespace WarlockMod.Warlock.Components
         }
     }
 }
-

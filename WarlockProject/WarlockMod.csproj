@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Configurations>Release;Debug</Configurations>
+    <TestProfilePath Condition="'$(TestProfilePath)' == ''">F:\WebfishingMods\RiskOfRain2\profiles\testing</TestProfilePath>
+    <DeployToTestProfile Condition="'$(DeployToTestProfile)' == ''">true</DeployToTestProfile>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -24,29 +27,21 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="BepInEx.Core" Version="5.4.*" />
-		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.4-r.0" />
-		<PackageReference Include="UnityEngine.Modules" Version="2019.4.26" />
-		<PackageReference Include="MMHOOK.RoR2" Version="2022.9.20">
+		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0" />
+		<PackageReference Include="RoR2BepInExPack" Version="1.41.0" />
+		<PackageReference Include="MMHOOK.RoR2" Version="2025.12.9">
 			<NoWarn>NU1701</NoWarn>
 		</PackageReference>
 		<PackageReference Include="R2API.Core" Version="5.*" />
 		<PackageReference Include="R2API.Prefab" Version="1.*" />
-		<PackageReference Include="R2API.RecalculateStats" Version="1.*" />
 		<PackageReference Include="R2API.Language" Version="1.*" />
-		<PackageReference Include="R2API.Unlockable" Version="1.*" />
 		<PackageReference Include="R2API.DamageType" Version="1.*" />
-		<PackageReference Include="R2API.TempVisualEffect" Version="1.*" />
 		<PackageReference Include="R2API.Dot" Version="1.*" />
-		<PackageReference Include="R2API.Orb" Version="1.*" />
-		<PackageReference Include="R2API.Deployable" Version="1.*" />
-		<PackageReference Include="R2API.Sound" Version="1.*" />
 		<PackageReference Include="R2API.Networking" Version="1.*" />
+		<PackageReference Include="R2API.Sound" Version="1.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="Decalicious">
-	    <HintPath>libs\Decalicious.dll</HintPath>
-	  </Reference>
 		<Reference Include="ShaderSwapper">
 			<HintPath>libs\ShaderSwapper.dll</HintPath>
 		</Reference>
@@ -55,12 +50,34 @@
 		</Reference>
 		<Reference Include="CustomEmotesAPI">
 			<HintPath>libs\CustomEmotesAPI.dll</HintPath>
+			<HintPath Condition="Exists('$(TestProfilePath)\BepInEx\plugins\MetrosexualFruitcake-CustomEmotesAPI\CustomEmotesAPI.dll')">$(TestProfilePath)\BepInEx\plugins\MetrosexualFruitcake-CustomEmotesAPI\CustomEmotesAPI.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="RiskOfOptions">
+			<HintPath>libs\RiskOfOptions.dll</HintPath>
+			<Private>false</Private>
 		</Reference>
 			<Reference Include="AncientScepter">
 			<HintPath>libs\AncientScepter.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="REM follow the Building Your Mod page on the henrytutorial wiki for more information on this&#xD;&#xA;REM change this to your username (or add yours if you're working in a team or somethin)&#xD;&#xA;if &quot;$(Username)&quot; == &quot;mario&quot; set build=true&#xD;&#xA;&#xD;&#xA;if defined build (&#xD;&#xA;&#xD;&#xA;REM copy the built mod to our Build folder&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Build\plugins&quot;&#xD;&#xA;&#xD;&#xA;REM copy the assetbundle from our unity project to our Build folder&#xD;&#xA;REM change these paths to your (now hopefully renamed) folders&#xD;&#xA;if exist &quot;$(ProjectDir)..\WarlockUnityProject\AssetBundles\StandaloneWindows\warlock&quot; (&#xD;&#xA;copy &quot;$(ProjectDir)..\WarlockUnityProject\AssetBundles\StandaloneWindows\warlock&quot; &quot;$(ProjectDir)..\Build\plugins\AssetBundles&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;REM copy the soundbanks from our unity project to our Build folder&#xD;&#xA;REM change these paths to your (now hopefully renamed) folders&#xD;&#xA;if exist &quot;$(ProjectDir)..\WarlockProject\interrogator_bank&quot; (&#xD;&#xA;copy &quot;$(ProjectDir)..\WarlockProject\interrogator_bank&quot; &quot;$(ProjectDir)..\Build\plugins\Soundbanks&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;REM copy the whole Build\plugins folder into your r2modman profile. This mimics how r2modman will install your mod&#xD;&#xA;Xcopy /E /I /Y &quot;$(ProjectDir)..\Build\plugins&quot; &quot;C:\Users\mario\AppData\Roaming\r2modmanPlus-local\RiskOfRain2\profiles\warlock\BepInEx\plugins\kenko-Warlock\&quot;&#xD;&#xA;)" />  </Target>
+  <Target Name="PackageMod" AfterTargets="Build" Condition="'$(SkipPackaging)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <BundlePath>$(ProjectDir)..\WarlockUnityProject\AssetBundles\StandaloneWindows\warlock</BundlePath>
+      <PluginOutput>$(ProjectDir)..\Build\plugins</PluginOutput>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(BundlePath)')" Text="Build the Warlock asset bundle using Tools/Warlock/Setup and Build before packaging." />
+    <Message Importance="high" Text="Packaging Warlock asset bundle: $(BundlePath)" />
+    <MakeDir Directories="$(PluginOutput)\AssetBundles;$(PluginOutput)\Soundbanks" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginOutput)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(BundlePath)" DestinationFolder="$(PluginOutput)\AssetBundles" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(ProjectDir)interrogator_bank.bnk" DestinationFolder="$(PluginOutput)\Soundbanks" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="DeployMod" AfterTargets="PackageMod" Condition="'$(DeployToTestProfile)' == 'true' and '$(SkipPackaging)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Error Condition="!Exists('$(TestProfilePath)\BepInEx\plugins')" Text="Test profile does not exist: $(TestProfilePath)" />
+    <Copy SourceFiles="$(PluginOutput)\WarlockMod.dll" DestinationFolder="$(TestProfilePath)\BepInEx\plugins\kenko-Warlock" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(PluginOutput)\AssetBundles\warlock" DestinationFolder="$(TestProfilePath)\BepInEx\plugins\kenko-Warlock\AssetBundles" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(PluginOutput)\Soundbanks\interrogator_bank.bnk" DestinationFolder="$(TestProfilePath)\BepInEx\plugins\kenko-Warlock\Soundbanks" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

@@ -5,6 +5,7 @@ using EntityStates.ImpMonster;
 using EntityStates.ImpBossMonster;
 using WarlockMod.Modules.BaseStates;
 using WarlockMod.Warlock.Content;
+using UnityEngine.Networking;
 
 namespace WarlockMod.Warlock.SkillStates
 {
@@ -17,8 +18,8 @@ namespace WarlockMod.Warlock.SkillStates
         public Material destealthMaterial = WarlockAssets.destealthMaterial;
         // for AOE stun
         public static float blastAttackRadius = 15f;
-		public static float blastAttackDamageCoefficient = 2f;
-		public static float blastAttackProcCoefficient = 1f;
+		public static float blastAttackDamageCoefficient => WarlockConfig.BloodDashDamage;
+		public static float blastAttackProcCoefficient => WarlockConfig.BloodDashProc;
 		public static float blastAttackForce = 1;
 
 		[SerializeField]
@@ -122,8 +123,8 @@ namespace WarlockMod.Warlock.SkillStates
             }
 			if(base.skillLocator.utility.stock == 0 && this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
 			{
-				base.skillLocator.utility.Reset();
-				this.characterBody.RemoveBuff(WarlockBuffs.warlockMetaMagicBuff);
+				if (isAuthority) base.skillLocator.utility.Reset();
+				if (NetworkServer.active) this.characterBody.RemoveBuff(WarlockBuffs.warlockMetaMagicBuff);
 			}
             if (!outer.destroying)
 			{
@@ -132,7 +133,7 @@ namespace WarlockMod.Warlock.SkillStates
                 modelTransform = GetModelTransform();
                 if (modelTransform && this.destealthMaterial)
                 {
-                    TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
+                    TemporaryOverlayInstance temporaryOverlay = TemporaryOverlayManager.AddOverlay(modelTransform.gameObject);
                     temporaryOverlay.duration = 1f;
                     temporaryOverlay.destroyComponentOnEnd = true;
                     temporaryOverlay.originalMaterial = this.destealthMaterial;

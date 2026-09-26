@@ -14,15 +14,7 @@ namespace WarlockMod.Warlock.Components
     public class WarlockController : MonoBehaviour
     {
         private CharacterBody characterBody;
-        private ModelSkinController skinController;
-        private ChildLocator childLocator;
-        private CharacterModel characterModel;
-        private Animator animator;
         private SkillLocator skillLocator;
-        private Material[] swordMat;
-        private Material[] batMat;
-        public string currentSkinNameToken => this.skinController.skins[this.skinController.currentSkinIndex].nameToken;
-        public string altSkinNameToken => WarlockSurvivor.INTERROGATOR_PREFIX + "MASTERY_SKIN_NAME";
 
         public bool primaryEmpowered => this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM1Buff);
         public bool secondaryEmpowered => this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM2Buff);
@@ -44,32 +36,9 @@ namespace WarlockMod.Warlock.Components
         private void Awake()
         {
             this.characterBody = this.GetComponent<CharacterBody>();
-            ModelLocator modelLocator = this.GetComponent<ModelLocator>();
-            this.childLocator = modelLocator.modelBaseTransform.GetComponentInChildren<ChildLocator>();
-            this.animator = modelLocator.modelBaseTransform.GetComponentInChildren<Animator>();
-            this.characterModel = modelLocator.modelBaseTransform.GetComponentInChildren<CharacterModel>();
             this.skillLocator = this.GetComponent<SkillLocator>();
-            this.skinController = modelLocator.modelTransform.gameObject.GetComponent<ModelSkinController>();
-
-            Hook();
-
-            this.Invoke("ApplySkin", 0.3f);
-        }
-        private void Start()
-        {
-        }
-        #region tooMuchCrap
-        private void Hook()
-        {
-        }
-        public void ApplySkin()
-        {
-            if (this.skinController)
-            {
-            }
         }
 
-        #endregion
         private void FixedUpdate()
         {
             if(jamTimer > 0f) jamTimer -= Time.fixedDeltaTime;
@@ -78,7 +47,7 @@ namespace WarlockMod.Warlock.Components
             else if (!hasStoppedSound)
             {
                 hasStoppedSound = true;
-                AkSoundEngine.StopPlayingID(soundID1);
+                if (soundID1 != 0) AkSoundEngine.StopPlayingID(soundID1);
             }
 
         }
@@ -108,7 +77,7 @@ namespace WarlockMod.Warlock.Components
         }
         private void OnDestroy()
         {
-            AkSoundEngine.StopPlayingID(soundID1);
+            if (soundID1 != 0) AkSoundEngine.StopPlayingID(soundID1);
         }
     }
 }

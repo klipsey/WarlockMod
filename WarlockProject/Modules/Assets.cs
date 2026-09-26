@@ -30,14 +30,11 @@ namespace WarlockMod.Modules
                 return loadedBundles[bundleName];
             }
 
-            AssetBundle assetBundle = null;
-            try
+            string path = Path.Combine(Path.GetDirectoryName(WarlockPlugin.instance.Info.Location), "AssetBundles", bundleName);
+            AssetBundle assetBundle = AssetBundle.LoadFromFile(path);
+            if (!assetBundle)
             {
-                assetBundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(WarlockPlugin.instance.Info.Location), "AssetBundles", bundleName));
-            }
-            catch (System.Exception e)
-            {
-                Log.Error($"Error loading asset bundle, {bundleName}. Your asset bundle must be in a folder next to your mod dll called 'AssetBundles'. Follow the guide to build and install your mod correctly!\n{e}");
+                throw new System.IO.InvalidDataException($"Unable to load Warlock asset bundle at {path}. Rebuild and deploy the Unity bundle alongside the plugin.");
             }
 
             loadedBundles[bundleName] = assetBundle;

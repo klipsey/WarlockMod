@@ -12,7 +12,7 @@ namespace WarlockMod.Modules
 
         public static string slayerKeyword = KeywordText("Slayer", "The skill deals 2% more damage per 1% of health the target has lost, up to <style=cIsDamage>3x</style> damage.");
 
-        public static string metaMagicKeyword = KeywordText("Metamagic Details", $"Primary: {WarlockStaticValues.m1Duration} seconds. \nSecondary: Half of max stock. \nUtility: {WarlockStaticValues.utilityDuration} seconds.");
+        public static string metaMagicKeyword => KeywordText("Metamagic Details", $"Primary: {WarlockConfig.PrimaryEmpowerDuration:0.###} seconds. \nSecondary: Half of max stock. \nUtility: {WarlockConfig.UtilityEmpowerDuration:0.###} seconds.");
         public static string DamageText(string text)
         {
             return $"<style=cIsDamage>{text}</style>";

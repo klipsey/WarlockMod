@@ -13,18 +13,16 @@ namespace WarlockMod.Warlock.SkillStates
 {
     public class CrimsonSurgeFire : BaseWarlockSkillState
     {
-        public float baseDuration = 0.5f;
+        public float baseDuration = 1f;
         public float selfKnockbackForce = 2250f;
-        public float damageCoefficient = WarlockStaticValues.crimsonSurgeDamageCoefficient;
+        public float damageCoefficient = WarlockConfig.CrimsonSurgeDamage;
         private float duration;
         private float fireInterval;
-        private float maxShots;
-        private float shotCounter;
+        private int maxShots = 1;
+        private int shotCounter;
+        private bool empoweredShot;
         private float fireTimer;
         private Ray aimRay;
-        private bool hasFiredFirstShot;
-
-        private static List<CharacterBody> _enemiesHit = new List<CharacterBody>();
 
         public GameObject hitEffectPrefab = WarlockAssets.warlockHitImpactEffect;
         public GameObject tracerEffectPrefab = WarlockAssets.warlockTracerEffect;
@@ -33,22 +31,24 @@ namespace WarlockMod.Warlock.SkillStates
         {
             RefreshState();
             base.OnEnter();
+            if (isAuthority)
+            {
+                maxShots = characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff) + 1;
+                empoweredShot = primaryEmpowered;
+            }
             this.duration = this.baseDuration / base.attackSpeedStat;
-            if (this.primaryEmpowered)
+            if (empoweredShot)
             {
                 this.duration *= 0.85f;
             }
-            if (this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
+            if (NetworkServer.active && maxShots > 1)
             {
-                this.maxShots = this.characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff) + 1;
-                this.fireInterval = this.duration / this.maxShots;
-                this.fireTimer = this.fireInterval;
-                this.characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex, 0);
+                characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex,
+                    Mathf.Max(0, characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff) - (maxShots - 1)));
             }
-            else
-            {
-                fireTimer = baseDuration;
-            }
+            fireInterval = duration / maxShots;
+            fireTimer = fireInterval;
+            shotCounter = 1;
             aimRay = base.GetAimRay();
             base.StartAimMode(aimRay, 2f, false);
             //base.PlayAnimation("Gesture Additive, Right", "FirePistol, Right");
@@ -56,13 +56,27 @@ namespace WarlockMod.Warlock.SkillStates
             base.AddRecoil(-0.6f, 0.6f, -0.6f, 0.6f);
             if (FireLaser.effectPrefab)
             {
-                EffectManager.SimpleMuzzleFlash(FireLaser.effectPrefab, base.gameObject, "EldritchMuzzle", false);
+                EffectManager.SimpleMuzzleFlash(FireLaser.effectPrefab, base.gameObject, "Muzzle", false);
             }
 
             if (base.isAuthority)
             {
                 this.Fire();
             }
+        }
+
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(maxShots);
+            writer.Write(empoweredShot);
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            maxShots = Mathf.Max(1, reader.ReadInt32());
+            empoweredShot = reader.ReadBoolean();
         }
 
         private void Fire()
@@ -76,12 +90,12 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.maxSpread = base.characterBody.spreadBloomAngle;
             bulletAttack.radius = 2f;
             bulletAttack.bulletCount = 1;
-            bulletAttack.procCoefficient = 1f;
+            bulletAttack.procCoefficient = WarlockConfig.CrimsonSurgeProc;
             bulletAttack.damage = damageCoefficient * damageStat;
             bulletAttack.force = selfKnockbackForce;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
             bulletAttack.tracerEffectPrefab = this.tracerEffectPrefab;
-            bulletAttack.muzzleName = "EldritchMuzzle";
+            bulletAttack.muzzleName = "Muzzle";
             bulletAttack.hitEffectPrefab = this.hitEffectPrefab;
             bulletAttack.isCrit = base.RollCrit();
             bulletAttack.HitEffectNormal = false;
@@ -89,13 +103,12 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.smartCollision = true;
             bulletAttack.maxDistance = 500f;
             bulletAttack.damageType |= DamageType.Generic;
-            _enemiesHit.Clear();
             bulletAttack.Fire();
 
-            if (!characterMotor.isGrounded && !hasFiredFirstShot)
+            if (!characterMotor.isGrounded)
             {
-                hasFiredFirstShot = true;
-                base.characterBody.characterMotor.ApplyForce((0f - selfKnockbackForce) * aimRay.direction, true);
+                float shotKnockbackForce = selfKnockbackForce * Mathf.Pow(0.5f, shotCounter - 1);
+                base.characterBody.characterMotor.ApplyForce(-shotKnockbackForce * aimRay.direction, true);
             }
         }
         public override void OnExit()
@@ -106,8 +119,9 @@ namespace WarlockMod.Warlock.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (base.fixedAge >= this.fireTimer && this.fireTimer < this.duration)
+            while (shotCounter < maxShots && base.fixedAge >= fireTimer)
             {
+                shotCounter++;
                 this.fireTimer += this.fireInterval;
                 aimRay = base.GetAimRay();
                 base.StartAimMode(aimRay, 2f, false);

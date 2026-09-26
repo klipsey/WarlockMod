@@ -19,7 +19,6 @@ using WarlockMod.Warlock.SkillStates;
 using HG;
 using EntityStates;
 using R2API.Networking.Interfaces;
-using EmotesAPI;
 using System.Runtime.CompilerServices;
 using static RoR2.TeleporterInteraction;
 
@@ -28,13 +27,13 @@ namespace WarlockMod.Warlock
     public class WarlockSurvivor : SurvivorBase<WarlockSurvivor>
     {
         public override string assetBundleName => "warlock";
-        public override string bodyName => "InterrogatorBody";
-        public override string masterName => "InterrogatorMonsterMaster";
-        public override string modelPrefabName => "mdlInterrogator";
-        public override string displayPrefabName => "InterrogatorDisplay";
+        public override string bodyName => "WarlockBody";
+        public override string masterName => "WarlockMonsterMaster";
+        public override string modelPrefabName => "mdlWarlock";
+        public override string displayPrefabName => "WarlockDisplay";
 
-        public const string INTERROGATOR_PREFIX = WarlockPlugin.DEVELOPER_PREFIX + "_WARLOCK_";
-        public override string survivorTokenPrefix => INTERROGATOR_PREFIX;
+        public const string WARLOCK_PREFIX = WarlockPlugin.DEVELOPER_PREFIX + "_WARLOCK_";
+        public override string survivorTokenPrefix => WARLOCK_PREFIX;
 
         internal static GameObject characterPrefab;
 
@@ -47,10 +46,10 @@ namespace WarlockMod.Warlock
         public override BodyInfo bodyInfo => new BodyInfo
         {
             bodyName = bodyName,
-            bodyNameToken = INTERROGATOR_PREFIX + "NAME",
-            subtitleNameToken = INTERROGATOR_PREFIX + "SUBTITLE",
+            bodyNameToken = WARLOCK_PREFIX + "NAME",
+            subtitleNameToken = WARLOCK_PREFIX + "SUBTITLE",
 
-            characterPortrait = assetBundle.LoadAsset<Texture>("texInterrogatorIcon"),
+            characterPortrait = assetBundle.LoadAsset<Texture>("texWarlockIcon"),
             bodyColor = WarlockAssets.warlockColor,
             sortPosition = 99f,
 
@@ -69,32 +68,22 @@ namespace WarlockMod.Warlock
                 new CustomRendererInfo
                 {
                     childName = "Model",
-                    dontHotpoo = true,
                 },
                 new CustomRendererInfo
                 {
-                    childName = "MeleeModel",
-                    dontHotpoo = true,
+                    childName = "BookModel",
                 },
                 new CustomRendererInfo
                 {
-                    childName = "CleaverModel",
-                    dontHotpoo = true,
+                    childName = "DaggerModel",
                 },
                 new CustomRendererInfo
                 {
-                    childName = "JacketModel",
-                    dontHotpoo = true,
+                    childName = "CloakModel",
                 },
                 new CustomRendererInfo
                 {
-                    childName = "VisorModel",
-                    dontHotpoo = true,
-                },
-                new CustomRendererInfo
-                {
-                    childName = "ExtraModel",
-                    dontHotpoo = true,
+                    childName = "RopeModel",
                 },
         };
 
@@ -123,11 +112,10 @@ namespace WarlockMod.Warlock
 
         public override void InitializeCharacter()
         {
-            WarlockConfig.Init();
-
             WarlockUnlockables.Init();
 
             base.InitializeCharacter();
+            if (WarlockPlugin.riskOfOptionsInstalled) Modules.Config.InitializeOptions(prefabCharacterBody.portraitIcon);
 
             CameraParams.InitializeParams();
 
@@ -141,6 +129,7 @@ namespace WarlockMod.Warlock
             WarlockAssets.InitAssets();
 
             WarlockBuffs.Init(assetBundle);
+            Dots.Init();
 
             InitializeEntityStateMachines();
             InitializeSkills();
@@ -204,10 +193,11 @@ namespace WarlockMod.Warlock
 
             passive.interrogatorPassive = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = INTERROGATOR_PREFIX + "PASSIVE_NAME",
-                skillNameToken = INTERROGATOR_PREFIX + "PASSIVE_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "PASSIVE_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("texInterrogatorPassive"),
+                skillName = WARLOCK_PREFIX + "PASSIVE_NAME",
+                skillNameToken = WARLOCK_PREFIX + "PASSIVE_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "PASSIVE_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive")
+                    ?? throw new InvalidOperationException("Missing texWarlockPassive sprite. Rebuild and deploy the Warlock Unity asset bundle."),
                 keywordTokens = new string[] { },
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "",
@@ -229,13 +219,16 @@ namespace WarlockMod.Warlock
 
             Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, passive.interrogatorPassive);
 
+            Sprite metaMagicIcon = assetBundle.LoadAsset<Sprite>("texWarlockMetaMagic")
+                ?? throw new InvalidOperationException("Missing texWarlockMetaMagic sprite. Rebuild and deploy the Warlock Unity asset bundle.");
+
             m1EmpowerSkillDef = Skills.CreateSkillDef<WarlockSkillDef>(new SkillDefInfo
             {
                 skillName = "Empower1",
-                skillNameToken = INTERROGATOR_PREFIX + "PRIMARY_EMPOWER1_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "PRIMARY_EMPOWER1_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "PRIMARY_EMPOWER1_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "PRIMARY_EMPOWER1_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
+                skillIcon = metaMagicIcon,
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower1)),
                 activationStateMachineName = "MetaMenu",
@@ -258,10 +251,10 @@ namespace WarlockMod.Warlock
             m2EmpowerSkillDef = Skills.CreateSkillDef<WarlockSkillDef>(new SkillDefInfo
             {
                 skillName = "Empower2",
-                skillNameToken = INTERROGATOR_PREFIX + "SECONDARY_EMPOWER_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "SECONDARY_EMPOWER_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "SECONDARY_EMPOWER_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "SECONDARY_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
+                skillIcon = metaMagicIcon,
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower2)),
                 activationStateMachineName = "MetaMenu",
@@ -284,10 +277,10 @@ namespace WarlockMod.Warlock
             utilityEmpowerSkillDef = Skills.CreateSkillDef<WarlockSkillDef>(new SkillDefInfo
             {
                 skillName = "Empower3",
-                skillNameToken = INTERROGATOR_PREFIX + "UTILITY_EMPOWER_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "UTILITY_EMPOWER_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "UTILITY_EMPOWER_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "UTILITY_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
+                skillIcon = metaMagicIcon,
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower3)),
                 activationStateMachineName = "MetaMenu",
@@ -310,10 +303,10 @@ namespace WarlockMod.Warlock
             empowerSkillDef = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "Empower",
-                skillNameToken = INTERROGATOR_PREFIX + "SPECIAL_EMPOWER_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "SPECIAL_EMPOWER_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "SPECIAL_EMPOWER_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "SPECIAL_EMPOWER_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
+                skillIcon = passive.interrogatorPassive.icon,
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Empower)),
                 activationStateMachineName = "MetaMenu",
@@ -339,10 +332,11 @@ namespace WarlockMod.Warlock
             SkillDef crimsonSurge = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "Crimson Surge",
-                skillNameToken = INTERROGATOR_PREFIX + "PRIMARY_SURGE_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "PRIMARY_SURGE_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "PRIMARY_SURGE_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "PRIMARY_SURGE_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texInterrogatorCleaverIcon"),
+                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPrimary")
+                    ?? throw new InvalidOperationException("Missing texWarlockPrimary sprite. Rebuild and deploy the Warlock Unity asset bundle."),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(CrimsonSurgePrep)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
@@ -370,9 +364,9 @@ namespace WarlockMod.Warlock
             SkillDef hex = Skills.CreateSkillDef<WarlockTrackerSkillDef>(new SkillDefInfo
             {
                 skillName = "Hex",
-                skillNameToken = INTERROGATOR_PREFIX + "SECONDARY_HEX_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "SECONDARY_HEX_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("texSwingIcon"),
+                skillNameToken = WARLOCK_PREFIX + "SECONDARY_HEX_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "SECONDARY_HEX_DESCRIPTION",
+                skillIcon = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/DeathMark/texBuffDeathMarkIcon.tif").WaitForCompletion(),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Hex)),
                 activationStateMachineName = "Weapon2",
                 baseMaxStock = 2,
@@ -399,10 +393,10 @@ namespace WarlockMod.Warlock
             SkillDef dash = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "Blood Dash",
-                skillNameToken = INTERROGATOR_PREFIX + "UTILITY_BLOOD_DASH_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "UTILITY_BLOOD_DASH_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "UTILITY_BLOOD_DASH_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "UTILITY_BLOOD_DASH_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texFalsifyIcon"),
+                skillIcon = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Huntress/HuntressBody.prefab").WaitForCompletion().GetComponent<SkillLocator>().utility.skillFamily.variants[0].skillDef.icon,
                 activationState = new EntityStates.SerializableEntityStateType(typeof(BloodDash)),
                 activationStateMachineName = "Weapon2",
                 baseMaxStock = 2,
@@ -430,24 +424,24 @@ namespace WarlockMod.Warlock
             WarlockSkillDef invoke = Skills.CreateSkillDef<WarlockSkillDef>(new SkillDefInfo
             {
                 skillName = "Ritual",
-                skillNameToken = INTERROGATOR_PREFIX + "SPECIAL_RITUAL_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "SPECIAL_RITUAL_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "SPECIAL_RITUAL_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "SPECIAL_RITUAL_DESCRIPTION",
                 keywordTokens = new string[] { Tokens.metaMagicKeyword },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texConvictIcon"),
+                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(RitualPrep)),
                 activationStateMachineName = "MetaMenu",
                 baseMaxStock = 1,
                 baseRechargeInterval = 0f,
                 beginSkillCooldownOnSkillEnd = true,
-                canceledFromSprinting = true,
+                canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = false,
-                cancelSprintingOnActivation = true,
+                cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
                 stockToConsume = 1
@@ -456,15 +450,16 @@ namespace WarlockMod.Warlock
             Skills.AddSpecialSkills(bodyPrefab, invoke);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private void InitializeScepter()
         {
             ritualScepterSkillDef = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "Ritual Scepter",
-                skillNameToken = INTERROGATOR_PREFIX + "SPECIAL_SCEPTER_RITUAL_NAME",
-                skillDescriptionToken = INTERROGATOR_PREFIX + "SPECIAL_SCEPTER_RITUAL_DESCRIPTION",
+                skillNameToken = WARLOCK_PREFIX + "SPECIAL_SCEPTER_RITUAL_NAME",
+                skillDescriptionToken = WARLOCK_PREFIX + "SPECIAL_SCEPTER_RITUAL_DESCRIPTION",
                 keywordTokens = new string[] { },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texConvictScepter"),
+                skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(RitualPrep)),
                 activationStateMachineName = "MetaMenu",
@@ -500,8 +495,8 @@ namespace WarlockMod.Warlock
 
             #region DefaultSkin
             //this creates a SkinDef with all default fields
-            SkinDef defaultSkin = Skins.CreateSkinDef("DEFAULT_SKIN",
-                assetBundle.LoadAsset<Sprite>("texDefaultSkin"),
+            SkinDef defaultSkin = Modules.Skins.CreateSkinDef("DEFAULT_SKIN",
+                assetBundle.LoadAsset<Sprite>("texWarlockIcon"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
 
@@ -509,13 +504,6 @@ namespace WarlockMod.Warlock
             //pass in meshes as they are named in your assetbundle
             //currently not needed as with only 1 skin they will simply take the default meshes
             //uncomment this when you have another skin
-            defaultSkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos,
-                "meshInterrogator",
-                "meshBat",
-                "meshCleaver",
-                "meshJacket",
-                "meshVisor",
-                "meshExtra");
 
             //add new skindef to our list of skindefs. this is what we'll be passing to the SkinController
             /*
@@ -576,6 +564,12 @@ namespace WarlockMod.Warlock
             #endregion
             */
             skinController.skins = skins.ToArray();
+            var displayModel = displayPrefab.GetComponent<CharacterModel>();
+            var displaySkinController = displayPrefab.AddComponent<ModelSkinController>();
+            displaySkinController.skins = new[]
+            {
+                Modules.Skins.CreateSkinDef("DEFAULT_SKIN", defaultSkin.icon, displayModel.baseRendererInfos, displayPrefab)
+            };
         }
         #endregion skins
 
@@ -601,18 +595,23 @@ namespace WarlockMod.Warlock
             GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 
-            if(WarlockPlugin.emotesInstalled) Emotes();
+            if (WarlockPlugin.emotesInstalled && WarlockConfig.EnableEmotes)
+                On.RoR2.SurvivorCatalog.Init += SurvivorCatalog_Init;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static void Emotes()
+        private static void SurvivorCatalog_Init(On.RoR2.SurvivorCatalog.orig_Init orig)
         {
-            On.RoR2.SurvivorCatalog.Init += (orig) =>
-            {
-                orig();
-                var skele = WarlockAssets.mainAssetBundle.LoadAsset<GameObject>("interrogator_emoteskeleton");
-                CustomEmotesAPI.ImportArmature(WarlockSurvivor.characterPrefab, skele);
-            };
+            orig();
+            if (WarlockPlugin.emotesInstalled) Compatibility.EmotesCompat.Initialize();
+        }
+
+        internal void RemoveHooks()
+        {
+            On.RoR2.UI.LoadoutPanelController.Rebuild -= LoadoutPanelController_Rebuild;
+            GlobalEventManager.onCharacterDeathGlobal -= GlobalEventManager_onCharacterDeathGlobal;
+            On.RoR2.CharacterBody.RecalculateStats -= CharacterBody_RecalculateStats;
+            On.RoR2.SurvivorCatalog.Init -= SurvivorCatalog_Init;
+            RoR2.ContentManagement.ContentManager.onContentPacksAssigned -= SetItemDisplays;
         }
 
 
@@ -620,7 +619,7 @@ namespace WarlockMod.Warlock
         {
             orig(self);
 
-            if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("InterrogatorBody"))
+            if (self.currentDisplayData.bodyIndex == BodyCatalog.FindBodyIndex("WarlockBody"))
             {
                 foreach (LanguageTextMeshController i in self.gameObject.GetComponentsInChildren<LanguageTextMeshController>())
                 {
@@ -638,14 +637,6 @@ namespace WarlockMod.Warlock
                 {
                     self.moveSpeed *= 0.85f;
                 }
-                if(self.baseNameToken == "KENKO_WARLOCK_NAME")
-                {
-                    WarlockController iController = self.gameObject.GetComponent<WarlockController>();
-                    if(iController)
-                    {
-
-                    }
-                }
             }
         }
         private static void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
@@ -657,7 +648,7 @@ namespace WarlockMod.Warlock
                 {
                     if(NetworkServer.active)
                     {
-                        if (attackerBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaStack) < WarlockStaticValues.requiredCrimsonMana - 1)
+                        if (attackerBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaStack) < WarlockConfig.KillsPerCrimsonMana - 1)
                         {
                             attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaStack);
                         }
@@ -672,7 +663,7 @@ namespace WarlockMod.Warlock
 
                             if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
                             {
-                                new SyncBloodExplosion(identity.netId, damageReport.victim.gameObject).Send(NetworkDestination.Clients);
+                                new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
                             }
                         }
                     }

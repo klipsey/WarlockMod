@@ -12,6 +12,7 @@ namespace WarlockMod.Warlock.Components
 {
     public class ConsumeOrb : Orb
     {
+        private bool arrived;
         public override void Begin()
         {
             base.duration = Mathf.Clamp(base.distanceToTarget / 5f, 0.5f, 1.5f);
@@ -31,19 +32,13 @@ namespace WarlockMod.Warlock.Components
 
         public override void OnArrival()
         {
-            if (this.target)
-            {
-                if (this.target.healthComponent)
-                {
-                    if(NetworkServer.active)
-                    {
-                        this.target.healthComponent.body.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
-                    }
-                    NetworkIdentity identity = this.target.healthComponent.gameObject.GetComponent<NetworkIdentity>();
-                    if (!identity) return;
-                    new SyncOrbWarlock(identity.netId, this.target.healthComponent.gameObject).Send(NetworkDestination.Clients);
-                }
-            }
+            if (!NetworkServer.active || arrived || !target || !target.healthComponent || !target.healthComponent.alive) return;
+            arrived = true;
+            var body = target.healthComponent.body;
+            if (!body) return;
+            body.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+            var identity = body.GetComponent<NetworkIdentity>();
+            if (identity) new SyncOrbWarlock(identity.netId).Send(NetworkDestination.Clients);
         }
     }
 }

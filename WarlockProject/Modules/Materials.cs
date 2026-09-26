@@ -44,6 +44,8 @@ namespace WarlockMod.Modules
 
             float? bumpScale = null;
             Color? emissionColor = null;
+            bool noCull = tempMat.IsKeywordEnabled("NOCULL") ||
+                (tempMat.HasProperty("_Cull") && tempMat.GetInt("_Cull") == (int)UnityEngine.Rendering.CullMode.Off);
 
             //grab values before the shader changes
             if (tempMat.IsKeywordEnabled("_NORMALMAP"))
@@ -75,9 +77,9 @@ namespace WarlockMod.Modules
 
             //set this keyword in unity if you want your model to show backfaces
             //in unity, right click the inspector tab and choose Debug
-            if (tempMat.IsKeywordEnabled("NOCULL"))
+            if (noCull)
             {
-                tempMat.SetInt("_Cull", 0);
+                tempMat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
             }
             //set this keyword in unity if you've set up your model for limb removal item displays (eg. goat hoof) by setting your model's vertex colors
             if (tempMat.IsKeywordEnabled("LIMBREMOVAL"))

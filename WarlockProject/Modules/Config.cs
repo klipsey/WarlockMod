@@ -1,93 +1,90 @@
-﻿using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.CompilerServices;
 using BepInEx.Configuration;
+using RiskOfOptions;
+using RiskOfOptions.OptionConfigs;
+using RiskOfOptions.Options;
 using UnityEngine;
+
 namespace WarlockMod.Modules
 {
     public static class Config
     {
-        public static ConfigFile MyConfig = WarlockPlugin.instance.Config;
+        public static ConfigFile MyConfig => WarlockPlugin.instance.Config;
 
-        /// <summary>
-        /// automatically makes config entries for disabling survivors
-        /// </summary>
-        /// <param name="section"></param>
-        /// <param name="characterName"></param>
-        /// <param name="description"></param>
-        /// <param name="enabledByDefault"></param>
-        public static ConfigEntry<bool> CharacterEnableConfig(string section, string characterName, string description = "", bool enabledByDefault = true)
+        public static ConfigEntry<float> BindFloat(string section, string name, float defaultValue, float maximum, string description)
         {
-
-            if (string.IsNullOrEmpty(description))
+            var entry = MyConfig.Bind(section, name, defaultValue, new ConfigDescription(
+                description + " Restart required. Use matching settings on all multiplayer peers.",
+                new AcceptableValueRange<float>(0f, maximum)));
+            if (float.IsNaN(entry.Value) || float.IsInfinity(entry.Value))
             {
-                description = "Set to false to disable this character and as much of its code and content as possible";
+                Log.Warning($"Invalid value for {section}/{name}; restoring {defaultValue}.");
+                entry.Value = defaultValue;
             }
-            return BindAndOptions<bool>(section,
-                                        "Enable " + characterName,
-                                        enabledByDefault,
-                                        description,
-                                        true);
+            if (WarlockPlugin.riskOfOptionsInstalled) RegisterSlider(entry, maximum);
+            return entry;
         }
 
-        public static ConfigEntry<T> BindAndOptions<T>(string section, string name, T defaultValue, string description = "", bool restartRequired = false) =>
-            BindAndOptions<T>(section, name, defaultValue, 0, 20, description, restartRequired);
-        public static ConfigEntry<T> BindAndOptions<T>(string section, string name, T defaultValue, float min, float max, string description = "", bool restartRequired = false)
+        public static ConfigEntry<int> BindInt(string section, string name, int defaultValue, int minimum, int maximum, string description)
         {
-            if (string.IsNullOrEmpty(description))
-            {
-                description = name;
-            }
-
-            if (restartRequired)
-            {
-                description += " (restart required)";
-            }
-            ConfigEntry<T> configEntry = MyConfig.Bind(section, name, defaultValue, description);
-
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.riskofoptions"))
-            {
-                //TryRegisterOption(configEntry, min, max, restartRequired);
-            }
-
-            return configEntry;
+            var entry = MyConfig.Bind(section, name, defaultValue, new ConfigDescription(
+                description + " Restart required. Use matching settings on all multiplayer peers.",
+                new AcceptableValueRange<int>(minimum, maximum)));
+            if (WarlockPlugin.riskOfOptionsInstalled) RegisterIntSlider(entry, minimum, maximum);
+            return entry;
         }
 
-        //back compat
-        public static ConfigEntry<float> BindAndOptionsSlider(string section, string name, float defaultValue, string description, float min = 0, float max = 20, bool restartRequired = false) =>
-            BindAndOptions<float>(section, name, defaultValue, min, max, description, restartRequired);
+        public static ConfigEntry<bool> BindToggle(string section, string name, bool defaultValue, string description)
+        {
+            var entry = MyConfig.Bind(section, name, defaultValue, description + " Restart required.");
+            if (WarlockPlugin.riskOfOptionsInstalled) RegisterToggle(entry);
+            return entry;
+        }
 
-        //add risk of options dll to your project libs and uncomment this for a soft dependency
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static void TryRegisterOption<T>(ConfigEntry<T> entry, float min, float max, bool restartRequired)
+        private static void RegisterSlider(ConfigEntry<float> entry, float maximum)
         {
-            //if (entry is ConfigEntry<float>)
-            //{
-            //    ModSettingsManager.AddOption(new SliderOption(entry as ConfigEntry<float>, new SliderConfig() { min = min, max = max, formatString = "{0:0.00}", restartRequired = restartRequired }));
-            //}
-            //if (entry is ConfigEntry<int>)
-            //{
-            //    ModSettingsManager.AddOption(new IntSliderOption(entry as ConfigEntry<int>, new IntSliderConfig() { min = (int)min, max = (int)max, restartRequired = restartRequired }));
-            //}
-            //if (entry is ConfigEntry<bool>)
-            //{
-            //    ModSettingsManager.AddOption(new CheckBoxOption(entry as ConfigEntry<bool>, restartRequired));
-            //}
-            //if (entry is BepInEx.Configuration.ConfigEntry<KeyboardShortcut>)
-            //{
-            //    ModSettingsManager.AddOption(new KeyBindOption(entry as ConfigEntry<KeyboardShortcut>, restartRequired));
-            //}
+            ModSettingsManager.AddOption(new SliderOption(entry, new SliderConfig
+            {
+                min = 0f,
+                max = maximum,
+                formatString = "{0:0.###}",
+                restartRequired = true
+            }), WarlockPlugin.MODUID, WarlockPlugin.MODNAME);
         }
 
-        //Taken from https://github.com/ToastedOven/CustomEmotesAPI/blob/main/CustomEmotesAPI/CustomEmotesAPI/CustomEmotesAPI.cs
-        public static bool GetKeyPressed(KeyboardShortcut entry)
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static void RegisterIntSlider(ConfigEntry<int> entry, int minimum, int maximum)
         {
-            foreach (var item in entry.Modifiers)
+            ModSettingsManager.AddOption(new IntSliderOption(entry, new IntSliderConfig
             {
-                if (!Input.GetKey(item))
-                {
-                    return false;
-                }
+                min = minimum,
+                max = maximum,
+                restartRequired = true
+            }), WarlockPlugin.MODUID, WarlockPlugin.MODNAME);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static void RegisterToggle(ConfigEntry<bool> entry)
+        {
+            ModSettingsManager.AddOption(new CheckBoxOption(entry, true), WarlockPlugin.MODUID, WarlockPlugin.MODNAME);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static void InitializeOptions(Texture portrait)
+        {
+            ModSettingsManager.SetModDescription(
+                "Warlock combat coefficients, durations, Crimson Mana and optional emotes. All settings are captured at startup and require a restart. " +
+                "Gameplay settings must match on every multiplayer peer; they are not synchronized. Skill descriptions reflect the settings loaded at startup.",
+                WarlockPlugin.MODUID, WarlockPlugin.MODNAME);
+            if (!(portrait is Texture2D texture) || !texture)
+            {
+                Log.Error("Warlock portrait is missing; Risk of Options icon could not be set.");
+                return;
             }
-            return Input.GetKeyDown(entry.MainKey);
+            ModSettingsManager.SetModIcon(Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f)), WarlockPlugin.MODUID, WarlockPlugin.MODNAME);
         }
     }
 }

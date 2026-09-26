@@ -32,12 +32,17 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnEnter();
             duration = baseDuration / attackSpeedStat;
             tracker = this.GetComponent<WarlockTracker>();
-            if (tracker)
+            if (tracker && isAuthority)
             {
                 victim = tracker.GetTrackingTarget();
-                if (victim)
+            }
+                if (victim && victim.healthComponent && victim.healthComponent.alive)
                 {
                     victimBody = victim.healthComponent.body;
+                    if (!victimBody) return;
+                    if (NetworkServer.active && (victimBody.teamComponent.teamIndex == characterBody.teamComponent.teamIndex ||
+                        Vector3.Distance(inputBank.aimOrigin, victimBody.corePosition) > tracker.maxTrackingDistance + victimBody.radius))
+                        return;
                     if (base.cameraTargetParams)
                     {
                         aimRequest = base.cameraTargetParams.RequestAimType(CameraTargetParams.AimType.Aura);
@@ -48,7 +53,7 @@ namespace WarlockMod.Warlock.SkillStates
                     {
                         origin = victimBody.corePosition,
                         scale = 1.5f
-                    }, transmit: true);
+                    }, transmit: false);
 
                     if (NetworkServer.active)
                     {
@@ -56,23 +61,34 @@ namespace WarlockMod.Warlock.SkillStates
                         {
                             for(int i = 0; i < this.characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff); i++) 
                             {
-                                this.victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff, WarlockStaticValues.hexDuration);
+                                this.victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff, WarlockConfig.HexDuration);
                             }
                             this.characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex, 0);
                         }
 
                         if (!this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM2Buff))
                         {
-                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedDebuff, WarlockStaticValues.hexDuration);
+                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedDebuff, WarlockConfig.HexDuration);
                         }
                         else
                         {
-                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff, WarlockStaticValues.hexDuration);
+                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff, WarlockConfig.HexDuration);
                             this.characterBody.RemoveBuff(WarlockBuffs.warlockEmpoweredM2Buff);
                         }
                     }
                 }
-            }
+        }
+
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(HurtBoxReference.FromHurtBox(victim));
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            victim = reader.ReadHurtBoxReference().ResolveHurtBox();
         }
 
         public override void FixedUpdate()

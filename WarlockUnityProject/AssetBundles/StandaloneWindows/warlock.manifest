@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3501224277
+CRC: 3265288337
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1469509000f4eb8bf015155d0a28355c
+    Hash: c6a2e7a6ab764893d3c935e63b78e9e9
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 42d2694ece3e6464c0822cad42100938
+    Hash: ff03bc76cd10c6b62a214018645a6efe
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -42,15 +42,13 @@ ClassTypes:
 - Class: 108
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-- Class: 114
   Script: {fileID: 11500000, guid: f8258ea15b8f74c4889ce485d21cbbb1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 67079b849227b734694872d8810229b8, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 2334069450a65d042a95a873e5229b20, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: db294d07add6b364f99a346939dd2a8a, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: fef0780b96a0f12448b6dd86f9c8139b, type: 3}
 - Class: 115
@@ -62,8 +60,6 @@ ClassTypes:
 - Class: 136
   Script: {instanceID: 0}
 - Class: 137
-  Script: {instanceID: 0}
-- Class: 144
   Script: {instanceID: 0}
 - Class: 198
   Script: {instanceID: 0}
@@ -77,165 +73,139 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 319
   Script: {instanceID: 0}
-SerializeReferenceClassIdentifiers: []
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: ChildLocator/NameTransformPair
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentCallGroup
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
 Assets:
-- Assets/Warlock/Projectiles/texRampCrocoDiseaseDark.png
-- Assets/Warlock/Animations/animInterrogatorCSS.controller
-- Assets/Warlock/Textures/texEmpoweredMetaMagicBuff.png
-- Assets/Warlock/Animations/Armature_Point.anim
-- Assets/Warlock/VFX/CritLightningMonsoon.prefab
-- Assets/Warlock/VFX/Materials/matAnimeShapes.mat
-- Assets/Warlock/interrogator_emoteskeleton.prefab
-- Assets/Warlock/VFX/Textures/texPunchImpactShadow.png
-- Assets/Warlock/VFX/Textures/texHenrySwing2.png
-- Assets/Warlock/Animations/Armature_CSSIdle.anim
-- Assets/Warlock/Textures/texGuilty.png
-- Assets/Warlock/VFX/BloodSpurtEffect.prefab
-- Assets/Warlock/VFX/Badass 1/WoodHitEffect.prefab
-- Assets/Warlock/HUD/ChargeBar.prefab
-- Assets/Warlock/VFX/EldritchBlastPortal.prefab
-- Assets/Warlock/VFX/Textures/texLightning.tif
-- Assets/Warlock/VFX/texEldritchPortal.png
-- Assets/Warlock/VFX/CritLightning.prefab
-- Assets/Warlock/VFX/Textures/texFire.tga
-- Assets/Warlock/Animations/Armature_CSSIdleIn.anim
-- Assets/Warlock/VFX/matShockwave.mat
-- Assets/Warlock/VFX/Materials/matSmoke.mat
-- Assets/Warlock/Projectiles/meshSapper.mesh
-- Assets/Warlock/Animations/Armature_BatSwing1.anim
-- Assets/Warlock/VFX/Textures/texSwingEffect.png
-- Assets/Warlock/VFX/Badass 1/SmallExplosion.prefab
-- Assets/Warlock/VFX/Badass/BigExplosion.prefab
-- Assets/Warlock/Meshes/meshBat.mesh
-- Assets/Warlock/VFX/Badass/MetalHitEffect.prefab
-- Assets/Warlock/VFX/Materials/matHenrySwing2.mat
-- Assets/Warlock/Projectiles/CoinImpactHit.prefab
-- Assets/Warlock/VFX/Textures/texRipple.png
-- Assets/Warlock/VFX/texCloudDifferenceBW1.png
-- Assets/Warlock/HUD/Textures/texBulletIndicator.png
-- Assets/Warlock/VFX/Badass 1/MetalHitEffect.prefab
-- Assets/Warlock/Icons/Skill/texFalsifyIcon.png
-- Assets/Warlock/VFX/Badass 1/StoneHitEffect.prefab
-- Assets/Warlock/Animations/Armature_AimPitch.anim
-- Assets/Warlock/VFX/Badass/StoneHitEffect.prefab
-- Assets/Warlock/Projectiles/CoinTracer.prefab
-- Assets/Warlock/VFX/Textures/texFistSwing.png
-- Assets/Warlock/Animations/maskInterrogatorAim.mask
-- Assets/Warlock/Animations/Armature_BatSwingCleaver.anim
-- Assets/Warlock/Textures/texGuiltyBuff.png
-- Assets/Warlock/VFX/NoGrab.png
-- Assets/Warlock/Projectiles/CoinProjectile.prefab
-- Assets/Warlock/VFX/Badass 1/TinyExplosion.prefab
-- Assets/Warlock/VFX/Materials/matPunchImpact.mat
-- Assets/Warlock/Animations/Armature_Sprint.anim
-- Assets/Warlock/Animations/Armature_IdleIn.anim
-- Assets/Warlock/VFX/texCloudOrganicNormal.png
-- Assets/Warlock/Materials/matInterrogator.mat
-- Assets/Warlock/Animations/Armature_RunB.anim
-- Assets/Warlock/Animations/Armature_SprintFast.anim
-- Assets/Warlock/Animations/animInterrogator.controller
-- Assets/Warlock/VFX/texRampWarlock.png
-- Assets/Warlock/Icons/Skill/texInterrogatorPassive.png
-- Assets/Warlock/Textures/texInterrogatorEmission.png
-- Assets/Warlock/Textures/texRampConvicted.png
-- Assets/Warlock/Textures/texInterrogator.png
-- Assets/Warlock/Icons/Skill/texConvictIcon.png
-- Assets/Warlock/Textures/texCloudPixel2.png
-- Assets/Warlock/VFX/texBehemothTileMask.png
-- Assets/Warlock/VFX/Textures/texDust.png
-- Assets/Warlock/VFX/texShockwave.png
-- Assets/Warlock/VFX/Textures/texHitSpark.png
-- Assets/Warlock/VFX/texSeamSlashMaskSharp.png
-- Assets/Warlock/VFX/BloodSpurtEffect 1.prefab
-- Assets/Warlock/Meshes/meshJacket.mesh
-- Assets/Warlock/VFX/Grab.png
-- Assets/Warlock/Meshes/meshInterrogator.mesh
-- Assets/Warlock/VFX/Materials/matPunchImpactShadow.mat
-- Assets/Warlock/VFX/Badass 1/BigExplosion.prefab
-- Assets/Warlock/Projectiles/CoinOrbEffect.prefab
-- Assets/Warlock/Meshes/meshCleaver.mesh
-- Assets/Warlock/Textures/texMetaMagicBuff.png
-- Assets/Warlock/Animations/Armature_AimYaw.anim
-- Assets/Warlock/VFX/Materials/matFistSwing.mat
-- Assets/Warlock/Projectiles/texAlphaGradient6Mask.png
-- Assets/Warlock/Textures/texInterrogatorNormal.png
-- Assets/Warlock/VFX/Materials/matTrail.mat
-- Assets/Warlock/Materials/matVisor.mat
-- Assets/Warlock/VFX/Materials/matHitSpark.mat
-- Assets/Warlock/Icons/Skill/texSwingIcon.png
-- Assets/Warlock/Meshes/meshVisor.mesh
-- Assets/Warlock/Animations/Armature_LightImpact.anim
-- Assets/Warlock/Animations/Armature_Dash.anim
-- Assets/Warlock/VFX/texRampWarlockTrail.png
-- Assets/Warlock/Animations/Armature_Jump.anim
-- Assets/Warlock/HUD/WeaponChargeBar.prefab
-- Assets/Warlock/mdlInterrogator.prefab
-- Assets/Warlock/VFX/texSpyStreak.png
-- Assets/Warlock/Animations/Armature_BatSwing2.anim
-- Assets/Warlock/VFX/Materials/matSwingShadow.mat
-- Assets/Warlock/Textures/texConvictBuff.png
-- Assets/Warlock/VFX/matMagicPortal2.mat
-- Assets/Warlock/VFX/matSpyDefault.mat
-- Assets/Warlock/VFX/Materials/matPunchEffect.mat
-- Assets/Warlock/Icons/texDefaultSkin.png
-- Assets/Warlock/VFX/Textures/texPunchImpact.png
-- Assets/Warlock/interrogatorCleaver.prefab
-- Assets/Warlock/Animations/Armature_RunR.anim
-- Assets/Warlock/VFX/Badass/TinyExplosion.prefab
-- Assets/Warlock/VFX/Badass/SandHitEffect.prefab
-- Assets/Warlock/VFX/Materials/matHitSparkPunch.mat
-- Assets/Warlock/HUD/ChargeRing.prefab
-- Assets/Warlock/VFX/texBlackLightning.png
-- Assets/Warlock/Projectiles/texRampCoin.png
-- Assets/Warlock/VFX/Materials/matSwingEffect.mat
-- Assets/Warlock/Projectiles/CoinProjectileGhost.prefab
-- Assets/Warlock/VFX/matShockwave2.mat
-- Assets/Warlock/Projectiles/coin.asset
-- Assets/Warlock/VFX/matWarlockChargeUp.mat
-- Assets/Warlock/Animations/Armature_Idle.anim
-- Assets/Warlock/Meshes/meshExtra.mesh
-- Assets/Warlock/Animations/maskInterrogatorLeftArm.mask
-- Assets/Warlock/VFX/Materials/matEmbers.mat
-- Assets/Warlock/Animations/Armature_DescendFast.anim
-- Assets/Warlock/InterrogatorDisplay.prefab
+- Assets/Warlock/Textures/texWarlockDiffuse.png
+- Assets/Warlock/mdlWarlock.prefab
 - Assets/Warlock/HUD/Textures/texChargeRing.png
 - Assets/Warlock/Projectiles/DriverStunGrenadeImpact.prefab
-- Assets/Warlock/VFX/matSpyStreak.mat
-- Assets/Warlock/VFX/Materials/matSlash.mat
-- Assets/Warlock/VFX/Materials/matDust.mat
-- Assets/Warlock/VFX/Textures/texSmoke.png
-- Assets/Warlock/VFX/Textures/texEmbers.png
-- Assets/Warlock/Icons/Skill/texInterrogatorCleaverIcon.png
-- Assets/Warlock/Projectiles/mdlSapper.prefab
-- Assets/Warlock/VFX/Materials/matRipple.mat
-- Assets/Warlock/Meshes/Circle.mesh
-- Assets/Warlock/VFX/texRampImp.png
-- Assets/Warlock/Animations/Armature_RunL.anim
+- Assets/Warlock/HUD/ChargeBar.prefab
+- Assets/Warlock/Projectiles/texAlphaGradient6Mask.png
+- Assets/Warlock/VFX/Badass 1/SmallExplosion.prefab
+- Assets/Warlock/Projectiles/texRampCoin.png
+- Assets/Warlock/Icons/Skill/texWarlockPassive.png
+- Assets/Warlock/VFX/Badass 1/MetalHitEffect.prefab
+- Assets/Warlock/Textures/texWarlockEmission.png
 - Assets/Warlock/VFX/matMagicPortal1.mat
-- Assets/Warlock/Animations/Armature_Ascend.anim
-- Assets/Warlock/Icons/texInterrogatorIcon.png
-- Assets/Warlock/Projectiles/DriverStunGrenadeGhost.prefab
+- Assets/Warlock/Animations/animWarlock.controller
+- Assets/Warlock/Meshes/meshDagger.mesh
+- Assets/Warlock/VFX/Materials/matPunchEffect.mat
+- Assets/Warlock/VFX/texBehemothTileMask.png
+- Assets/Warlock/VFX/Materials/matDust.mat
+- Assets/Warlock/VFX/Badass 1/SandHitEffect.prefab
+- Assets/Warlock/HUD/Textures/texSniperBulletIndicator.png
+- Assets/Warlock/warlock_emoteskeleton.prefab
+- Assets/Warlock/VFX/texSeamSlashMask 1.png
+- Assets/Warlock/Meshes/meshBody.mesh
+- Assets/Warlock/VFX/Textures/texLightning.tif
+- Assets/Warlock/VFX/Textures/texSmoke.png
+- Assets/Warlock/VFX/matSpyDefault.mat
+- Assets/Warlock/Projectiles/CoinProjectileGhost.prefab
+- Assets/Warlock/Textures/texDaggerDiffuse.png
+- Assets/Warlock/VFX/BloodSpurtEffect.prefab
+- Assets/Warlock/VFX/Badass 1/BigExplosion.prefab
+- Assets/Warlock/VFX/NoGrab.png
+- Assets/Warlock/VFX/Textures/texPunchImpact.png
+- Assets/Warlock/VFX/Textures/texDust.png
+- Assets/Warlock/VFX/EldritchBlastPortal.prefab
+- Assets/Warlock/VFX/Textures/texSlash.png
+- Assets/Warlock/VFX/CritLightning.prefab
+- Assets/Warlock/Materials/WarlockDoubleSided.shader
+- Assets/Warlock/VFX/Badass/WoodHitEffect.prefab
+- Assets/Warlock/VFX/Materials/matSwingEffect.mat
+- Assets/Warlock/VFX/matMagicPortal2.mat
+- Assets/Warlock/VFX/Materials/matPunchImpact.mat
+- Assets/Warlock/VFX/texShockwave.png
+- Assets/Warlock/Animations/animWarlockEmotes.controller
 - Assets/Warlock/VFX/Materials/matFire.mat
+- Assets/Warlock/VFX/Textures/texFire.tga
+- Assets/Warlock/Materials/matWarlock.mat
+- Assets/Warlock/Projectiles/CoinProjectile.prefab
+- Assets/Warlock/Meshes/meshCloak.mesh
+- Assets/Warlock/VFX/matShockwave2.mat
+- Assets/Warlock/Animations/maskWarlockAim.mask
+- Assets/Warlock/VFX/Badass/SmallExplosion.prefab
+- Assets/Warlock/VFX/Badass 1/TinyExplosion.prefab
+- Assets/Warlock/VFX/Materials/matPunchImpactShadow.mat
+- Assets/Warlock/VFX/texRampWarlock.png
+- Assets/Warlock/VFX/Badass/TinyExplosion.prefab
+- Assets/Warlock/Projectiles/CoinImpactHit.prefab
+- Assets/Warlock/VFX/Textures/texFistSwing.png
+- Assets/Warlock/VFX/Materials/matSlash.mat
+- Assets/Warlock/VFX/Materials/matEmbers.mat
+- Assets/Warlock/Projectiles/CoinOrbEffect.prefab
+- Assets/Warlock/VFX/Materials/matTrail.mat
+- Assets/Warlock/VFX/Badass 1/WoodHitEffect.prefab
+- Assets/Warlock/VFX/Textures/texSwingEffect.png
+- Assets/Warlock/Animations/WarlockEmpty.anim
+- Assets/Warlock/VFX/texSeamSlashMaskSharp.png
+- Assets/Warlock/VFX/texSeamSlashMask.png
+- Assets/Warlock/VFX/Materials/matRipple.mat
 - Assets/Warlock/Textures/texMetaMagicStackingBuff.png
 - Assets/Warlock/Projectiles/texRampCoin2.png
-- Assets/Warlock/VFX/Badass/WoodHitEffect.prefab
-- Assets/Warlock/VFX/Badass/SmallExplosion.prefab
-- Assets/Warlock/VFX/texSeamSlashMask 1.png
-- Assets/Warlock/Animations/Armature_Descend.anim
-- Assets/Warlock/Materials/matSword.mat
-- Assets/Warlock/Animations/animInterrogatorEmotes.controller
-- Assets/Warlock/Animations/Armature_RunF.anim
-- Assets/Warlock/HUD/Textures/texSniperBulletIndicator.png
-- Assets/Warlock/Icons/texMonsoonSkin.png
-- Assets/Warlock/Meshes/meshSword.mesh
-- Assets/Warlock/VFX/Badass 1/SandHitEffect.prefab
-- Assets/Warlock/VFX/texSeamSlashMask.png
-- Assets/Warlock/Animations/maskInterrogatorImpact.mask
-- Assets/Warlock/Textures/texGuiltyDebuff.png
-- Assets/Warlock/Animations/Armature_JumpSprint.anim
-- Assets/Warlock/VFX/matBlackLightning.mat
-- Assets/Warlock/VFX/Textures/texSlash.png
-- Assets/Warlock/Animations/maskInterrogatorGesture.mask
-- Assets/Warlock/Icons/Skill/texConvictScepter.png
+- Assets/Warlock/Textures/texWarlockBookEmission.png
+- Assets/Warlock/VFX/texCloudDifferenceBW1.png
+- Assets/Warlock/VFX/BloodSpurtEffect 1.prefab
+- Assets/Warlock/VFX/Materials/matFistSwing.mat
+- Assets/Warlock/HUD/ChargeRing.prefab
+- Assets/Warlock/WarlockDisplay.prefab
+- Assets/Warlock/VFX/Materials/matAnimeShapes.mat
+- Assets/Warlock/Projectiles/texRampCrocoDiseaseDark.png
+- Assets/Warlock/Textures/texEmpoweredMetaMagicBuff.png
+- Assets/Warlock/VFX/Badass/BigExplosion.prefab
+- Assets/Warlock/Animations/maskWarlockImpact.mask
 - Assets/Warlock/HUD/Textures/texWhite.png
+- Assets/Warlock/Animations/WarlockIdle.anim
+- Assets/Warlock/VFX/texBlackLightning.png
+- Assets/Warlock/Textures/texMetaMagicBuff.png
+- Assets/Warlock/Textures/texDaggerNormals.png
+- Assets/Warlock/VFX/texRampWarlockTrail.png
+- Assets/Warlock/VFX/texCloudOrganicNormal.png
+- Assets/Warlock/VFX/texSpyStreak.png
+- Assets/Warlock/VFX/Materials/matHitSparkPunch.mat
+- Assets/Warlock/HUD/Textures/texBulletIndicator.png
+- Assets/Warlock/VFX/Badass 1/StoneHitEffect.prefab
+- Assets/Warlock/VFX/texRampImp.png
+- Assets/Warlock/VFX/matSpyStreak.mat
+- Assets/Warlock/VFX/Textures/texEmbers.png
+- Assets/Warlock/VFX/Badass/MetalHitEffect.prefab
+- Assets/Warlock/Projectiles/meshSapper.mesh
+- Assets/Warlock/VFX/Badass/SandHitEffect.prefab
+- Assets/Warlock/VFX/Textures/texHenrySwing2.png
+- Assets/Warlock/Materials/matBook.mat
+- Assets/Warlock/VFX/Textures/texHitSpark.png
+- Assets/Warlock/VFX/matWarlockChargeUp.mat
+- Assets/Warlock/Animations/animWarlockCSS.controller
+- Assets/Warlock/Meshes/meshRope.mesh
+- Assets/Warlock/VFX/Grab.png
+- Assets/Warlock/VFX/Textures/texRipple.png
+- Assets/Warlock/VFX/Badass/StoneHitEffect.prefab
+- Assets/Warlock/Projectiles/DriverStunGrenadeGhost.prefab
+- Assets/Warlock/VFX/Materials/matSwingShadow.mat
+- Assets/Warlock/VFX/Materials/matHitSpark.mat
+- Assets/Warlock/Projectiles/coin.asset
+- Assets/Warlock/Projectiles/CoinTracer.prefab
+- Assets/Warlock/VFX/Materials/matHenrySwing2.mat
+- Assets/Warlock/Animations/maskWarlockLeftArm.mask
+- Assets/Warlock/Icons/Skill/texWarlockPrimary.png
+- Assets/Warlock/Icons/texWarlockIcon.png
+- Assets/Warlock/VFX/CritLightningMonsoon.prefab
+- Assets/Warlock/VFX/matShockwave.mat
+- Assets/Warlock/VFX/Materials/matSmoke.mat
+- Assets/Warlock/Icons/Skill/texWarlockMetaMagic.png
+- Assets/Warlock/VFX/Textures/texPunchImpactShadow.png
+- Assets/Warlock/Textures/texWarlockBookDiffuse.png
+- Assets/Warlock/Animations/maskWarlockGesture.mask
+- Assets/Warlock/HUD/WeaponChargeBar.prefab
+- Assets/Warlock/VFX/texEldritchPortal.png
+- Assets/Warlock/Projectiles/mdlSapper.prefab
+- Assets/Warlock/Meshes/meshBook.mesh
+- Assets/Warlock/VFX/matBlackLightning.mat
+- Assets/Warlock/Materials/matDagger.mat
 Dependencies: []

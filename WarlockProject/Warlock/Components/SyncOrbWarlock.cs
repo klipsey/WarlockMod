@@ -1,5 +1,4 @@
-﻿using UnityEngine.Networking;
-using R2API.Networking;
+using UnityEngine.Networking;
 using R2API.Networking.Interfaces;
 using UnityEngine;
 using RoR2;
@@ -10,52 +9,28 @@ namespace WarlockMod.Warlock.Components
     public class SyncOrbWarlock : INetMessage
     {
         private NetworkInstanceId netId;
-        private GameObject target;
 
-        public SyncOrbWarlock()
-        {
-        }
-
-        public SyncOrbWarlock(NetworkInstanceId netId, GameObject target)
-        {
-            this.netId = netId;
-            this.target = target;
-        }
-
-        public void Deserialize(NetworkReader reader)
-        {
-            this.netId = reader.ReadNetworkId();
-            this.target = reader.ReadGameObject();
-        }
+        public SyncOrbWarlock() { }
+        public SyncOrbWarlock(NetworkInstanceId netId) => this.netId = netId;
+        public void Deserialize(NetworkReader reader) => netId = reader.ReadNetworkId();
+        public void Serialize(NetworkWriter writer) => writer.Write(netId);
 
         public void OnReceived()
         {
-            GameObject bodyObject = Util.FindNetworkObject(this.netId);
-            if (!bodyObject)
-            {
-                Chat.AddMessage("Fuck");
-                return;
-            }
-
-            Transform modelTransform = target.GetComponent<CharacterBody>().modelLocator.modelTransform;
-            if (modelTransform)
-            {
-                TemporaryOverlay temporaryOverlay = modelTransform.gameObject.AddComponent<TemporaryOverlay>();
-                temporaryOverlay.duration = 1f;
-                temporaryOverlay.destroyComponentOnEnd = true;
-                temporaryOverlay.originalMaterial = WarlockAssets.destealthMaterial;
-                temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
-                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                temporaryOverlay.animateShaderAlpha = true;
-            }
-
-            Util.PlaySound("Play_item_proc_novaonheal_spawn", this.target.gameObject);
-        }
-
-        public void Serialize(NetworkWriter writer)
-        {
-            writer.Write(this.netId);
-            writer.Write(this.target);
+            if (!NetworkClient.active) return;
+            var bodyObject = Util.FindNetworkObject(netId);
+            if (!bodyObject || !bodyObject.GetComponent<WarlockController>()) return;
+            var body = bodyObject.GetComponent<CharacterBody>();
+            var modelTransform = body && body.modelLocator ? body.modelLocator.modelTransform : null;
+            if (!modelTransform) return;
+            var overlay = TemporaryOverlayManager.AddOverlay(modelTransform.gameObject);
+            overlay.duration = 1f;
+            overlay.destroyComponentOnEnd = true;
+            overlay.originalMaterial = WarlockAssets.destealthMaterial;
+            overlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
+            overlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+            overlay.animateShaderAlpha = true;
+            Util.PlaySound("Play_item_proc_novaonheal_spawn", bodyObject);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace WarlockMod.Warlock.SkillStates
             warlockController.jamTimer = 0f;
 
             EntityStateMachine entityStateMachine = EntityStateMachine.FindByCustomName(base.gameObject, "MetaMenu");
-            if (entityStateMachine)
+            if (entityStateMachine && isAuthority)
             {
                 entityStateMachine.SetNextStateToMain();
             }
@@ -77,7 +77,7 @@ namespace WarlockMod.Warlock.SkillStates
                 this.warlockController.ReturnSavedStocks();
             }
 
-            skillLocator.secondary.stock = skillLocator.secondary.maxStock;
+            if (isAuthority) skillLocator.secondary.stock = skillLocator.secondary.maxStock;
 
             warlockController.jamTimer = 0f;
         }
@@ -88,5 +88,4 @@ namespace WarlockMod.Warlock.SkillStates
         }
     }
 }
-
 

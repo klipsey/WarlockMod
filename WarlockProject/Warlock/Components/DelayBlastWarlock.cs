@@ -48,6 +48,8 @@ namespace WarlockMod.Warlock.Components
 
         [HideInInspector]
         public float procCoefficient = 1f;
+        public ProcChainMask procChainMask;
+        public int bleedStacks;
 
         public GameObject explosionEffect;
 
@@ -60,6 +62,7 @@ namespace WarlockMod.Warlock.Components
         private float timer;
 
         private bool hasSpawnedDelayEffect;
+        private bool detonated;
 
         private TeamFilter teamFilter;
 
@@ -96,6 +99,8 @@ namespace WarlockMod.Warlock.Components
 
         public void Detonate()
         {
+            if (!NetworkServer.active || detonated) return;
+            detonated = true;
             EffectManager.SpawnEffect(explosionEffect, new EffectData
             {
                 origin = base.transform.position,
@@ -116,6 +121,8 @@ namespace WarlockMod.Warlock.Components
             blastAttack.damageType = damageType;
             blastAttack.falloffModel = falloffModel;
             blastAttack.procCoefficient = procCoefficient;
+            blastAttack.procChainMask = procChainMask;
+            blastAttack.attackerFiltering = AttackerFiltering.NeverHitSelf;
             foreach (DamageAPI.ModdedDamageType i in moddedDamageTypeHolder)
             {
                 blastAttack.AddModdedDamageType(i);

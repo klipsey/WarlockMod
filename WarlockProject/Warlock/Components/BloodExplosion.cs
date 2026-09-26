@@ -1,28 +1,25 @@
-﻿using UnityEngine;
+using UnityEngine;
 using RoR2;
 
 namespace WarlockMod.Warlock.Components
 {
     public class BloodExplosion : MonoBehaviour
     {
+        private CharacterModel model;
+
         private void Awake()
         {
-            CharacterBody characterBody = this.GetComponent<CharacterBody>();
-
-            if (this.transform)
+            var body = GetComponent<CharacterBody>();
+            if (body && body.healthComponent && !body.healthComponent.alive && body.modelLocator && body.modelLocator.modelTransform)
             {
-                EffectManager.SpawnEffect(Content.WarlockAssets.bloodExplosionEffect, new EffectData
-                {
-                    origin = this.transform.position,
-                    rotation = Quaternion.identity,
-                    scale = 0.5f
-                }, false);
+                model = body.modelLocator.modelTransform.GetComponent<CharacterModel>();
+                if (model) model.invisibilityCount++;
             }
         }
 
-        private void LateUpdate()
+        private void OnDestroy()
         {
-            if (this.transform) this.transform.localScale = Vector3.zero;
+            if (model) model.invisibilityCount--;
         }
     }
 }

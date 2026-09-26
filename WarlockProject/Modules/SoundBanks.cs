@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using R2API;
 using System.IO;
-using System.Text;
 
 namespace WarlockMod.Modules
 {
@@ -19,10 +17,11 @@ namespace WarlockMod.Modules
         public static void Init()
         {
             if (initialized) return;
+            string path = Path.Combine(SoundBankDirectory, "interrogator_bank.bnk");
+            if (!File.Exists(path))
+                throw new FileNotFoundException("Warlock soundbank is missing. Deploy the complete Build/plugins folder.", path);
+            SoundAPI.SoundBanks.Add(path);
             initialized = true;
-            AKRESULT akResult = AkSoundEngine.AddBasePath(SoundBankDirectory);
-
-            AkSoundEngine.LoadBank("interrogator_bank.bnk", out _);
         }
     }
 }
