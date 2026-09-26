@@ -197,7 +197,7 @@ namespace WarlockMod.Warlock
                 skillNameToken = WARLOCK_PREFIX + "PASSIVE_NAME",
                 skillDescriptionToken = WARLOCK_PREFIX + "PASSIVE_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPassive")
-                    ?? throw new InvalidOperationException("Missing texWarlockPassive sprite. Rebuild and deploy the Warlock Unity asset bundle."),
+                    ?? throw new InvalidOperationException("Missing texWarlockPassive sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll."),
                 keywordTokens = new string[] { },
                 activationState = new EntityStates.SerializableEntityStateType(typeof(EntityStates.Idle)),
                 activationStateMachineName = "",
@@ -220,7 +220,7 @@ namespace WarlockMod.Warlock
             Skills.AddPassiveSkills(passive.passiveSkillSlot.skillFamily, passive.interrogatorPassive);
 
             Sprite metaMagicIcon = assetBundle.LoadAsset<Sprite>("texWarlockMetaMagic")
-                ?? throw new InvalidOperationException("Missing texWarlockMetaMagic sprite. Rebuild and deploy the Warlock Unity asset bundle.");
+                ?? throw new InvalidOperationException("Missing texWarlockMetaMagic sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll.");
 
             m1EmpowerSkillDef = Skills.CreateSkillDef<WarlockSkillDef>(new SkillDefInfo
             {
@@ -336,7 +336,7 @@ namespace WarlockMod.Warlock
                 skillDescriptionToken = WARLOCK_PREFIX + "PRIMARY_SURGE_DESCRIPTION",
                 keywordTokens = new string[] { },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texWarlockPrimary")
-                    ?? throw new InvalidOperationException("Missing texWarlockPrimary sprite. Rebuild and deploy the Warlock Unity asset bundle."),
+                    ?? throw new InvalidOperationException("Missing texWarlockPrimary sprite. Rebuild the Unity asset bundle, then rebuild and deploy WarlockMod.dll."),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(CrimsonSurgePrep)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,

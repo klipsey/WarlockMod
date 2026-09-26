@@ -7,7 +7,6 @@ using System.IO;
 using System.Collections.Generic;
 using RoR2.UI;
 using RoR2.Projectile;
-using Path = System.IO.Path;
 
 namespace WarlockMod.Modules
 {
@@ -30,17 +29,30 @@ namespace WarlockMod.Modules
                 return loadedBundles[bundleName];
             }
 
-            string path = Path.Combine(Path.GetDirectoryName(WarlockPlugin.instance.Info.Location), "AssetBundles", bundleName);
-            AssetBundle assetBundle = AssetBundle.LoadFromFile(path);
+            string resourceName = "WarlockMod." + bundleName;
+            AssetBundle assetBundle = AssetBundle.LoadFromMemory(ReadEmbeddedResource(resourceName));
             if (!assetBundle)
             {
-                throw new System.IO.InvalidDataException($"Unable to load Warlock asset bundle at {path}. Rebuild and deploy the Unity bundle alongside the plugin.");
+                throw new InvalidDataException($"Unable to load embedded asset bundle '{resourceName}'. Rebuild the Unity bundle, then rebuild and deploy WarlockMod.dll.");
             }
 
             loadedBundles[bundleName] = assetBundle;
 
             return assetBundle;
+        }
 
+        internal static byte[] ReadEmbeddedResource(string resourceName)
+        {
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                    throw new FileNotFoundException($"Missing embedded resource '{resourceName}'. Rebuild and deploy WarlockMod.dll.", resourceName);
+                using (var buffer = new MemoryStream())
+                {
+                    stream.CopyTo(buffer);
+                    return buffer.ToArray();
+                }
+            }
         }
 
         internal static GameObject CloneTracer(string originalTracerName, string newTracerName)
