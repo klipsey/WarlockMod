@@ -1,5 +1,6 @@
 using R2API;
 using RoR2;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using WarlockMod.Warlock.Components;
@@ -10,11 +11,22 @@ namespace WarlockMod.Warlock.Content
     {
         public static DamageAPI.ModdedDamageType HexMask;
         private static bool hooked;
+        private static int damageDepth;
+        private static bool applyingHexDamage;
+        private static readonly Queue<PendingHexDamage> pendingHexDamage = new Queue<PendingHexDamage>();
+
+        private struct PendingHexDamage
+        {
+            public HealthComponent victim;
+            public DamageInfo damage;
+            public int bleedStacks;
+        }
 
         internal static void Init()
         {
             if (hooked) return;
             HexMask = DamageAPI.ReserveDamageType();
+            On.RoR2.HealthComponent.TakeDamageProcess += TakeDamageProcess;
             GlobalEventManager.onServerDamageDealt += OnDamageDealt;
             hooked = true;
         }
@@ -23,7 +35,48 @@ namespace WarlockMod.Warlock.Content
         {
             if (!hooked) return;
             GlobalEventManager.onServerDamageDealt -= OnDamageDealt;
+            On.RoR2.HealthComponent.TakeDamageProcess -= TakeDamageProcess;
+            pendingHexDamage.Clear();
             hooked = false;
+        }
+
+        private static void TakeDamageProcess(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damage)
+        {
+            damageDepth++;
+            bool completed = false;
+            try
+            {
+                orig(self, damage);
+                completed = true;
+            }
+            finally
+            {
+                damageDepth--;
+                if (!completed) pendingHexDamage.Clear();
+            }
+            if (damageDepth == 0) ApplyPendingHexDamage();
+        }
+
+        private static void ApplyPendingHexDamage()
+        {
+            if (applyingHexDamage || pendingHexDamage.Count == 0) return;
+            applyingHexDamage = true;
+            try
+            {
+                while (pendingHexDamage.Count > 0)
+                {
+                    var pending = pendingHexDamage.Dequeue();
+                    if (!pending.victim || !pending.victim.alive) continue;
+                    pending.victim.TakeDamage(pending.damage);
+                    if (pending.victim && !pending.damage.rejected)
+                        Dots.InflictBleed(pending.victim.gameObject, pending.damage.attacker, pending.bleedStacks, pending.damage.procCoefficient);
+                }
+            }
+            finally
+            {
+                applyingHexDamage = false;
+                pendingHexDamage.Clear();
+            }
         }
 
         private static void OnDamageDealt(DamageReport report)
@@ -87,8 +140,13 @@ namespace WarlockMod.Warlock.Content
                     damageType = damageType
                 };
                 bonus.AddModdedDamageType(HexMask);
-                victim.healthComponent.TakeDamage(bonus);
-                if (!bonus.rejected) Dots.InflictBleed(victim.gameObject, damage.attacker, bleedStacks, bonus.procCoefficient);
+                
+                pendingHexDamage.Enqueue(new PendingHexDamage
+                {
+                    victim = victim.healthComponent,
+                    damage = bonus,
+                    bleedStacks = bleedStacks
+                });
             }
         }
     }
