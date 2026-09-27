@@ -9,7 +9,7 @@ using RoR2.Skills;
 using System;
 using System.Linq;
 using WarlockMod.Modules;
-using WarlockMod.Modules;
+
 
 namespace WarlockMod.Modules
 {

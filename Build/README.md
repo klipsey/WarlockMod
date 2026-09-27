@@ -1,12 +1,12 @@
 # Warlock
 
-# Overview
+## Overview
 
 ### The Warlock
 
 [![icon.png](https://i.postimg.cc/26hvx3F5/icon.png)](https://postimg.cc/tZRYqqc0)
 
-# Skills
+## Skills
 
 [![Screenshot-2026-09-26-053214.png](https://i.postimg.cc/yYpqFT15/Screenshot-2026-09-26-053214.png)](https://postimg.cc/QH7nD1Wk)
 
@@ -20,7 +20,7 @@ https://thunderstore.io/package/tsuyoikenko/
 
 Contact me on Discord: https://discord.gg/GKFCa8z2y8
 
-# Credits
+## Credits
 
 tsuyoikenko - Reworked Kit, Code, Animations (So far)
 

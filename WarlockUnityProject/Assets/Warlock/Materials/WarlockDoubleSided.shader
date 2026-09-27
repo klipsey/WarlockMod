@@ -20,11 +20,11 @@ Shader "Warlock/Double Sided Standard"
         #pragma surface surf Standard fullforwardshadows addshadow
         #pragma target 3.0
         #pragma shader_feature_local _NORMALMAP
-        #pragma shader_feature_local _EMISSION
         #include "UnityStandardUtils.cginc"
 
         sampler2D _MainTex, _BumpMap, _EmissionMap;
-        fixed4 _Color, _EmissionColor;
+        fixed4 _Color;
+        half4 _EmissionColor;
         half _Metallic, _Glossiness, _BumpScale;
 
         struct Input
@@ -44,9 +44,7 @@ Shader "Warlock/Double Sided Standard"
             #ifdef _NORMALMAP
             output.Normal = UnpackScaleNormal(tex2D(_BumpMap, input.uv_BumpMap), _BumpScale);
             #endif
-            #ifdef _EMISSION
             output.Emission = tex2D(_EmissionMap, input.uv_EmissionMap).rgb * _EmissionColor.rgb;
-            #endif
         }
         ENDCG
     }

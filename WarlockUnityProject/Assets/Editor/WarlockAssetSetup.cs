@@ -8,12 +8,19 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Animations;
 using Object = UnityEngine.Object;
 
 public static class WarlockAssetSetup
 {
     private const string Root = "Assets/Warlock/";
-    private static readonly string[] PhysicsRoots = { "cloak.l", "cloak.r", "cloak.x", "hood.x", "c_feeler_00.l", "c_feeler_00.r" };
+    private static readonly string[] PhysicsRoots = { "cloak.l", "cloak.r", "cloak.x", "hood.x", "c_feeler_00.l", "c_feeler_00.r", "scarf.l", "scarf.r" };
+    private const string BookRoot = "root/c_bookroot.x";
+    private static readonly Dictionary<string, (string hand, string grip)> PropHands = new Dictionary<string, (string hand, string grip)>
+    {
+        { "c_bookroot.x", ("hand.r", "BookGrip") },
+        { "dagger.x", ("hand.l", "DaggerGrip") }
+    };
     private static readonly string[] SkillIconNames =
     {
         "texWarlockPassive", "texWarlockPrimary", "texWarlockPrimaryEmpowered", "texWarlockSecondary",
@@ -23,45 +30,110 @@ public static class WarlockAssetSetup
     [MenuItem("Tools/Warlock/Setup and Build")]
     public static void SetupAndBuild()
     {
-        SetupTexturesAndMaterials();
+        RebuildModelVariant();
+        RebuildDisplayVariant();
+        SetupEmoteSkeleton();
+        SetupMasks(Require<GameObject>(Root + "mdlWarlock.prefab"));
+        var controller = Require<AnimatorController>(Root + "Animations/animWarlock.controller");
+        var layers = controller.layers;
+        var bookLayer = layers.Single(layer => layer.name == "Book, Override");
+        bookLayer.avatarMask = Require<AvatarMask>(Root + "Animations/maskWarlockBook.mask");
+        controller.layers = layers;
+        EditorUtility.SetDirty(controller);
+        AssetDatabase.SaveAssets();
+        BuildBundle();
+    }
+
+    private static void RebuildModelVariant()
+    {
+        var existing = Require<GameObject>(Root + "mdlWarlock.prefab");
         var model = (GameObject)PrefabUtility.InstantiatePrefab(Require<GameObject>("Assets/FBX/mdlWarlock.fbx"));
-        PrefabUtility.UnpackPrefabInstance(model, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
         try
         {
             model.name = "mdlWarlock";
-            model.transform.localScale = Vector3.one * 1.5f;
-            Find(model, "dagger.x").SetParent(Find(model, "hand.l"), true);
-            var idle = CreateIdle(model);
-            SetupMasks(model);
-            SetupControllers(idle);
-            var animator = model.GetComponent<Animator>();
-            if (!animator) animator = model.AddComponent<Animator>();
-            animator.runtimeAnimatorController = Require<AnimatorController>(Root + "Animations/animWarlock.controller");
-            animator.applyRootMotion = false;
-            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-            foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
-                string material = renderer.name == "meshBook" ? "matBook" : renderer.name == "meshDagger" ? "matDagger" : "matWarlock";
-                renderer.sharedMaterial = Require<Material>(Root + "Materials/" + material + ".mat");
-                renderer.localBounds = new Bounds(renderer.localBounds.center, renderer.localBounds.size * 1.5f);
-            }
+            model.transform.localScale = existing.transform.localScale;
+            CopyAnimator(existing, model);
+            SetupRenderers(model);
             SetupChildLocator(model);
-            SetupDynamicBones(model);
-            PrefabUtility.SaveAsPrefabAsset(model, Root + "mdlWarlock.prefab");
-            model.name = "WarlockDisplay";
-            animator.runtimeAnimatorController = Require<AnimatorController>(Root + "Animations/animWarlockCSS.controller");
-            PrefabUtility.SaveAsPrefabAsset(model, Root + "WarlockDisplay.prefab");
+            SetupDynamicBones(model, existing);
+            SetupPropConstraints(model);
+            SaveVariant(model, Root + "mdlWarlock.prefab", "Assets/FBX/mdlWarlock.fbx");
         }
         finally
         {
             Object.DestroyImmediate(model);
         }
-        SetupEmoteSkeleton();
-        SetupScene();
-        RenderPreviews();
-        AssetDatabase.SaveAssets();
-        Validate();
-        BuildBundle();
+    }
+
+    private static void RebuildDisplayVariant()
+    {
+        var existing = Require<GameObject>(Root + "WarlockDisplay.prefab");
+        var display = (GameObject)PrefabUtility.InstantiatePrefab(Require<GameObject>(Root + "mdlWarlock.prefab"));
+        try
+        {
+            display.name = "WarlockDisplay";
+            display.transform.localScale = existing.transform.localScale;
+            var animator = CopyAnimator(existing, display);
+            animator.runtimeAnimatorController = Require<AnimatorController>(Root + "Animations/animWarlockCSS.controller");
+            PrefabUtility.RecordPrefabInstancePropertyModifications(animator);
+            SetupDynamicBones(display, existing);
+            DisablePropConstraints(display);
+            SaveVariant(display, Root + "WarlockDisplay.prefab", Root + "mdlWarlock.prefab");
+        }
+        finally
+        {
+            Object.DestroyImmediate(display);
+        }
+    }
+
+    private static Animator CopyAnimator(GameObject existing, GameObject target)
+    {
+        var source = existing.GetComponent<Animator>();
+        if (!source) throw new InvalidOperationException("Missing configured Animator on " + existing.name);
+        var animator = target.GetComponent<Animator>();
+        if (!animator) animator = target.AddComponent<Animator>();
+        EditorUtility.CopySerialized(source, animator);
+        PrefabUtility.RecordPrefabInstancePropertyModifications(animator);
+        return animator;
+    }
+
+    private static void SetupRenderers(GameObject model, bool hidden = false)
+    {
+        if (hidden)
+        {
+            foreach (var bone in model.GetComponentsInChildren<Transform>(true))
+            {
+                bone.gameObject.SetActive(true);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(bone.gameObject);
+            }
+        }
+        foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+        {
+            string material = renderer.name == "meshBook" ? "matBook" : renderer.name == "meshDagger" ? "matDagger" : "matWarlock";
+            renderer.sharedMaterial = Require<Material>(Root + "Materials/" + material + ".mat");
+            renderer.gameObject.SetActive(true);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(renderer.gameObject);
+            renderer.enabled = !hidden;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
+        }
+        if (hidden)
+        {
+            foreach (var renderer in model.GetComponentsInChildren<Renderer>(true))
+            {
+                renderer.enabled = false;
+                PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
+            }
+        }
+    }
+
+    private static void SaveVariant(GameObject instance, string path, string parentPath)
+    {
+        if (!PrefabUtility.SaveAsPrefabAsset(instance, path))
+            throw new InvalidOperationException("Could not save prefab variant: " + path);
+        var saved = Require<GameObject>(path);
+        if (PrefabUtility.GetPrefabAssetType(saved) != PrefabAssetType.Variant ||
+            AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(saved)) != parentPath)
+            throw new InvalidOperationException("Incorrect prefab ancestry: " + path);
     }
 
     private static T Require<T>(string path) where T : Object
@@ -76,6 +148,115 @@ public static class WarlockAssetSetup
         var bone = model.GetComponentsInChildren<Transform>(true).SingleOrDefault(t => t.name == name);
         if (!bone) throw new InvalidOperationException("Missing bone: " + name);
         return bone;
+    }
+
+    [MenuItem("Tools/Warlock/Refresh Prop Constraints")]
+    public static void RefreshPropConstraints()
+    {
+        foreach (string name in new[] { "mdlWarlock", "WarlockDisplay" })
+        {
+            string path = Root + name + ".prefab";
+            var contents = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                if (name == "mdlWarlock") SetupPropConstraints(contents);
+                else DisablePropConstraints(contents);
+                SaveVariant(contents, path, name == "mdlWarlock" ? "Assets/FBX/mdlWarlock.fbx" : Root + "mdlWarlock.prefab");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(contents);
+            }
+        }
+        AssetDatabase.SaveAssets();
+        ValidatePropConstraints();
+    }
+
+    private static void SetupPropConstraints(GameObject model)
+    {
+        var reference = Object.Instantiate(model);
+        reference.hideFlags = HideFlags.HideAndDontSave;
+        try
+        {
+            foreach (var constraint in reference.GetComponentsInChildren<ParentConstraint>(true))
+                constraint.enabled = false;
+            LoadImportedIdle().SampleAnimation(reference, 0f);
+            foreach (var pair in PropHands)
+            {
+                var prop = Find(model, pair.Key);
+                var referenceProp = Find(reference, pair.Key);
+                var referenceHand = Find(reference, pair.Value.hand);
+                var hand = Find(model, pair.Value.hand);
+                var grip = hand.Find(pair.Value.grip);
+                if (!grip) grip = Child(hand, pair.Value.grip, Vector3.zero);
+                grip.localPosition = referenceHand.InverseTransformPoint(referenceProp.position);
+                grip.localRotation = Quaternion.Inverse(referenceHand.rotation) * referenceProp.rotation;
+                grip.localScale = Vector3.one;
+                PrefabUtility.RecordPrefabInstancePropertyModifications(grip);
+                var constraint = prop.GetComponent<ParentConstraint>();
+                if (!constraint) constraint = prop.gameObject.AddComponent<ParentConstraint>();
+                constraint.constraintActive = false;
+                constraint.locked = false;
+                constraint.SetSources(new List<ConstraintSource>
+                {
+                    new ConstraintSource { sourceTransform = grip, weight = 1f }
+                });
+                constraint.translationAtRest = prop.localPosition;
+                constraint.rotationAtRest = prop.localEulerAngles;
+                constraint.translationAxis = Axis.X | Axis.Y | Axis.Z;
+                constraint.rotationAxis = Axis.X | Axis.Y | Axis.Z;
+                // Grip transforms scale with the rig; ParentConstraint offsets do not.
+                constraint.SetTranslationOffset(0, Vector3.zero);
+                constraint.SetRotationOffset(0, Vector3.zero);
+                constraint.weight = 1f;
+                constraint.locked = true;
+                constraint.constraintActive = true;
+                constraint.enabled = true;
+                PrefabUtility.RecordPrefabInstancePropertyModifications(constraint);
+            }
+        }
+        finally
+        {
+            Object.DestroyImmediate(reference);
+        }
+    }
+
+    private static void DisablePropConstraints(GameObject display)
+    {
+        foreach (string name in PropHands.Keys)
+        {
+            var constraint = Find(display, name).GetComponent<ParentConstraint>();
+            if (!constraint) throw new InvalidOperationException("Missing prop constraint: " + name);
+            constraint.enabled = false;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(constraint);
+        }
+    }
+
+    [MenuItem("Tools/Warlock/Validate Prop Constraints")]
+    public static void ValidatePropConstraints()
+    {
+        foreach (string name in new[] { "mdlWarlock", "WarlockDisplay" })
+        {
+            var prefab = Require<GameObject>(Root + name + ".prefab");
+            if (prefab.GetComponentsInChildren<ParentConstraint>(true).Length != PropHands.Count)
+                throw new InvalidOperationException("Expected two prop constraints on " + name);
+            foreach (var pair in PropHands)
+            {
+                var prop = Find(prefab, pair.Key);
+                var grip = Find(prefab, pair.Value.grip);
+                var constraint = prop.GetComponent<ParentConstraint>();
+                if (!constraint || constraint.enabled != (name == "mdlWarlock") || !constraint.constraintActive ||
+                    !constraint.locked || constraint.weight != 1f || constraint.sourceCount != 1 ||
+                    constraint.GetSource(0).sourceTransform != grip || constraint.GetSource(0).weight != 1f ||
+                    constraint.GetTranslationOffset(0) != Vector3.zero || constraint.GetRotationOffset(0) != Vector3.zero ||
+                    grip.parent != Find(prefab, pair.Value.hand) || grip.localScale != Vector3.one ||
+                    constraint.translationAxis != (Axis.X | Axis.Y | Axis.Z) || constraint.rotationAxis != (Axis.X | Axis.Y | Axis.Z))
+                    throw new InvalidOperationException("Invalid prop constraint: " + name + "/" + pair.Key);
+                if (prop.parent != Find(prefab, "root"))
+                    throw new InvalidOperationException("Prop hierarchy was changed: " + name + "/" + pair.Key);
+            }
+        }
+        Debug.Log("Warlock prop constraints validated: book/right hand, dagger/left hand, disabled on character select.");
     }
 
     private static void SetupTexturesAndMaterials()
@@ -99,6 +280,10 @@ public static class WarlockAssetSetup
 
     private static void SetupMaterial(string name, string diffuse, string normal, string emission)
     {
+        string path = Root + "Materials/" + name + ".mat";
+        // Existing materials contain artist-authored settings, not setup defaults.
+        if (AssetDatabase.LoadAssetAtPath<Material>(path)) return;
+
         var material = new Material(Require<Shader>(Root + "Materials/WarlockDoubleSided.shader")) { name = name };
         material.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
         material.doubleSidedGI = true;
@@ -111,8 +296,7 @@ public static class WarlockAssetSetup
         material.SetColor("_EmissionColor", emission == null ? Color.black : Color.white);
         material.globalIlluminationFlags = emission == null ? MaterialGlobalIlluminationFlags.EmissiveIsBlack : MaterialGlobalIlluminationFlags.BakedEmissive;
         if (normal != null) material.EnableKeyword("_NORMALMAP");
-        if (emission != null) material.EnableKeyword("_EMISSION");
-        SaveAsset(material, Root + "Materials/" + name + ".mat");
+        SaveAsset(material, path);
     }
 
     [MenuItem("Tools/Warlock/Refresh Materials and Build")]
@@ -122,23 +306,6 @@ public static class WarlockAssetSetup
         AssetDatabase.SaveAssets();
         RenderPreviews();
         BuildBundle();
-    }
-
-    private static AnimationClip CreateIdle(GameObject model)
-    {
-        var source = AssetDatabase.LoadAllAssetsAtPath("Assets/FBX/mdlWarlock_Idle.fbx").OfType<AnimationClip>().Single(c => !c.name.StartsWith("__preview__"));
-        var clip = Object.Instantiate(source);
-        clip.name = "WarlockIdle";
-        foreach (var binding in AnimationUtility.GetCurveBindings(clip))
-        {
-            if (binding.path.StartsWith("root/dagger.x", StringComparison.Ordinal) || !model.transform.Find(binding.path))
-                AnimationUtility.SetEditorCurve(clip, binding, null);
-        }
-        var settings = AnimationUtility.GetAnimationClipSettings(clip);
-        settings.loopTime = true;
-        settings.loopBlend = true;
-        AnimationUtility.SetAnimationClipSettings(clip, settings);
-        return SaveAsset(clip, Root + "Animations/WarlockIdle.anim");
     }
 
     private static T SaveAsset<T>(T asset, string path) where T : Object
@@ -156,70 +323,30 @@ public static class WarlockAssetSetup
 
     private static void SetupMasks(GameObject model)
     {
-        foreach (string name in new[] { "Aim", "Gesture", "Impact", "LeftArm" })
+        foreach (string name in new[] { "Aim", "Gesture", "Impact", "LeftArm", "Book" })
         {
-            var mask = Require<AvatarMask>(Root + "Animations/maskWarlock" + name + ".mask");
+            string path = Root + "Animations/maskWarlock" + name + ".mask";
+            var mask = AssetDatabase.LoadAssetAtPath<AvatarMask>(path);
+            if (!mask)
+            {
+                mask = new AvatarMask { name = "maskWarlock" + name };
+                AssetDatabase.CreateAsset(mask, path);
+            }
             mask.transformCount = 0;
             mask.AddTransformPath(model.transform, true);
             for (int i = 0; i < mask.transformCount; i++)
             {
-                string path = mask.GetTransformPath(i);
-                bool active = name == "LeftArm" ? path.Contains("/shoulder.l") : path.Contains("/spine_01.x");
-                if (PhysicsRoots.Any(b => path.Split('/').Contains(b))) active = false;
+                string bonePath = mask.GetTransformPath(i);
+                bool active = name == "Book" ? bonePath.StartsWith(BookRoot + "/", StringComparison.Ordinal) :
+                    name == "LeftArm" ? bonePath.Contains("/shoulder.l") : bonePath.Contains("/spine_01.x");
+                if (PhysicsRoots.Any(b => bonePath.Split('/').Contains(b))) active = false;
                 mask.SetTransformActive(i, active);
             }
             for (int i = 0; i < (int)AvatarMaskBodyPart.LastBodyPart; i++)
-                mask.SetHumanoidBodyPartActive((AvatarMaskBodyPart)i, name == "LeftArm"
+                mask.SetHumanoidBodyPartActive((AvatarMaskBodyPart)i, name != "Book" && (name == "LeftArm"
                     ? i == (int)AvatarMaskBodyPart.LeftArm || i == (int)AvatarMaskBodyPart.LeftFingers
-                    : i == (int)AvatarMaskBodyPart.Body || i == (int)AvatarMaskBodyPart.Head || i == (int)AvatarMaskBodyPart.LeftArm || i == (int)AvatarMaskBodyPart.RightArm || i == (int)AvatarMaskBodyPart.LeftFingers || i == (int)AvatarMaskBodyPart.RightFingers);
+                    : i == (int)AvatarMaskBodyPart.Body || i == (int)AvatarMaskBodyPart.Head || i == (int)AvatarMaskBodyPart.LeftArm || i == (int)AvatarMaskBodyPart.RightArm || i == (int)AvatarMaskBodyPart.LeftFingers || i == (int)AvatarMaskBodyPart.RightFingers));
             EditorUtility.SetDirty(mask);
-        }
-    }
-
-    private static void SetupControllers(AnimationClip idle)
-    {
-        var empty = SaveAsset(new AnimationClip { name = "WarlockEmpty" }, Root + "Animations/WarlockEmpty.anim");
-        foreach (string name in new[] { "animWarlock", "animWarlockCSS", "animWarlockEmotes" })
-        {
-            string path = Root + "Animations/" + name + ".controller";
-            var controller = Require<AnimatorController>(path);
-            controller.layers = Array.Empty<AnimatorControllerLayer>();
-            foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path).Where(a => a != controller))
-                Object.DestroyImmediate(asset, true);
-            controller.AddLayer("Body");
-            var body = controller.layers[0].stateMachine;
-            body.defaultState = body.AddState("Idle");
-            body.defaultState.motion = name == "animWarlockEmotes" ? empty : idle;
-            if (name == "animWarlock")
-            {
-                foreach (string stateName in new[] { "Jump", "SprintJump", "BonusJump", "Ascend", "Descend", "Land", "Run", "Sprint", "IdleToRun", "RunToIdle", "BufferEmpty" })
-                    body.AddState(stateName).motion = idle;
-                foreach (string layerName in new[] { "Gesture, Override", "FullBody, Override", "LeftArm, Override", "AimPitch", "AimYaw", "Impact" })
-                {
-                    controller.AddLayer(layerName);
-                    var layers = controller.layers;
-                    var layer = layers[layers.Length - 1];
-                    layer.defaultWeight = 1f;
-                    string maskName = layerName.StartsWith("Aim") ? "Aim" : layerName.StartsWith("LeftArm") ? "LeftArm" : layerName == "Impact" ? "Impact" : "Gesture";
-                    layer.avatarMask = Require<AvatarMask>(Root + "Animations/maskWarlock" + maskName + ".mask");
-                    layer.stateMachine.defaultState = layer.stateMachine.AddState("BufferEmpty");
-                    layer.stateMachine.defaultState.motion = empty;
-                    if (layerName == "Gesture, Override")
-                    {
-                        foreach (string stateName in new[] { "Point", "SwapToGun", "SwapToBat" })
-                        {
-                            var state = layer.stateMachine.AddState(stateName);
-                            state.motion = empty;
-                            var transition = state.AddTransition(layer.stateMachine.defaultState);
-                            transition.hasExitTime = true;
-                            transition.exitTime = 1f;
-                            transition.duration = 0.1f;
-                        }
-                    }
-                    controller.layers = layers;
-                }
-            }
-            EditorUtility.SetDirty(controller);
         }
     }
 
@@ -263,102 +390,71 @@ public static class WarlockAssetSetup
         model.AddComponent<ChildLocator>().TransformPairs = pairs.ToArray();
     }
 
-    private static void SetupDynamicBones(GameObject model)
+    private static void SetupDynamicBones(GameObject model, GameObject existing)
     {
         var colliders = new List<DynamicBoneCollider>();
         foreach (var item in new[] { Tuple.Create("spine_02.x", 0.15f), Tuple.Create("head.x", 0.12f) })
         {
-            var collider = Find(model, item.Item1).gameObject.AddComponent<DynamicBoneCollider>();
-            collider.m_Radius = item.Item2 / Mathf.Abs(collider.transform.lossyScale.x) * model.transform.lossyScale.x;
+            var bone = Find(model, item.Item1);
+            var collider = bone.GetComponent<DynamicBoneCollider>();
+            if (!collider) collider = bone.gameObject.AddComponent<DynamicBoneCollider>();
+            var oldCollider = Find(existing, item.Item1).GetComponent<DynamicBoneCollider>();
+            if (oldCollider) EditorUtility.CopySerialized(oldCollider, collider);
+            else collider.m_Radius = item.Item2 / Mathf.Abs(collider.transform.lossyScale.x) * model.transform.lossyScale.x;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(collider);
             colliders.Add(collider);
         }
         foreach (string root in PhysicsRoots)
         {
-            var dynamicBone = model.AddComponent<DynamicBone>();
+            var dynamicBone = model.GetComponents<DynamicBone>().SingleOrDefault(b => b.m_Root && b.m_Root.name == root);
+            if (!dynamicBone) dynamicBone = model.AddComponent<DynamicBone>();
+            var previous = existing.GetComponents<DynamicBone>().SingleOrDefault(b => b.m_Root && b.m_Root.name == root);
+            if (previous) EditorUtility.CopySerialized(previous, dynamicBone);
+            else
+            {
+                dynamicBone.m_Damping = root.StartsWith("cloak") ? 0.25f : 0.2f;
+                dynamicBone.m_Elasticity = 0.08f;
+                dynamicBone.m_Stiffness = root == "hood.x" ? 0.3f : 0.15f;
+                dynamicBone.m_Inert = 0.15f;
+                dynamicBone.m_Radius = 0.015f;
+                dynamicBone.m_DistantDisable = true;
+                dynamicBone.m_DistanceToObject = 35f;
+            }
             dynamicBone.m_Root = Find(model, root);
-            dynamicBone.m_Damping = root.StartsWith("cloak") ? 0.25f : 0.2f;
-            dynamicBone.m_Elasticity = 0.08f;
-            dynamicBone.m_Stiffness = root == "hood.x" ? 0.3f : 0.15f;
-            dynamicBone.m_Inert = 0.15f;
-            dynamicBone.m_Radius = 0.015f;
             dynamicBone.m_Colliders = colliders;
-            dynamicBone.m_DistantDisable = true;
-            dynamicBone.m_DistanceToObject = 35f;
+            dynamicBone.m_Exclusions = previous && previous.m_Exclusions != null
+                ? previous.m_Exclusions.Where(t => t).Select(t => Find(model, t.name)).ToList()
+                : new List<Transform>();
+            dynamicBone.m_ReferenceObject = previous && previous.m_ReferenceObject ? Find(model, previous.m_ReferenceObject.name) : null;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(dynamicBone);
         }
     }
 
     private static void SetupEmoteSkeleton()
     {
         const string path = "Assets/FBX/mdlWarlock_aapose.fbx";
-        var model = Object.Instantiate(Require<GameObject>(path));
-        model.name = "mdlWarlock_aapose";
+        var existing = Require<GameObject>(Root + "warlock_emoteskeleton.prefab");
+        var model = (GameObject)PrefabUtility.InstantiatePrefab(Require<GameObject>(path));
         try
         {
-            var mapping = new Dictionary<string, string>
-            {
-                { "Hips", "base" }, { "Spine", "spine_01.x" }, { "Chest", "spine_02.x" }, { "UpperChest", "spine_03.x" }, { "Neck", "neck.x" }, { "Head", "head.x" }
-            };
-            foreach (string side in new[] { "Left", "Right" })
-            {
-                string suffix = side == "Left" ? ".l" : ".r";
-                foreach (var pair in new Dictionary<string, string>
-                {
-                    { "Shoulder", "shoulder" }, { "UpperArm", "arm_stretch" }, { "LowerArm", "forearm_stretch" }, { "Hand", "hand" },
-                    { "UpperLeg", "thigh_stretch" }, { "LowerLeg", "leg_stretch" }, { "Foot", "foot" }, { "Toes", "toes_01" }
-                }) mapping.Add(side + pair.Key, pair.Value + suffix);
-                foreach (string finger in new[] { "Thumb", "Index", "Middle", "Ring", "Little" })
-                {
-                    string boneName = finger == "Little" ? "pinky" : finger.ToLowerInvariant();
-                    if (!model.GetComponentsInChildren<Transform>().Any(t => t.name == boneName + "1" + suffix)) continue;
-                    mapping.Add(side + " " + finger + " Proximal", boneName + "1" + suffix);
-                    mapping.Add(side + " " + finger + " Intermediate", boneName + "2" + suffix);
-                    mapping.Add(side + " " + finger + " Distal", boneName + "3" + suffix);
-                }
-            }
-            // Use the same pose solver as Configure Avatar > Enforce T-Pose in Unity 2021.
-            var tool = typeof(Editor).Assembly.GetType("UnityEditor.AvatarSetupTool", true);
-            var importer = (ModelImporter)AssetImporter.GetAtPath(path);
-            if (importer.humanDescription.skeleton.Length > 0)
-                tool.GetMethod("TransferDescriptionToPose", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { new SerializedObject(importer), model.transform });
-            var wrapper = tool.GetNestedType("BoneWrapper", BindingFlags.NonPublic);
-            var bones = Array.CreateInstance(wrapper, HumanTrait.BoneCount);
-            for (int i = 0; i < HumanTrait.BoneCount; i++)
-            {
-                string boneName;
-                Transform bone = mapping.TryGetValue(HumanTrait.BoneName[i], out boneName) ? Find(model, boneName) : null;
-                bones.SetValue(Activator.CreateInstance(wrapper, new object[] { HumanTrait.BoneName[i], bone }), i);
-            }
-            var isPoseValid = tool.GetMethod("IsPoseValid", BindingFlags.Public | BindingFlags.Static);
-            if (!(bool)isPoseValid.Invoke(null, new object[] { bones }))
-                tool.GetMethod("MakePoseValid", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { bones });
-            if (!(bool)isPoseValid.Invoke(null, new object[] { bones }))
-                throw new InvalidOperationException("Unity could not enforce a valid Warlock T-pose. Error: " + tool.GetMethod("GetPoseError", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { bones }));
-            var description = importer.humanDescription;
-            description.human = mapping.Select(p => new HumanBone { humanName = p.Key, boneName = p.Value, limit = new HumanLimit { useDefaultValues = true } }).ToArray();
-            description.skeleton = (SkeletonBone[])tool.GetMethod("GetSkeletonBones", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { model.transform });
-            importer.animationType = ModelImporterAnimationType.Human;
-            importer.avatarSetup = ModelImporterAvatarSetup.CreateFromThisModel;
-            importer.humanDescription = description;
-            importer.importAnimation = false;
-            importer.optimizeGameObjects = false;
-            importer.SaveAndReimport();
-            var avatar = AssetDatabase.LoadAllAssetsAtPath(path).OfType<Avatar>().Single();
-            if (!avatar.isValid || !avatar.isHuman) throw new InvalidOperationException("Warlock emote avatar is invalid.");
             model.name = "warlock_emoteskeleton";
-            model.transform.localScale = Vector3.one * 1.5f;
-            var animator = model.GetComponent<Animator>();
-            if (!animator) animator = model.AddComponent<Animator>();
-            animator.avatar = avatar;
-            animator.runtimeAnimatorController = Require<AnimatorController>(Root + "Animations/animWarlockEmotes.controller");
-            animator.applyRootMotion = false;
-            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-            foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>())
+            model.transform.localScale = existing.transform.localScale;
+            CopyAnimator(existing, model);
+            var bodyRenderer = Find(Require<GameObject>(Root + "mdlWarlock.prefab"), "meshBody").GetComponent<SkinnedMeshRenderer>();
+            var mapperRenderer = model.GetComponentsInChildren<SkinnedMeshRenderer>(true).SingleOrDefault(renderer => renderer.name == bodyRenderer.name);
+            if (!mapperRenderer)
             {
-                string material = renderer.name == "meshBook" ? "matBook" : renderer.name == "meshDagger" ? "matDagger" : "matWarlock";
-                renderer.sharedMaterial = Require<Material>(Root + "Materials/" + material + ".mat");
-                renderer.enabled = false;
+                var meshObject = Child(model.transform, bodyRenderer.name, bodyRenderer.transform.localPosition);
+                meshObject.localRotation = bodyRenderer.transform.localRotation;
+                meshObject.localScale = bodyRenderer.transform.localScale;
+                mapperRenderer = meshObject.gameObject.AddComponent<SkinnedMeshRenderer>();
             }
-            PrefabUtility.SaveAsPrefabAsset(model, Root + "warlock_emoteskeleton.prefab");
+            mapperRenderer.sharedMesh = bodyRenderer.sharedMesh;
+            mapperRenderer.bones = bodyRenderer.bones.Select(bone => Find(model, bone.name)).ToArray();
+            mapperRenderer.rootBone = Find(model, bodyRenderer.rootBone.name);
+            mapperRenderer.localBounds = bodyRenderer.localBounds;
+            SetupRenderers(model, true);
+            SaveVariant(model, Root + "warlock_emoteskeleton.prefab", path);
         }
         finally
         {
@@ -390,25 +486,51 @@ public static class WarlockAssetSetup
     [MenuItem("Tools/Warlock/Validate Assets")]
     public static void Validate()
     {
+        ValidatePropConstraints();
         foreach (string name in SkillIconNames)
             Require<Sprite>(Root + "Icons/Skill/" + name + ".png");
+        foreach (var pair in new Dictionary<string, string>
+        {
+            { "mdlWarlock", "Assets/FBX/mdlWarlock.fbx" },
+            { "WarlockDisplay", Root + "mdlWarlock.prefab" },
+            { "warlock_emoteskeleton", "Assets/FBX/mdlWarlock_aapose.fbx" }
+        })
+        {
+            var prefab = Require<GameObject>(Root + pair.Key + ".prefab");
+            if (PrefabUtility.GetPrefabAssetType(prefab) != PrefabAssetType.Variant ||
+                AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(prefab)) != pair.Value)
+                throw new InvalidOperationException("Invalid prefab variant ancestry: " + pair.Key);
+            var source = Require<GameObject>(pair.Value);
+            foreach (var sourceRenderer in source.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                var renderer = Find(prefab, sourceRenderer.name).GetComponent<SkinnedMeshRenderer>();
+                if (renderer.sharedMesh != sourceRenderer.sharedMesh || renderer.bones.Length != sourceRenderer.bones.Length)
+                    throw new InvalidOperationException("Variant does not use its source mesh/rig: " + pair.Key + "/" + renderer.name);
+            }
+            foreach (string bone in PhysicsRoots) Find(prefab, bone);
+        }
         var model = Require<GameObject>(Root + "mdlWarlock.prefab");
         if (model.GetComponentsInChildren<SkinnedMeshRenderer>().Length != 5) throw new InvalidOperationException("Expected five Warlock renderers.");
         if (model.GetComponents<DynamicBone>().Length != PhysicsRoots.Length) throw new InvalidOperationException("Missing secondary-motion chains.");
         foreach (var dynamicBone in model.GetComponents<DynamicBone>())
             if (!dynamicBone.m_Root || dynamicBone.m_Root.childCount == 0) throw new InvalidOperationException("Invalid dynamic bone root.");
+        var display = Require<GameObject>(Root + "WarlockDisplay.prefab");
+        if (display.GetComponents<DynamicBone>().Length != PhysicsRoots.Length)
+            throw new InvalidOperationException("Display is missing secondary-motion chains.");
+        if (display.GetComponent<Animator>().runtimeAnimatorController != Require<AnimatorController>(Root + "Animations/animWarlockCSS.controller"))
+            throw new InvalidOperationException("WarlockDisplay must use animWarlockCSS.");
         foreach (var renderer in model.GetComponentsInChildren<SkinnedMeshRenderer>())
             if (!renderer.sharedMesh || !renderer.sharedMaterial || !renderer.sharedMaterial.mainTexture || renderer.bones.Any(b => !b))
                 throw new InvalidOperationException("Incomplete renderer: " + renderer.name);
         var bookMaterial = Require<Material>(Root + "Materials/matBook.mat");
-        if (!bookMaterial.IsKeywordEnabled("_EMISSION") || !bookMaterial.GetTexture("_EmissionMap"))
+        if (!bookMaterial.GetTexture("_EmissionMap") || bookMaterial.GetColor("_EmissionColor").maxColorComponent <= 0f)
             throw new InvalidOperationException("Book emission is not enabled.");
         var daggerMaterial = Require<Material>(Root + "Materials/matDagger.mat");
         if (!daggerMaterial.IsKeywordEnabled("_NORMALMAP") || !daggerMaterial.GetTexture("_BumpMap"))
             throw new InvalidOperationException("Dagger normal map is not enabled.");
         ValidateDoubleSidedMaterials();
-        var idle = Require<AnimationClip>(Root + "Animations/WarlockIdle.anim");
-        foreach (string name in new[] { "Aim", "Gesture", "Impact", "LeftArm" })
+        var idle = LoadImportedIdle();
+        foreach (string name in new[] { "Aim", "Gesture", "Impact", "LeftArm", "Book" })
         {
             var mask = Require<AvatarMask>(Root + "Animations/maskWarlock" + name + ".mask");
             for (int i = 0; i < mask.transformCount; i++)
@@ -417,6 +539,8 @@ public static class WarlockAssetSetup
                 if (path.Length > 0 && !model.transform.Find(path)) throw new InvalidOperationException("Unbound mask path: " + path);
                 if (mask.GetTransformActive(i) && PhysicsRoots.Any(b => path.Split('/').Contains(b)))
                     throw new InvalidOperationException("Gesture mask includes dynamic chain: " + path);
+                if (name == "Book" && mask.GetTransformActive(i) != path.StartsWith(BookRoot + "/", StringComparison.Ordinal))
+                    throw new InvalidOperationException("Book mask must include only descendants of c_bookroot.x: " + path);
             }
         }
         var instance = Object.Instantiate(model);
@@ -436,11 +560,23 @@ public static class WarlockAssetSetup
         }
         var emote = Require<GameObject>(Root + "warlock_emoteskeleton.prefab").GetComponent<Animator>();
         if (!emote.avatar || !emote.avatar.isHuman || !emote.avatar.isValid) throw new InvalidOperationException("Invalid emote avatar.");
+        if (emote.GetComponentsInChildren<SkinnedMeshRenderer>().Length == 0 ||
+            emote.GetComponentsInChildren<Renderer>(true).Any(renderer => renderer.enabled))
+            throw new InvalidOperationException("Emote renderer objects must be active for bone discovery while their renderers stay hidden.");
+        var mappingRenderer = Find(emote.gameObject, "meshBody").GetComponent<SkinnedMeshRenderer>();
+        var bodyRenderer = Find(model, "meshBody").GetComponent<SkinnedMeshRenderer>();
+        if (!mappingRenderer || mappingRenderer.sharedMesh != bodyRenderer.sharedMesh || mappingRenderer.bones.Any(bone => !bone) ||
+            !mappingRenderer.bones.Select(bone => bone.name).SequenceEqual(bodyRenderer.bones.Select(bone => bone.name)))
+            throw new InvalidOperationException("Emote bone mapping is stale. Refresh the emote skeleton variant after reimporting the rig.");
         if (emote.cullingMode != AnimatorCullingMode.AlwaysAnimate)
             throw new InvalidOperationException("The hidden emote skeleton must animate even when its renderers are invisible.");
         ValidatePhysics(model);
-        Debug.Log("Warlock validation passed: five textured renderers, six dynamic chains, bound animated idle, valid humanoid avatar.");
+        ValidatePhysics(display);
+        Debug.Log("Warlock validation passed: three linked prefab variants, eight dynamic chains on model/display, current rig and masks, CSS controller and valid humanoid avatar.");
     }
+
+    private static AnimationClip LoadImportedIdle() => AssetDatabase.LoadAllAssetsAtPath("Assets/FBX/mdlWarlock_Idle.fbx")
+        .OfType<AnimationClip>().Single(clip => !clip.name.StartsWith("__preview__", StringComparison.Ordinal));
 
     private static void ValidateDoubleSidedMaterials()
     {
@@ -478,7 +614,7 @@ public static class WarlockAssetSetup
                 {
                     material.SetTexture("_EmissionMap", Texture2D.whiteTexture);
                     material.SetColor("_EmissionColor", Color.white);
-                    material.EnableKeyword("_EMISSION");
+                    material.DisableKeyword("_EMISSION");
                     quad.GetComponent<Renderer>().sharedMaterial = material;
                     foreach (float side in new[] { -1f, 1f })
                     {
@@ -575,7 +711,7 @@ public static class WarlockAssetSetup
         fill.transform.rotation = Quaternion.Euler(340f, 160f, 0f);
         try
         {
-            var idle = Require<AnimationClip>(Root + "Animations/WarlockIdle.anim");
+            var idle = LoadImportedIdle();
             idle.SampleAnimation(model, 0f);
             RenderImage(camera, "Logs/WarlockPreview.png", 768);
             camera.transform.position = new Vector3(-2f, 1.5f, -4f);
@@ -641,6 +777,7 @@ public static class WarlockAssetSetup
         var assets = new[]
         {
             "mdlWarlock.prefab", "WarlockDisplay.prefab", "warlock_emoteskeleton.prefab",
+            "Animations/maskWarlockBook.mask",
             "Icons/texWarlockIcon.png", "Textures/texMetaMagicStackingBuff.png", "Textures/texMetaMagicBuff.png", "Textures/texEmpoweredMetaMagicBuff.png",
             "VFX/Grab.png"
         }.Concat(SkillIconNames.Select(name => "Icons/Skill/" + name + ".png")).Select(p => Root + p).ToArray();

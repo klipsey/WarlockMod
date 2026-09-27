@@ -1,70 +1,53 @@
 using EntityStates;
-using RoR2;
 using UnityEngine;
-using WarlockMod.Modules.BaseStates;
-using EntityStates.Wisp1Monster;
+using UnityEngine.Networking;
+using RoR2;
 using WarlockMod.Warlock.Content;
 
 namespace WarlockMod.Warlock.SkillStates
 {
-    public class CrimsonSurgePrep : BaseWarlockSkillState
+    public class CrimsonSurgePrep : BaseMetamagicCharge
     {
-		public string enterSoundString;
-		public float baseDuration = 0.5f;
-		private float duration;
-		public string chargeMuzzle = "Muzzle";
-		public GameObject ChargeUpPrefab = WarlockAssets.spawnPrefab;
-		private GameObject portal;
-        private const float PortalExitDuration = 0.15f;
+        private bool empoweredAtStart;
+        protected override bool IsHeld => inputBank && inputBank.skill1.down;
+        protected override GameObject ChargeEffectPrefab => WarlockAssets.spawnPrefab;
+        protected override float ChargeSpeed => attackSpeedStat / (primaryEmpowered ? 0.85f : 1f);
 
-		public override void OnEnter()
-		{
-			RefreshState();
-			base.OnEnter();
-            Transform muzzle = FindModelChild(chargeMuzzle);
-            if (muzzle)
-            {
-                portal = Object.Instantiate(ChargeUpPrefab, muzzle.position, Quaternion.LookRotation(GetAimRay().direction));
-                portal.GetComponent<EffectComponent>().noEffectData = true;
-                portal.transform.localScale = Vector3.one * 0.2f;
-                portal.transform.SetParent(muzzle, true);
-            }
-            else
-            {
-                Log.Error($"Cannot attach Crimson Surge's portal: model child '{chargeMuzzle}' is missing.");
-            }
-            this.duration = this.baseDuration / base.attackSpeedStat;
-			if (this.primaryEmpowered) this.duration *= 0.85f;
-            //PlayAnimation("Gesture, Additive", "MainToSide", "MainToSide.playbackRate", duration);
+        protected override void BeginCharge()
+        {
+            empoweredAtStart = primaryEmpowered;
+            StartAimMode(0.5f);
             Util.PlayAttackSpeedSound("Play_imp_overlord_attack2_tell", gameObject, attackSpeedStat);
         }
 
-        public override void FixedUpdate()
-		{
-			base.FixedUpdate();
-            if (portal) portal.transform.rotation = Quaternion.LookRotation(GetAimRay().direction);
-			if (base.isAuthority && base.fixedAge > this.duration && warlockController.jamTimer <= 0f)
-			{
-				CrimsonSurgeFire FireState = new CrimsonSurgeFire();
-				outer.SetNextState(FireState);
-			}
-		}
+        protected override BaseMetamagicCharge NextStep() => new CrimsonSurgePrep();
 
-		public override void OnExit()
-		{
-			base.OnExit();
-            if (portal)
-            {
-                foreach (var particles in portal.GetComponentsInChildren<ParticleSystem>(true))
-                    particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-                Object.Destroy(portal, PortalExitDuration);
-                portal = null;
-            }
-		}
+        protected override EntityState FinishCharge() => new CrimsonSurgeFire();
 
-        public override InterruptPriority GetMinimumInterruptPriority()
+        public override void ModifyNextState(EntityState nextState)
         {
-            return InterruptPriority.PrioritySkill;
+            base.ModifyNextState(nextState);
+            if (nextState is CrimsonSurgePrep next)
+                next.empoweredAtStart = empoweredAtStart;
+            if (nextState is CrimsonSurgeFire fire && (NetworkServer.active || isAuthority))
+            {
+                fire.maxShots = consumedStacks + 1;
+                fire.empoweredShot = empoweredAtStart;
+                if (isAuthority) fire.initialAimRay = GetAimRay();
+                fire.activatorSkillSlot = activatorSkillSlot;
+            }
+        }
+
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(empoweredAtStart);
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            empoweredAtStart = reader.ReadBoolean();
         }
     }
 }

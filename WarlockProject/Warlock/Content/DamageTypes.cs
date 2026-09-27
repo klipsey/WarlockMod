@@ -40,12 +40,17 @@ namespace WarlockMod.Warlock.Content
             }
 
             var victim = report.victimBody;
+            int stacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedDebuff);
             int empoweredStacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedEmpoweredDebuff);
             int bleedStacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedMetaMagicDebuff);
             if (WarlockConfig.BleedProc > 0f && damage.procChainMask.HasProc(ProcType.BleedOnHit))
                 bleedStacks = 0;
+
             if (empoweredStacks > 0)
             {
+                DamageTypeCombo damageType = DamageType.Stun1s;
+                damageType.damageSource = DamageSource.Secondary;
+
                 var blastObject = Object.Instantiate(WarlockAssets.warlockHexExplodeEffect, victim.corePosition, Quaternion.identity);
                 var blast = blastObject.GetComponent<DelayBlastWarlock>();
                 blast.position = victim.corePosition;
@@ -59,13 +64,16 @@ namespace WarlockMod.Warlock.Content
                 blast.falloffModel = BlastAttack.FalloffModel.None;
                 blast.procChainMask = damage.procChainMask;
                 blast.bleedStacks = bleedStacks;
+                blast.damageType = damageType;
                 blast.moddedDamageTypeHolder.Add(HexMask);
                 blastObject.GetComponent<TeamFilter>().teamIndex = report.attackerTeamIndex;
             }
-            else
+            
+            if(stacks > 0)
             {
-                int stacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedDebuff);
-                if (stacks == 0) return;
+                DamageTypeCombo damageType = DamageType.Stun1s;
+                damageType.damageSource = DamageSource.Secondary;
+
                 var bonus = new DamageInfo
                 {
                     procCoefficient = damage.procCoefficient * WarlockConfig.HexProcMultiplier,
@@ -76,7 +84,7 @@ namespace WarlockMod.Warlock.Content
                     crit = damage.crit,
                     damage = damage.damage * WarlockConfig.HexDamage * stacks,
                     damageColorIndex = DamageColorIndex.Sniper,
-                    damageType = DamageType.Stun1s
+                    damageType = damageType
                 };
                 bonus.AddModdedDamageType(HexMask);
                 victim.healthComponent.TakeDamage(bonus);

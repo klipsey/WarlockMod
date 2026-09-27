@@ -52,6 +52,7 @@ namespace WarlockMod
 
             NetworkingAPI.RegisterMessageType<Warlock.Components.SyncBloodExplosion>();
             NetworkingAPI.RegisterMessageType<Warlock.Components.SyncOrbWarlock>();
+            NetworkingAPI.RegisterMessageType<Warlock.Components.SyncCrimsonManaRefill>();
 
             //easy to use logger
             Log.Init(Logger);

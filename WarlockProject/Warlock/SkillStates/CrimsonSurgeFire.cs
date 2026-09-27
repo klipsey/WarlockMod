@@ -18,9 +18,10 @@ namespace WarlockMod.Warlock.SkillStates
         public float damageCoefficient = WarlockConfig.CrimsonSurgeDamage;
         private float duration;
         private float fireInterval;
-        private int maxShots = 1;
+        public int maxShots = 1;
         private int shotCounter;
-        private bool empoweredShot;
+        public bool empoweredShot;
+        public Ray initialAimRay;
         private float fireTimer;
         private Ray aimRay;
 
@@ -31,38 +32,24 @@ namespace WarlockMod.Warlock.SkillStates
         {
             RefreshState();
             base.OnEnter();
-            if (isAuthority)
-            {
-                maxShots = characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff) + 1;
-                empoweredShot = primaryEmpowered;
-            }
             this.duration = this.baseDuration / base.attackSpeedStat;
             if (empoweredShot)
             {
                 this.duration *= 0.85f;
             }
-            if (NetworkServer.active && maxShots > 1)
-            {
-                characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex,
-                    Mathf.Max(0, characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff) - (maxShots - 1)));
-            }
             fireInterval = duration / maxShots;
             fireTimer = fireInterval;
             shotCounter = 1;
-            aimRay = base.GetAimRay();
+            aimRay = initialAimRay.direction == Vector3.zero ? GetAimRay() : initialAimRay;
             base.StartAimMode(aimRay, 2f, false);
             //base.PlayAnimation("Gesture Additive, Right", "FirePistol, Right");
             Util.PlaySound("Play_imp_overlord_teleport_end", base.gameObject);
-            base.AddRecoil(-0.6f, 0.6f, -0.6f, 0.6f);
             if (FireLaser.effectPrefab)
             {
                 EffectManager.SimpleMuzzleFlash(FireLaser.effectPrefab, base.gameObject, "Muzzle", false);
             }
 
-            if (base.isAuthority)
-            {
-                this.Fire();
-            }
+            Fire();
         }
 
         public override void OnSerialize(NetworkWriter writer)
@@ -70,6 +57,8 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnSerialize(writer);
             writer.Write(maxShots);
             writer.Write(empoweredShot);
+            writer.Write(aimRay.origin);
+            writer.Write(aimRay.direction);
         }
 
         public override void OnDeserialize(NetworkReader reader)
@@ -77,10 +66,14 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnDeserialize(reader);
             maxShots = Mathf.Max(1, reader.ReadInt32());
             empoweredShot = reader.ReadBoolean();
+            initialAimRay = new Ray(reader.ReadVector3(), reader.ReadVector3());
         }
 
         private void Fire()
         {
+            DamageTypeCombo damageType = DamageType.Generic;
+            damageType.damageSource = DamageSource.Primary;
+
             BulletAttack bulletAttack = new BulletAttack();
             bulletAttack.owner = base.gameObject;
             bulletAttack.weapon = base.gameObject;
@@ -102,10 +95,10 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.stopperMask = LayerIndex.world.mask;
             bulletAttack.smartCollision = true;
             bulletAttack.maxDistance = 500f;
-            bulletAttack.damageType |= DamageType.Generic;
-            bulletAttack.Fire();
+            bulletAttack.damageType = damageType;
+            if (NetworkServer.active) bulletAttack.Fire();
 
-            if (!characterMotor.isGrounded)
+            if (isAuthority && !characterMotor.isGrounded)
             {
                 float shotKnockbackForce = selfKnockbackForce * Mathf.Pow(0.5f, shotCounter - 1);
                 base.characterBody.characterMotor.ApplyForce(-shotKnockbackForce * aimRay.direction, true);
@@ -126,11 +119,7 @@ namespace WarlockMod.Warlock.SkillStates
                 aimRay = base.GetAimRay();
                 base.StartAimMode(aimRay, 2f, false);
                 Util.PlaySound("Play_imp_overlord_teleport_end", base.gameObject);
-                base.AddRecoil(-0.6f, 0.6f, -0.6f, 0.6f);
-                if (base.isAuthority)
-                {
-                    this.Fire();
-                }
+                Fire();
             }
             if (base.fixedAge >= this.duration && base.isAuthority)
             {

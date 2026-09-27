@@ -315,7 +315,7 @@ namespace WarlockMod.Warlock
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
-                interruptPriority = InterruptPriority.PrioritySkill,
+                interruptPriority = InterruptPriority.Skill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
                 mustKeyPress = true,
@@ -378,7 +378,7 @@ namespace WarlockMod.Warlock
                 mustKeyPress = true,
                 cancelSprintingOnActivation = false,
                 rechargeStock = 0,
-                requiredStock = 1,
+                requiredStock = 0,
                 stockToConsume = 1,
                 keywordTokens = new string[] { Tokens.agileKeyword }
             });
@@ -388,7 +388,7 @@ namespace WarlockMod.Warlock
 
         private void AddUtilitySkills()
         {
-            SkillDef dash = Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef dash = Skills.CreateSkillDef<CrimsonManaSkillDef>(new SkillDefInfo
             {
                 skillName = "Blood Dash",
                 skillNameToken = WARLOCK_PREFIX + "UTILITY_BLOOD_DASH_NAME",
@@ -409,7 +409,7 @@ namespace WarlockMod.Warlock
                 mustKeyPress = true,
                 cancelSprintingOnActivation = false,
                 rechargeStock = 0,
-                requiredStock = 1,
+                requiredStock = 0,
                 stockToConsume = 1
 
             });
@@ -438,7 +438,7 @@ namespace WarlockMod.Warlock
                 interruptPriority = EntityStates.InterruptPriority.Skill,
                 resetCooldownTimerOnUse = false,
                 isCombatSkill = false,
-                mustKeyPress = false,
+                mustKeyPress = true,
                 cancelSprintingOnActivation = false,
                 rechargeStock = 1,
                 requiredStock = 1,
@@ -494,7 +494,8 @@ namespace WarlockMod.Warlock
             #region DefaultSkin
             //this creates a SkinDef with all default fields
             SkinDef defaultSkin = Modules.Skins.CreateSkinDef("DEFAULT_SKIN",
-                assetBundle.LoadAsset<Sprite>("texWarlockIcon"),
+                R2API.Skins.CreateSkinIcon(WarlockAssets.warlockColor, new Color(55f / 255f, 49f / 255f, 58f / 255f),
+                new Color(86f / 255f, 95f / 255f, 72f / 255f), new Color(22f / 255f, 22f / 255f, 26f / 255f)),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
 
@@ -593,7 +594,7 @@ namespace WarlockMod.Warlock
             GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 
-            if (WarlockPlugin.emotesInstalled && WarlockConfig.EnableEmotes)
+            if (WarlockPlugin.emotesInstalled)
                 On.RoR2.SurvivorCatalog.Init += SurvivorCatalog_Init;
         }
 
@@ -639,93 +640,21 @@ namespace WarlockMod.Warlock
         }
         private static void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
         {
+            if (!NetworkServer.active || !damageReport.attackerBody || !damageReport.victim) return;
             CharacterBody attackerBody = damageReport.attackerBody;
-            if (attackerBody && damageReport.attackerMaster && damageReport.victim)
+            if (!attackerBody.GetComponent<WarlockController>()) return;
+            attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+            var target = Util.FindBodyMainHurtBox(attackerBody);
+            if (target)
             {
-                if(attackerBody.baseNameToken == "KENKO_WARLOCK_NAME")
+                RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
                 {
-                    if(NetworkServer.active)
-                    {
-                        if (attackerBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaStack) < WarlockConfig.KillsPerCrimsonMana - 1)
-                        {
-                            attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaStack);
-                        }
-                        else
-                        {
-                            attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, 0);
-
-                            ConsumeOrb orb = new ConsumeOrb();
-                            orb.origin = damageReport.victim.transform.position;
-                            orb.target = Util.FindBodyMainHurtBox(attackerBody);
-                            RoR2.Orbs.OrbManager.instance.AddOrb(orb);
-
-                            if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
-                            {
-                                new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
-                            }
-                        }
-                    }
-                }
+                    origin = damageReport.victim.transform.position,
+                    target = target
+                });
             }
-        }
-        internal static void HUDSetup(HUD hud)
-        {
-            /*
-            if (hud.targetBodyObject && hud.targetMaster && hud.targetMaster.bodyPrefab == InterrogatorSurvivor.characterPrefab)
-            {
-                if (!hud.targetMaster.hasAuthority) return;
-                Transform skillsContainer = hud.equipmentIcons[0].gameObject.transform.parent;
-
-                // ammo display for atomic
-                Transform healthbarContainer = hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster").Find("BarRoots").Find("LevelDisplayCluster");
-
-                GameObject stealthTracker = GameObject.Instantiate(healthbarContainer.gameObject, hud.transform.Find("MainContainer").Find("MainUIArea").Find("SpringCanvas").Find("BottomLeftCluster"));
-                stealthTracker.name = "AmmoTracker";
-                stealthTracker.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
-
-                GameObject.DestroyImmediate(stealthTracker.transform.GetChild(0).gameObject);
-                MonoBehaviour.Destroy(stealthTracker.GetComponentInChildren<LevelText>());
-                MonoBehaviour.Destroy(stealthTracker.GetComponentInChildren<ExpBar>());
-
-                stealthTracker.transform.Find("LevelDisplayRoot").Find("ValueText").gameObject.SetActive(false);
-                GameObject.DestroyImmediate(stealthTracker.transform.Find("ExpBarRoot").gameObject);
-
-                stealthTracker.transform.Find("LevelDisplayRoot").GetComponent<RectTransform>().anchoredPosition = new Vector2(-12f, 0f);
-
-                RectTransform rect = stealthTracker.GetComponent<RectTransform>();
-                rect.localScale = new Vector3(0.8f, 0.8f, 1f);
-                rect.anchorMin = new Vector2(0f, 0f);
-                rect.anchorMax = new Vector2(0f, 0f);
-                rect.offsetMin = new Vector2(120f, -40f);
-                rect.offsetMax = new Vector2(120f, -40f);
-                rect.pivot = new Vector2(0.5f, 0f);
-                //positional data doesnt get sent to clients? Manually making offsets works..
-                rect.anchoredPosition = new Vector2(50f, 0f);
-                rect.localPosition = new Vector3(120f, -40f, 0f);
-
-                GameObject chargeBarAmmo = GameObject.Instantiate(InterrogatorAssets.mainAssetBundle.LoadAsset<GameObject>("WeaponChargeBar"));
-                chargeBarAmmo.name = "StealthMeter";
-                chargeBarAmmo.transform.SetParent(hud.transform.Find("MainContainer").Find("MainUIArea").Find("CrosshairCanvas").Find("CrosshairExtras"));
-
-                rect = chargeBarAmmo.GetComponent<RectTransform>();
-
-                rect.localScale = new Vector3(0.75f, 0.1f, 1f);
-                rect.anchorMin = new Vector2(100f, 2f);
-                rect.anchorMax = new Vector2(100f, 2f);
-                rect.pivot = new Vector2(0.5f, 0f);
-                rect.anchoredPosition = new Vector2(100f, 2f);
-                rect.localPosition = new Vector3(100f, 2f, 0f);
-                rect.rotation = Quaternion.Euler(new Vector3(0f, 0f, 90f));
-
-                ConvictHudController stealthComponent = stealthTracker.AddComponent<ConvictHudController>();
-
-                stealthComponent.targetHUD = hud;
-                stealthComponent.targetText = stealthTracker.transform.Find("LevelDisplayRoot").Find("PrefixText").gameObject.GetComponent<LanguageTextMeshController>();
-                stealthComponent.durationDisplay = chargeBarAmmo;
-                stealthComponent.durationBar = chargeBarAmmo.transform.GetChild(1).gameObject.GetComponent<UnityEngine.UI.Image>();
-                stealthComponent.durationBarColor = chargeBarAmmo.transform.GetChild(0).gameObject.GetComponent<UnityEngine.UI.Image>();
-            }
-            */
+            if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
+                new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
         }
     }
 }

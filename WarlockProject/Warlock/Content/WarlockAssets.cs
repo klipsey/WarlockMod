@@ -16,6 +16,7 @@ namespace WarlockMod.Warlock.Content
     {
         internal static AssetBundle mainAssetBundle;
         internal static GameObject spawnPrefab;
+        internal static GameObject hexChargeEffect;
         internal static GameObject consumeOrb;
         internal static GameObject warlockHitImpactEffect;
         internal static GameObject warlockHexExplodeEffect;
@@ -90,15 +91,9 @@ namespace WarlockMod.Warlock.Content
             effect.soundName = "";
             spawnPrefab.transform.Find("DashRings").localScale *= 0.75f;
             Object.DestroyImmediate(spawnPrefab.transform.Find("PP").gameObject);
-            foreach (var particles in spawnPrefab.GetComponentsInChildren<ParticleSystem>(true))
-            {
-                var main = particles.main;
-                main.simulationSpace = ParticleSystemSimulationSpace.Local;
-            }
-            var portalLifetime = spawnPrefab.AddComponent<DestroyOnTimer>();
-            portalLifetime.duration = 2.5f;
-            portalLifetime.resetAgeOnDisable = true;
-            spawnPrefab.GetComponent<ShakeEmitter>().duration = portalLifetime.duration;
+            MakeContinuous(spawnPrefab);
+            foreach (var shake in spawnPrefab.GetComponentsInChildren<ShakeEmitter>(true))
+                Object.DestroyImmediate(shake);
             Modules.Content.CreateAndAddEffectDef(spawnPrefab);
 
             var impDustMaterial = Load<Material>("RoR2/Base/Imp/matImpDust.mat");
@@ -118,6 +113,8 @@ namespace WarlockMod.Warlock.Content
             Modules.Content.CreateAndAddEffectDef(bloodExplosionEffect);
 
             warlockHitImpactEffect = CloneEffect("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab", "WarlockHitImpact");
+            foreach (var shake in warlockHitImpactEffect.GetComponentsInChildren<ShakeEmitter>(true))
+                Object.DestroyImmediate(shake);
             warlockHitImpactEffect.GetComponent<OmniEffect>().enabled = false;
             var impactMaterial = Object.Instantiate(Load<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat"));
             impactMaterial.SetColor("_TintColor", warlockColor);
@@ -156,6 +153,10 @@ namespace WarlockMod.Warlock.Content
             pulseMaterial.SetTexture("_RemapTex", impRamp);
             pulse.GetComponent<ParticleSystemRenderer>().sharedMaterial = pulseMaterial;
             SetParticleTint(pulse, Color.white);
+            hexChargeEffect = consumeOrb.transform.Find("VFX").gameObject.InstantiateClone("WarlockHexCharge", false);
+            foreach (var scaleCurve in hexChargeEffect.GetComponentsInChildren<ObjectScaleCurve>(true))
+                Object.DestroyImmediate(scaleCurve);
+            MakeContinuous(hexChargeEffect);
 
             var arrivalEffect = CloneEffect("RoR2/Base/Infusion/InfusionOrbFlash.prefab", "WarlockConsumeOrbArrival");
             foreach (var particles in arrivalEffect.GetComponentsInChildren<ParticleSystem>(true))
@@ -171,6 +172,42 @@ namespace WarlockMod.Warlock.Content
             orb.endEffect = arrivalEffect;
             orb.endEffectCopiesRotation = true;
             Modules.Content.CreateAndAddEffectDef(consumeOrb);
+        }
+
+        private static void MakeContinuous(GameObject effect)
+        {
+            foreach (var timer in effect.GetComponentsInChildren<DestroyOnTimer>(true)) Object.DestroyImmediate(timer);
+            foreach (var end in effect.GetComponentsInChildren<DestroyOnParticleEnd>(true)) Object.DestroyImmediate(end);
+            foreach (var particles in effect.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                var main = particles.main;
+                main.loop = true;
+                main.stopAction = ParticleSystemStopAction.None;
+                main.simulationSpace = ParticleSystemSimulationSpace.Local;
+            }
+        }
+
+        internal static GameObject CreateChargeEffect(GameObject prefab, Transform muzzle, Vector3 aimDirection)
+        {
+            if (!muzzle)
+            {
+                Log.Error("Cannot attach Warlock charge effect: Muzzle is missing.");
+                return null;
+            }
+            var effect = Object.Instantiate(prefab, muzzle.position, Util.QuaternionSafeLookRotation(aimDirection));
+            var component = effect.GetComponent<EffectComponent>();
+            if (component) component.noEffectData = true;
+            effect.transform.localScale = Vector3.one * 0.2f;
+            effect.transform.SetParent(muzzle, true);
+            return effect;
+        }
+
+        internal static void StopChargeEffect(GameObject effect)
+        {
+            if (!effect) return;
+            foreach (var particles in effect.GetComponentsInChildren<ParticleSystem>(true))
+                particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            Object.Destroy(effect, 0.15f);
         }
 
         private static void SetParticleTint(ParticleSystem particles, Color tint)

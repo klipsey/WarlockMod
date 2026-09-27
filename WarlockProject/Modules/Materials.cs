@@ -44,6 +44,8 @@ namespace WarlockMod.Modules
 
             float? bumpScale = null;
             Color? emissionColor = null;
+            Texture emissionMap = tempMat.HasProperty("_EmissionMap") ? tempMat.GetTexture("_EmissionMap") : null;
+            bool warlockShader = tempMat.shader && tempMat.shader.name == "Warlock/Double Sided Standard";
             bool noCull = tempMat.IsKeywordEnabled("NOCULL") ||
                 (tempMat.HasProperty("_Cull") && tempMat.GetInt("_Cull") == (int)UnityEngine.Rendering.CullMode.Off);
 
@@ -52,7 +54,7 @@ namespace WarlockMod.Modules
             {
                 bumpScale = tempMat.GetFloat("_BumpScale");
             }
-            if (tempMat.IsKeywordEnabled("_EMISSION"))
+            if (warlockShader || tempMat.IsKeywordEnabled("_EMISSION"))
             {
                 emissionColor = tempMat.GetColor("_EmissionColor");
             }
@@ -61,7 +63,7 @@ namespace WarlockMod.Modules
             tempMat.shader = hotpoo;
 
             //apply values after shader is set
-            tempMat.SetTexture("_EmTex", tempMat.GetTexture("_EmissionMap"));
+            tempMat.SetTexture("_EmTex", emissionMap);
             tempMat.EnableKeyword("DITHER");
 
             if (bumpScale != null)

@@ -1,72 +1,87 @@
-﻿using EntityStates;
+using EntityStates;
 using RoR2;
 using UnityEngine;
-using UnityEngine.UI;
-using WarlockMod.Modules.BaseStates;
-using EntityStates.ImpBossMonster;
 using UnityEngine.Networking;
+using WarlockMod.Modules.BaseStates;
 using WarlockMod.Warlock.Content;
 
 namespace WarlockMod.Warlock.SkillStates
 {
     public class Empower : BaseWarlockSkillState
     {
-        public string enterSoundString;
-        public float baseDuration = 3f;
-        public float dampingCoefficient = 1.2f;
-        private float duration;
-        private Animator animator;
-
-        public static GameObject areaIndicatorPrefab;
-        private GameObject areaIndicatorInstance;
-        public static float indicatorStartingRadius = 2.5f;
-        public static float indicatorScalingCoefficient = .01f;
-
-        public CharacterCameraParams cameraParams;
-        private CameraTargetParams.CameraParamsOverrideHandle cameraParamsOverrideHandle;
+        private bool repeating;
+        private bool continuing;
+        private int remainingMana;
+        private float nextConversion = 0.5f;
 
         public override void OnEnter()
         {
-            RefreshState();
             base.OnEnter();
-            this.warlockController.PlaySound();
-            //return to special
-            PlayAnimation("Gesture, Override", "SwapToGun", "Grab.playbackRate", 0.5f / base.characterBody.attackSpeed);
-
+            if (!repeating)
+            {
+                warlockController.OpenRitualMenu();
+                if (NetworkServer.active || isAuthority)
+                    remainingMana = characterBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaFullStack);
+            }
             if (NetworkServer.active)
             {
-                characterBody.RemoveBuff(WarlockBuffs.warlockCrimsonManaFullStack);
-                characterBody.AddBuff(WarlockBuffs.warlockMetaMagicBuff);
+                if (warlockController.TryConsumeCrimsonMana())
+                    characterBody.AddBuff(WarlockBuffs.warlockMetaMagicBuff);
+                remainingMana = characterBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaFullStack);
             }
-
-            warlockController.jamTimer = 0f;
+            else if (isAuthority)
+                remainingMana = Mathf.Max(0, remainingMana - 1);
+            if (!repeating) warlockController.PlaySound();
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (base.isAuthority && base.fixedAge >= 0.1f)
+            if (!isAuthority) return;
+            if (!inputBank.skill4.down)
+                outer.SetNextStateToMain();
+            else if (remainingMana > 0 && fixedAge >= nextConversion)
+                outer.SetNextState(new Empower());
+        }
+
+        public override void ModifyNextState(EntityState nextState)
+        {
+            base.ModifyNextState(nextState);
+            if (nextState is Empower next)
             {
-                this.outer.SetNextStateToMain();
+                continuing = true;
+                next.repeating = true;
+                next.activatorSkillSlot = activatorSkillSlot;
+                if (NetworkServer.active || isAuthority)
+                {
+                    next.remainingMana = remainingMana;
+                    next.nextConversion = Mathf.Max(0f, 0.1f - Mathf.Max(0f, fixedAge - nextConversion));
+                }
             }
         }
+
         public override void OnExit()
         {
+            if (!continuing) warlockController.CloseRitualMenu();
             base.OnExit();
-            this.skillLocator.primary.UnsetSkillOverride(this.gameObject, WarlockSurvivor.m1EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
-            this.skillLocator.secondary.UnsetSkillOverride(this.gameObject, WarlockSurvivor.m2EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
-            this.skillLocator.utility.UnsetSkillOverride(this.gameObject, WarlockSurvivor.utilityEmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
-
-            if (base.isAuthority)
-            {
-                this.warlockController.ReturnSavedStocks();
-            }
-
-            warlockController.jamTimer = 0f;
         }
-        public override InterruptPriority GetMinimumInterruptPriority()
+
+        public override void OnSerialize(NetworkWriter writer)
         {
-            return InterruptPriority.Frozen;
+            base.OnSerialize(writer);
+            writer.Write(repeating);
+            writer.Write(remainingMana);
+            writer.Write(nextConversion);
         }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            repeating = reader.ReadBoolean();
+            remainingMana = reader.ReadInt32();
+            nextConversion = reader.ReadSingle();
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority() => InterruptPriority.PrioritySkill;
     }
 }

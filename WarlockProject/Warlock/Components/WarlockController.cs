@@ -15,6 +15,10 @@ namespace WarlockMod.Warlock.Components
     {
         private CharacterBody characterBody;
         private SkillLocator skillLocator;
+        private bool ritualMenuOpen;
+        private uint refillRequestId;
+
+        internal uint NextRefillRequestId() => ++refillRequestId;
 
         public bool primaryEmpowered => this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM1Buff);
         public bool secondaryEmpowered => this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM2Buff);
@@ -74,6 +78,56 @@ namespace WarlockMod.Warlock.Components
             for (int i = 0; i < this.currentSecondaryStock; i++) this.skillLocator.secondary.AddOneStock();
             for (int i = 0; i < this.currentUtilityStock; i++) this.skillLocator.utility.AddOneStock();
 
+        }
+        internal bool TryConsumeMetaMagic()
+        {
+            if (!NetworkServer.active || !characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff)) return false;
+            characterBody.RemoveBuff(WarlockBuffs.warlockMetaMagicBuff);
+            return true;
+        }
+
+        internal bool TryConsumeCrimsonMana()
+        {
+            if (!NetworkServer.active || !characterBody.HasBuff(WarlockBuffs.warlockCrimsonManaFullStack)) return false;
+            characterBody.RemoveBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+            return true;
+        }
+
+        internal void ApplySecondaryEmpowerment(int charges)
+        {
+            if (!NetworkServer.active) return;
+            characterBody.SetBuffCount(WarlockBuffs.warlockEmpoweredM2Buff.buffIndex,
+                characterBody.GetBuffCount(WarlockBuffs.warlockEmpoweredM2Buff) + charges);
+        }
+
+        internal void ApplyUtilityEmpowerment()
+        {
+            if (NetworkServer.active)
+                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredUtilityBuff, WarlockConfig.UtilityEmpowerDuration);
+        }
+
+        internal void OpenRitualMenu()
+        {
+            if (ritualMenuOpen) return;
+            SetupStockSecondary();
+            SetupStockUtility();
+            ritualMenuOpen = true;
+            skillLocator.primary.SetSkillOverride(gameObject, WarlockSurvivor.m1EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            skillLocator.secondary.SetSkillOverride(gameObject, WarlockSurvivor.m2EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            skillLocator.utility.SetSkillOverride(gameObject, WarlockSurvivor.utilityEmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            skillLocator.special.SetSkillOverride(gameObject, WarlockSurvivor.empowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+        }
+
+        internal void CloseRitualMenu()
+        {
+            if (!ritualMenuOpen) return;
+            ritualMenuOpen = false;
+            skillLocator.primary.UnsetSkillOverride(gameObject, WarlockSurvivor.m1EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            skillLocator.secondary.UnsetSkillOverride(gameObject, WarlockSurvivor.m2EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            skillLocator.utility.UnsetSkillOverride(gameObject, WarlockSurvivor.utilityEmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            skillLocator.special.UnsetSkillOverride(gameObject, WarlockSurvivor.empowerSkillDef, GenericSkill.SkillOverridePriority.Network);
+            if (characterBody.hasEffectiveAuthority) ReturnSavedStocks();
+            jamTimer = 0f;
         }
         private void OnDestroy()
         {

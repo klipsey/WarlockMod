@@ -32,6 +32,20 @@ namespace WarlockMod.Warlock.Components
         private Indicator indicator;
 
         private bool onCooldown;
+        private bool chargeLocked;
+        private HurtBox chargeTarget;
+
+        internal void SetChargeTarget(HurtBox target)
+        {
+            chargeLocked = true;
+            chargeTarget = target;
+        }
+
+        internal void ClearChargeTarget()
+        {
+            chargeLocked = false;
+            chargeTarget = null;
+        }
 
         private readonly BullseyeSearch search = new BullseyeSearch();
 
@@ -49,18 +63,7 @@ namespace WarlockMod.Warlock.Components
 
         public HurtBox GetTrackingTarget()
         {
-            if (trackingTarget != null)
-            {
-                if (!onCooldown)
-                {
-                    return trackingTarget;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else return trackingTarget;
+            return chargeLocked ? chargeTarget : trackingTarget;
         }
         private void OnEnable()
         {
@@ -81,6 +84,11 @@ namespace WarlockMod.Warlock.Components
                 return;
             }
             indicator.active = true;
+            if (chargeLocked)
+            {
+                indicator.targetTransform = chargeTarget ? chargeTarget.transform : null;
+                return;
+            }
             trackerUpdateStopwatch += Time.fixedDeltaTime;
             if (trackerUpdateStopwatch >= 1f / trackerUpdateFrequency)
             {
@@ -90,7 +98,8 @@ namespace WarlockMod.Warlock.Components
                 SearchForTarget(aimRay);
                 if (trackingTarget != null)
                 {
-                    onCooldown = characterBody.skillLocator.secondary.stock <= 0;
+                    onCooldown = characterBody.skillLocator.secondary.stock <= 0 &&
+                        !characterBody.HasBuff(WarlockBuffs.warlockCrimsonManaFullStack);
                 }
                 else
                 {

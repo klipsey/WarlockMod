@@ -36,7 +36,6 @@ namespace WarlockMod.Warlock.Components
             arrived = true;
             var body = target.healthComponent.body;
             if (!body) return;
-            body.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
             var identity = body.GetComponent<NetworkIdentity>();
             if (identity) new SyncOrbWarlock(identity.netId).Send(NetworkDestination.Clients);
         }

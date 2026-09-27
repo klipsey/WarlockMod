@@ -1,114 +1,107 @@
 using EntityStates;
 using RoR2;
 using UnityEngine;
-using RoR2.Projectile;
-using WarlockMod.Modules.BaseStates;
-using EntityStates.Commando.CommandoWeapon;
-using EntityStates.GlobalSkills.LunarNeedle;
 using UnityEngine.Networking;
-using WarlockMod.Warlock.Content;
 using WarlockMod.Warlock.Components;
+using WarlockMod.Warlock.Content;
 
 namespace WarlockMod.Warlock.SkillStates
 {
-    public class Hex : BaseWarlockSkillState
+    public class Hex : BaseMetamagicCharge
     {
-        private float baseDuration = 0.5f;
-
-        private float duration;
-
-        private WarlockTracker tracker;
-
         private HurtBox victim;
-
-        private CharacterBody victimBody;
-
+        private bool empowered;
+        private bool continuingHex;
+        private WarlockTracker tracker;
         private CameraTargetParams.AimRequest aimRequest;
+        private bool transferringTarget;
 
-        public GameObject markedPrefab = WarlockAssets.warlockHexConsume;
+        protected override bool IsHeld => inputBank && inputBank.skill2.down;
+        protected override GameObject ChargeEffectPrefab => WarlockAssets.hexChargeEffect;
+        protected override bool CanCharge => base.CanCharge && victim && victim.healthComponent &&
+            victim.healthComponent.alive && victim.healthComponent.body &&
+            victim.healthComponent.body.teamComponent.teamIndex != characterBody.teamComponent.teamIndex &&
+            Vector3.Distance(inputBank.aimOrigin, victim.healthComponent.body.corePosition) <=
+                tracker.maxTrackingDistance + victim.healthComponent.body.radius;
+
         public override void OnEnter()
         {
-            RefreshState();
+            tracker = GetComponent<WarlockTracker>();
+            if (!continuingHex && isAuthority) victim = tracker.GetTrackingTarget();
             base.OnEnter();
-            duration = baseDuration / attackSpeedStat;
-            tracker = this.GetComponent<WarlockTracker>();
-            if (tracker && isAuthority)
+            if (victim)
             {
-                victim = tracker.GetTrackingTarget();
+                tracker.SetChargeTarget(victim);
+                if (cameraTargetParams) aimRequest = cameraTargetParams.RequestAimType(CameraTargetParams.AimType.Aura);
             }
-                if (victim && victim.healthComponent && victim.healthComponent.alive)
-                {
-                    victimBody = victim.healthComponent.body;
-                    if (!victimBody) return;
-                    if (NetworkServer.active && (victimBody.teamComponent.teamIndex == characterBody.teamComponent.teamIndex ||
-                        Vector3.Distance(inputBank.aimOrigin, victimBody.corePosition) > tracker.maxTrackingDistance + victimBody.radius))
-                        return;
-                    if (base.cameraTargetParams)
-                    {
-                        aimRequest = base.cameraTargetParams.RequestAimType(CameraTargetParams.AimType.Aura);
-                    }
-                    StartAimMode(duration);
-                    PlayAnimation("Gesture, Override", "Point", "Swing.playbackRate", duration * 1.5f);
-                    EffectManager.SpawnEffect(markedPrefab, new EffectData
-                    {
-                        origin = victimBody.corePosition,
-                        scale = 1.5f
-                    }, transmit: false);
+        }
 
-                    if (NetworkServer.active)
-                    {
-                        if(this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
-                        {
-                            for(int i = 0; i < this.characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff); i++) 
-                            {
-                                this.victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff, WarlockConfig.HexDuration);
-                            }
-                            this.characterBody.SetBuffCount(WarlockBuffs.warlockMetaMagicBuff.buffIndex, 0);
-                        }
+        protected override void BeginCharge()
+        {
+            if (!CanCharge) return;
+            StartAimMode(0.5f);
+            PlayAnimation("Gesture, Override", "Point", "Swing.playbackRate", 0.5f / attackSpeedStat);
+            if (NetworkServer.active)
+            {
+                empowered = warlockController.secondaryEmpowered;
+                if (empowered) characterBody.RemoveBuff(WarlockBuffs.warlockEmpoweredM2Buff);
+                ApplyHex(false);
+            }
+        }
 
-                        if (!this.characterBody.HasBuff(WarlockBuffs.warlockEmpoweredM2Buff))
-                        {
-                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedDebuff, WarlockConfig.HexDuration);
-                        }
-                        else
-                        {
-                            victimBody.AddTimedBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff, WarlockConfig.HexDuration);
-                            this.characterBody.RemoveBuff(WarlockBuffs.warlockEmpoweredM2Buff);
-                        }
-                    }
-                }
+        protected override void ApplyConsumedStack() => ApplyHex(true);
+
+        private void ApplyHex(bool metamagic)
+        {
+            var targetBody = victim.healthComponent.body;
+            targetBody.AddTimedBuff(empowered ? WarlockBuffs.warlockHexxedEmpoweredDebuff : WarlockBuffs.warlockHexxedDebuff,
+                WarlockConfig.HexDuration);
+            if (metamagic)
+                targetBody.AddTimedBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff, WarlockConfig.HexDuration);
+            EffectManager.SpawnEffect(WarlockAssets.warlockHexConsume, new EffectData
+            {
+                origin = targetBody.corePosition,
+                scale = 1.5f
+            }, true);
+        }
+
+        protected override BaseMetamagicCharge NextStep() => new Hex();
+
+        protected override EntityState FinishCharge() => new Idle();
+
+        public override void ModifyNextState(EntityState nextState)
+        {
+            base.ModifyNextState(nextState);
+            if (nextState is Hex next)
+            {
+                transferringTarget = true;
+                next.continuingHex = true;
+                next.victim = victim;
+                next.empowered = empowered;
+            }
+        }
+
+        public override void OnExit()
+        {
+            if (!transferringTarget && tracker) tracker.ClearChargeTarget();
+            aimRequest?.Dispose();
+            base.OnExit();
         }
 
         public override void OnSerialize(NetworkWriter writer)
         {
             base.OnSerialize(writer);
             writer.Write(HurtBoxReference.FromHurtBox(victim));
+            writer.Write(empowered);
+            writer.Write(continuingHex);
         }
 
         public override void OnDeserialize(NetworkReader reader)
         {
             base.OnDeserialize(reader);
             victim = reader.ReadHurtBoxReference().ResolveHurtBox();
-        }
-
-        public override void FixedUpdate()
-        {
-            base.FixedUpdate();
-            if (base.isAuthority && base.fixedAge >= duration)
-            {
-                this.outer.SetNextStateToMain();
-            }
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-            aimRequest?.Dispose();
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.PrioritySkill;
+            empowered = reader.ReadBoolean();
+            continuingHex = reader.ReadBoolean();
         }
     }
 }

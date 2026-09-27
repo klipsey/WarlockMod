@@ -11,6 +11,7 @@ namespace WarlockMod.Warlock.SkillStates
 {
     public class BloodDash : BaseWarlockSkillState
     {
+        public bool crimsonManaEmpowered;
 		private Transform modelTransform;
 		private float stopwatch;
 		private Vector3 blinkVector = Vector3.zero;
@@ -22,7 +23,7 @@ namespace WarlockMod.Warlock.SkillStates
 		public static float blastAttackProcCoefficient => WarlockConfig.BloodDashProc;
 		public static float blastAttackForce = 1;
 
-		[SerializeField]
+        [SerializeField]
 		public float duration = 0.15f;
 
 		[SerializeField]
@@ -36,6 +37,7 @@ namespace WarlockMod.Warlock.SkillStates
 		{
 			RefreshState();
 			base.OnEnter();
+            utilityEmpowered |= crimsonManaEmpowered;
 			Util.PlaySound(EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
 			FireAOEStun();
 			modelTransform = GetModelTransform();
@@ -63,6 +65,18 @@ namespace WarlockMod.Warlock.SkillStates
 			return ((base.inputBank.moveVector == Vector3.zero) ? base.characterDirection.forward : base.inputBank.moveVector).normalized;
 		}
 
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(crimsonManaEmpowered);
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            crimsonManaEmpowered = reader.ReadBoolean();
+        }
+
 		private void CreateBlinkEffect(Vector3 origin)
 		{
 			EffectData effectData = new EffectData();
@@ -75,7 +89,9 @@ namespace WarlockMod.Warlock.SkillStates
 		{
 			if (base.isAuthority)
 			{
-				BlastAttack obj = new BlastAttack
+				DamageTypeCombo damageType = DamageType.Stun1s;
+				damageType.damageSource = DamageSource.Utility;
+                BlastAttack obj = new BlastAttack
 				{
 					radius = blastAttackRadius,
 					procCoefficient = blastAttackProcCoefficient,
@@ -84,7 +100,7 @@ namespace WarlockMod.Warlock.SkillStates
 					crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
 					baseDamage = base.characterBody.damage * blastAttackDamageCoefficient,
 					falloffModel = BlastAttack.FalloffModel.None,
-					damageType = DamageType.Stun1s,
+					damageType = damageType,
 					baseForce = blastAttackForce
 				};
 				obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
