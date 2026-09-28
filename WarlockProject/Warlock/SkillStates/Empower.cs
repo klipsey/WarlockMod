@@ -25,13 +25,15 @@ namespace WarlockMod.Warlock.SkillStates
             }
             if (NetworkServer.active)
             {
-                if (warlockController.TryConsumeCrimsonMana())
+                if (warlockController.TryConsumeCrimsonMana(false))
+                {
                     characterBody.AddBuff(WarlockBuffs.warlockMetaMagicBuff);
+                    Modules.SoundBanks.PlayConsume(characterBody.corePosition);
+                }
                 remainingMana = characterBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaFullStack);
             }
             else if (isAuthority)
                 remainingMana = Mathf.Max(0, remainingMana - 1);
-            if (!repeating) warlockController.PlaySound();
         }
 
         public override void FixedUpdate()

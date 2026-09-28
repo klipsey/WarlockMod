@@ -24,6 +24,8 @@ namespace WarlockMod.Warlock.SkillStates
         public Ray initialAimRay;
         private float fireTimer;
         private Ray aimRay;
+        internal int ShotsFired => shotCounter;
+        internal float ShotInterval => fireInterval;
 
         public GameObject hitEffectPrefab = WarlockAssets.warlockHitImpactEffect;
         public GameObject tracerEffectPrefab = WarlockAssets.warlockTracerEffect;
@@ -42,7 +44,6 @@ namespace WarlockMod.Warlock.SkillStates
             shotCounter = 1;
             aimRay = initialAimRay.direction == Vector3.zero ? GetAimRay() : initialAimRay;
             base.StartAimMode(aimRay, 2f, false);
-            //base.PlayAnimation("Gesture Additive, Right", "FirePistol, Right");
             Util.PlaySound("Play_imp_overlord_teleport_end", base.gameObject);
             if (FireLaser.effectPrefab)
             {

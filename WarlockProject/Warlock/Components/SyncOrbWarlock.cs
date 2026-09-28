@@ -21,6 +21,7 @@ namespace WarlockMod.Warlock.Components
             var bodyObject = Util.FindNetworkObject(netId);
             if (!bodyObject || !bodyObject.GetComponent<WarlockController>()) return;
             var body = bodyObject.GetComponent<CharacterBody>();
+            Util.PlaySound(Modules.SoundBanks.OrbConsumeEvent, bodyObject);
             var modelTransform = body && body.modelLocator ? body.modelLocator.modelTransform : null;
             if (!modelTransform) return;
             var overlay = TemporaryOverlayManager.AddOverlay(modelTransform.gameObject);
@@ -30,7 +31,6 @@ namespace WarlockMod.Warlock.Components
             overlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
             overlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
             overlay.animateShaderAlpha = true;
-            Util.PlaySound("Play_item_proc_novaonheal_spawn", bodyObject);
         }
     }
 }

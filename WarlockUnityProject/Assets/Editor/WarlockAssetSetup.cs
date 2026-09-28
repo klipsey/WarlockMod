@@ -34,6 +34,7 @@ public static class WarlockAssetSetup
         RebuildDisplayVariant();
         SetupEmoteSkeleton();
         SetupMasks(Require<GameObject>(Root + "mdlWarlock.prefab"));
+        SetupEyeAiming();
         var controller = Require<AnimatorController>(Root + "Animations/animWarlock.controller");
         var layers = controller.layers;
         var bookLayer = layers.Single(layer => layer.name == "Book, Override");
@@ -348,6 +349,50 @@ public static class WarlockAssetSetup
                     : i == (int)AvatarMaskBodyPart.Body || i == (int)AvatarMaskBodyPart.Head || i == (int)AvatarMaskBodyPart.LeftArm || i == (int)AvatarMaskBodyPart.RightArm || i == (int)AvatarMaskBodyPart.LeftFingers || i == (int)AvatarMaskBodyPart.RightFingers));
             EditorUtility.SetDirty(mask);
         }
+    }
+
+    [MenuItem("Tools/Warlock/Setup Eye Aiming")]
+    public static void SetupEyeAiming()
+    {
+        var model = Require<GameObject>(Root + "mdlWarlock.prefab");
+        var eyePaths = new HashSet<string>(new[] { "eye.x", "eye_look.x" }
+            .Select(name => AnimationUtility.CalculateTransformPath(Find(model, name), model.transform)));
+        var controller = Require<AnimatorController>(Root + "Animations/animWarlock.controller");
+        var parameters = controller.parameters.ToList();
+        foreach (string name in new[] { "eyePitch", "eyeYaw", "eyeWeight" })
+        {
+            var existing = parameters.SingleOrDefault(parameter => parameter.name == name);
+            if (existing != null)
+            {
+                if (existing.type != AnimatorControllerParameterType.Float)
+                    throw new InvalidOperationException(name + " must be a Float Animator parameter.");
+                continue;
+            }
+            parameters.Add(new AnimatorControllerParameter
+            {
+                name = name,
+                type = AnimatorControllerParameterType.Float,
+                defaultFloat = name == "eyeWeight" ? 0f : 0.5f
+            });
+        }
+        controller.parameters = parameters.ToArray();
+        const string maskPath = Root + "Animations/maskWarlockEye.mask";
+        var mask = AssetDatabase.LoadAssetAtPath<AvatarMask>(maskPath);
+        if (!mask)
+        {
+            mask = new AvatarMask { name = "maskWarlockEye" };
+            AssetDatabase.CreateAsset(mask, maskPath);
+        }
+        mask.transformCount = 0;
+        mask.AddTransformPath(model.transform, true);
+        for (int i = 0; i < mask.transformCount; i++)
+            mask.SetTransformActive(i, eyePaths.Contains(mask.GetTransformPath(i)));
+        for (int i = 0; i < (int)AvatarMaskBodyPart.LastBodyPart; i++)
+            mask.SetHumanoidBodyPartActive((AvatarMaskBodyPart)i, false);
+        EditorUtility.SetDirty(mask);
+        EditorUtility.SetDirty(controller);
+        AssetDatabase.SaveAssets();
+        Debug.Log("Warlock eye setup: eyePitch/eyeYaw neutral at 0.5, eyeWeight defaults to 0 (animation control); eye-only mask and existing layers preserved.");
     }
 
     private static Transform Child(Transform parent, string name, Vector3 position)
@@ -777,7 +822,7 @@ public static class WarlockAssetSetup
         var assets = new[]
         {
             "mdlWarlock.prefab", "WarlockDisplay.prefab", "warlock_emoteskeleton.prefab",
-            "Animations/maskWarlockBook.mask",
+            "Animations/maskWarlockBook.mask", "Animations/maskWarlockEye.mask",
             "Icons/texWarlockIcon.png", "Textures/texMetaMagicStackingBuff.png", "Textures/texMetaMagicBuff.png", "Textures/texEmpoweredMetaMagicBuff.png",
             "VFX/Grab.png"
         }.Concat(SkillIconNames.Select(name => "Icons/Skill/" + name + ".png")).Select(p => Root + p).ToArray();

@@ -32,10 +32,10 @@ namespace WarlockMod.Warlock.Components
             if (!NetworkClient.active) return;
             var bodyObject = Util.FindNetworkObject(netId);
             var health = bodyObject ? bodyObject.GetComponent<HealthComponent>() : null;
-            if (health && health.alive) return;
             EffectManager.SpawnEffect(WarlockAssets.bloodExplosionEffect,
                 new EffectData { origin = position, rotation = Quaternion.identity, scale = 0.5f }, false);
-            if (bodyObject && !bodyObject.GetComponent<BloodExplosion>()) bodyObject.AddComponent<BloodExplosion>();
+            if (bodyObject && health && !health.alive && !bodyObject.GetComponent<BloodExplosion>())
+                bodyObject.AddComponent<BloodExplosion>();
         }
     }
 }

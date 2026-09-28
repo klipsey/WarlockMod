@@ -148,6 +148,7 @@ namespace WarlockMod.Warlock
             AddHitboxes();
             bodyPrefab.AddComponent<WarlockController>();
             bodyPrefab.AddComponent<WarlockTracker>();
+            bodyPrefab.AddComponent<WarlockAnimationController>();
         }
         public void AddHitboxes()
         {

@@ -13,8 +13,6 @@ namespace WarlockMod.Warlock.SkillStates
         {
             base.OnEnter();
             warlockController.OpenRitualMenu();
-            Util.PlaySound("sfx_scout_swap_weapon", gameObject);
-            PlayAnimation("Gesture, Override", "SwapToBat", "Grab.playbackRate", 0.5f / attackSpeedStat);
         }
 
         public override void FixedUpdate()

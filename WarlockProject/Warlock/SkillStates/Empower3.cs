@@ -10,7 +10,6 @@ namespace WarlockMod.Warlock.SkillStates
         {
             base.OnEnter();
             warlockController.CloseRitualMenu();
-            warlockController.PlaySound();
             if (warlockController.TryConsumeCrimsonMana())
                 warlockController.ApplyUtilityEmpowerment();
             if (isAuthority) skillLocator.utility.stock = skillLocator.utility.maxStock;

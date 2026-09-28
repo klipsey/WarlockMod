@@ -62,7 +62,7 @@ namespace WarlockMod.Warlock.Content
             exposedMaterial.SetColor("_TintColor", warlockColor);
             warlockHexConsume = CloneEffect("RoR2/Base/Merc/MercExposeConsumeEffect.prefab", "WarlockHexConsume");
             warlockHexConsume.transform.Find("Visual, Consumed/PulseEffect, Ring (1)").GetComponent<ParticleSystemRenderer>().sharedMaterial = exposedMaterial;
-            warlockHexConsume.GetComponent<EffectComponent>().soundName = "sfx_interrogator_point";
+            warlockHexConsume.GetComponent<EffectComponent>().soundName = Modules.SoundBanks.HexEvent;
             Object.DestroyImmediate(warlockHexConsume.transform.Find("Visual, Consumed/PulseEffect, Slash").gameObject);
             Modules.Content.CreateAndAddEffectDef(warlockHexConsume);
 
@@ -109,7 +109,7 @@ namespace WarlockMod.Warlock.Content
             Object.DestroyImmediate(bloodExplosionEffect.transform.Find("PP").gameObject);
             effect = bloodExplosionEffect.GetComponent<EffectComponent>();
             effect.applyScale = true;
-            effect.soundName = "sfx_blood_gurgle";
+            effect.soundName = Modules.SoundBanks.BloodExplosionEvent;
             Modules.Content.CreateAndAddEffectDef(bloodExplosionEffect);
 
             warlockHitImpactEffect = CloneEffect("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab", "WarlockHitImpact");

@@ -89,21 +89,7 @@ namespace WarlockMod.Warlock.SkillStates
                         int layerIndex = base.modelAnimator.GetLayerIndex("Body");
                         if (layerIndex >= 0)
                         {
-                            if (this.characterBody.isSprinting)
-                            {
-                                this.modelAnimator.CrossFadeInFixedTime("SprintJump", this.smoothingParameters.intoJumpTransitionTime, layerIndex);
-                            }
-                            else
-                            {
-                                if (hopooFeather)
-                                {
-                                    this.modelAnimator.CrossFadeInFixedTime("BonusJump", this.smoothingParameters.intoJumpTransitionTime, layerIndex);
-                                }
-                                else
-                                {
-                                    this.modelAnimator.CrossFadeInFixedTime("Jump", this.smoothingParameters.intoJumpTransitionTime, layerIndex);
-                                }
-                            }
+                            this.modelAnimator.CrossFadeInFixedTime("Jump", this.smoothingParameters.intoJumpTransitionTime, layerIndex);
                         }
                     }
 

@@ -4,7 +4,7 @@ namespace WarlockMod.Warlock.Content
 {
     public static class WarlockConfig
     {
-        public static int KillsPerCrimsonMana => 1;
+        public static int KillsPerCrimsonMana { get; private set; }
         public static float CrimsonSurgeDamage { get; private set; }
         public static float CrimsonSurgeProc { get; private set; }
         public static float PrimaryEmpowerDuration { get; private set; }
@@ -22,6 +22,7 @@ namespace WarlockMod.Warlock.Content
 
         public static void Init()
         {
+            KillsPerCrimsonMana = Stack("01 - Crimson Mana", "Kills per Crimson Mana", 2, "Number of kills required to gain one stack of Crimson Mana.");
             CrimsonSurgeDamage = Damage("02 - Crimson Surge", "Damage coefficient", 4f, "Damage per shot, as a multiple of base damage.");
             CrimsonSurgeProc = Proc("02 - Crimson Surge", "Proc coefficient", 1f, "Proc coefficient per shot.");
             PrimaryEmpowerDuration = Duration("02 - Crimson Surge", "Empower duration", 7f, "Duration in seconds of Crimson Mana's primary fire-rate empowerment.");
@@ -39,6 +40,9 @@ namespace WarlockMod.Warlock.Content
                 "Zero preserves vanilla non-proccing bleed. Positive values enable on-hit callbacks on a separate Warlock dot. Its proc chains cannot create more metamagic bleed; other bleeds are unchanged.");
             BleedDuration = Duration("06 - Metamagic Bleed", "Duration", 2f, "Duration in seconds of each metamagic bleed stack, with or without on-hit procs.");
         }
+
+        private static int Stack(string section, string name, int value, string description) =>
+            Config.BindInt(section, name, value, 1, 100, description).Value;
 
         private static float Damage(string section, string name, float value, string description) =>
             Config.BindFloat(section, name, value, 100f, description).Value;

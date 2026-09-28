@@ -3,16 +3,44 @@
   "WorkspaceRootPath": "D:\\RoR2Mods\\WarlockMod\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\warlocktokens.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\content\\warlocktokens.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\crimsonsurgefire.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\skillstates\\crimsonsurgefire.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\ritualprep.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\skillstates\\ritualprep.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\delayblastwarlock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\components\\delayblastwarlock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\warlockassets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\content\\warlockassets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\hex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\skillstates\\hex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\warlocksurvivor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\warlocksurvivor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlockmod.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlockmod.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\consumeorb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\components\\consumeorb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\warlockconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\content\\warlockconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlockmod.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlockmod.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\warlockbuffs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,22 +53,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\damagetypes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\content\\damagetypes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\crimsonsurgefire.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\skillstates\\crimsonsurgefire.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\warlocktokens.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\content\\warlocktokens.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\delayblastwarlock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\components\\delayblastwarlock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\hex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\skillstates\\hex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\crimsonsurgeprep.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -67,16 +79,8 @@
       "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\modules\\assets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\consumeorb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\components\\consumeorb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\bloodexplosion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\components\\bloodexplosion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\skillstates\\ritualprep.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\skillstates\\ritualprep.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\warlocktracker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -93,10 +97,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\modules\\tokens.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\modules\\tokens.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\content\\warlockassets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|solutionrelative:warlockproject\\warlock\\content\\warlockassets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D23DD085-E9ED-49CC-ACAB-9532CFE9BFC3}|WarlockProject\\WarlockMod.csproj|d:\\ror2mods\\warlockmod\\warlockproject\\warlock\\components\\syncorbwarlock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -173,7 +173,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 36,
+          "SelectedChildIndex": 31,
           "Children": [
             {
               "$type": "Bookmark",
@@ -269,59 +269,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "CrimsonSurgeFire.cs",
-              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
-              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
-              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
-              "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
-              "ViewState": "AgIAADcAAAAAAAAAAAAtwGIAAAA6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.133Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DamageTypes.cs",
-              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\DamageTypes.cs",
-              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\DamageTypes.cs",
-              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\DamageTypes.cs",
-              "RelativeToolTip": "WarlockProject\\Warlock\\Content\\DamageTypes.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFUAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.14Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "BloodDash.cs",
-              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
-              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
-              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
-              "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
-              "ViewState": "AgIAAGsAAAAAAAAAAAAmwIYAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.127Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 2,
               "Title": "RitualPrep.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\RitualPrep.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\RitualPrep.cs",
               "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\RitualPrep.cs",
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\RitualPrep.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-11T23:57:30.141Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "Prefabs.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Modules\\Prefabs.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Modules\\Prefabs.cs",
@@ -329,25 +290,24 @@
               "RelativeToolTip": "WarlockProject\\Modules\\Prefabs.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.17Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.17Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "WarlockConfig.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockConfig.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\WarlockConfig.cs",
               "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockConfig.cs",
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA9AAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAmwBkAAACKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-26T09:13:50.426Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "CrimsonSurgePrep.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\CrimsonSurgePrep.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\CrimsonSurgePrep.cs",
@@ -355,12 +315,11 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\CrimsonSurgePrep.cs",
               "ViewState": "AgIAABEAAAAAAAAAAAAgwAsAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.138Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.138Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 11,
               "Title": "Empower.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\Empower.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\Empower.cs",
@@ -368,25 +327,24 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\Empower.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAxwBwAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.131Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.131Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "Hex.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\Hex.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\Hex.cs",
               "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\Hex.cs",
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\Hex.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAA6wCQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAqwCAAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-11T23:57:30.13Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 10,
               "Title": "WarlockBuffs.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockBuffs.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\WarlockBuffs.cs",
@@ -394,12 +352,11 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockBuffs.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.152Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.152Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 3,
               "Title": "DelayBlastWarlock.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\DelayBlastWarlock.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\DelayBlastWarlock.cs",
@@ -412,20 +369,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 0,
               "Title": "WarlockTokens.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockTokens.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\WarlockTokens.cs",
               "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockTokens.cs",
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockTokens.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAowBQAAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACwAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-11T23:57:30.125Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
               "Title": "WarlockMod.csproj",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\WarlockMod.csproj",
               "RelativeDocumentMoniker": "WarlockProject\\WarlockMod.csproj",
@@ -433,25 +390,24 @@
               "RelativeToolTip": "WarlockProject\\WarlockMod.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADEAAACDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-03-11T23:57:30.175Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.175Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "WarlockSurvivor.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\WarlockSurvivor.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\WarlockSurvivor.cs",
               "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\WarlockSurvivor.cs",
               "RelativeToolTip": "WarlockProject\\Warlock\\WarlockSurvivor.cs",
-              "ViewState": "AgIAABUCAAAAAAAAAAAewDECAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAqwCAAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-11T23:57:30.123Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "WarlockTracker.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\WarlockTracker.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\WarlockTracker.cs",
@@ -459,12 +415,74 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\WarlockTracker.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAADwvxUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.164Z",
+              "WhenOpened": "2025-03-11T23:57:30.164Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ConsumeOrb.cs",
+              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
+              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
+              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
+              "RelativeToolTip": "WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T23:57:30.132Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 4,
+              "Title": "WarlockAssets.cs",
+              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
+              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
+              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
+              "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAQwEAAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T23:57:30.009Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CrimsonSurgeFire.cs",
+              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
+              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
+              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
+              "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\CrimsonSurgeFire.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAIAzwGIAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T23:57:30.133Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "BloodDash.cs",
+              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
+              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
+              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
+              "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\BloodDash.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAmwIYAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T23:57:30.127Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DamageTypes.cs",
+              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\DamageTypes.cs",
+              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\DamageTypes.cs",
+              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\DamageTypes.cs",
+              "RelativeToolTip": "WarlockProject\\Warlock\\Content\\DamageTypes.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFUAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T23:57:30.14Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
               "Title": "WarlockTrackerSkillDef.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\WarlockTrackerSkillDef.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\WarlockTrackerSkillDef.cs",
@@ -472,12 +490,11 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\WarlockTrackerSkillDef.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAIBJwA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.167Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.167Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "BloodExplosion.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\BloodExplosion.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\BloodExplosion.cs",
@@ -485,25 +502,11 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\BloodExplosion.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.137Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.137Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "ConsumeOrb.cs",
-              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
-              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
-              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
-              "RelativeToolTip": "WarlockProject\\Warlock\\Components\\ConsumeOrb.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.132Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "Dots.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\Dots.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\Dots.cs",
@@ -511,12 +514,11 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\Dots.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T09:16:31.398Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-26T09:16:31.398Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "Assets.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Modules\\Assets.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Modules\\Assets.cs",
@@ -524,12 +526,11 @@
               "RelativeToolTip": "WarlockProject\\Modules\\Assets.cs",
               "ViewState": "AgIAAE0AAAAAAAAAAAAwwGcAAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T11:16:35.577Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-26T11:16:35.577Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "WarlockPassive.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\WarlockPassive.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\WarlockPassive.cs",
@@ -537,12 +538,11 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\WarlockPassive.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T12:24:21.043Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-26T12:24:21.043Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "WarlockCSS.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Components\\WarlockCSS.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Components\\WarlockCSS.cs",
@@ -550,8 +550,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\WarlockCSS.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-26T12:24:21.663Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-26T12:24:21.663Z"
             },
             {
               "$type": "Document",
@@ -563,8 +562,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockItemDisplays.cs",
               "ViewState": "AgIAAJUFAAAAAAAAAAAiwLUFAABhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.136Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.136Z"
             },
             {
               "$type": "Document",
@@ -576,21 +574,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\SyncOrbWarlock.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAAYwCQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.135Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "WarlockAssets.cs",
-              "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
-              "RelativeDocumentMoniker": "WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
-              "ToolTip": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
-              "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockAssets.cs",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAcwAQBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.009Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.135Z"
             },
             {
               "$type": "Document",
@@ -602,12 +586,11 @@
               "RelativeToolTip": "WarlockProject\\WarlockPlugin.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAtwBUAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.128Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.128Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "Tokens.cs",
               "DocumentMoniker": "D:\\RoR2Mods\\WarlockMod\\WarlockProject\\Modules\\Tokens.cs",
               "RelativeDocumentMoniker": "WarlockProject\\Modules\\Tokens.cs",
@@ -615,8 +598,7 @@
               "RelativeToolTip": "WarlockProject\\Modules\\Tokens.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAQwBIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.162Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.162Z"
             },
             {
               "$type": "Document",
@@ -628,8 +610,7 @@
               "RelativeToolTip": "WarlockProject\\Modules\\BaseContent\\Characters\\CharacterBase.cs",
               "ViewState": "AgIAAFIAAAAAAAAAAOBmwGkAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.143Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.143Z"
             },
             {
               "$type": "Document",
@@ -639,8 +620,7 @@
               "ToolTip": "E:\\WarlockMod\\WarlockProject\\Warlock\\Components\\SyncCounter.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.144Z"
             },
             {
               "$type": "Document",
@@ -652,8 +632,7 @@
               "RelativeToolTip": "WarlockProject\\Modules\\BaseContent\\BaseStates\\BaseMeleeAttack.cs",
               "ViewState": "AgIAAC8AAAAAAAAAAAAQwEcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.147Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.147Z"
             },
             {
               "$type": "Document",
@@ -665,8 +644,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\Empower3.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAAuwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.148Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.148Z"
             },
             {
               "$type": "Document",
@@ -678,8 +656,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\Empower2.cs",
               "ViewState": "AgIAABgAAAAAAAAAAABQwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.15Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.15Z"
             },
             {
               "$type": "Document",
@@ -691,8 +668,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\Empower1.cs",
               "ViewState": "AgIAABEAAAAAAAAAAMBcwBoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.151Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.151Z"
             },
             {
               "$type": "Document",
@@ -704,8 +680,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\WarlockController.cs",
               "ViewState": "AgIAAFIAAAAAAAAAAAAvwGQAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.154Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.154Z"
             },
             {
               "$type": "Document",
@@ -717,8 +692,7 @@
               "RelativeToolTip": "WarlockProject\\Modules\\BaseContent\\BaseStates\\BaseWarlockState.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAAewBYAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.155Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.155Z"
             },
             {
               "$type": "Document",
@@ -730,8 +704,7 @@
               "RelativeToolTip": "WarlockProject\\Modules\\BaseContent\\BaseStates\\BaseWarlockSkillState.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAvwA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.157Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.157Z"
             },
             {
               "$type": "Document",
@@ -743,8 +716,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\SyncBloodExplosion.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAgwCIAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.159Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.159Z"
             },
             {
               "$type": "Document",
@@ -756,8 +728,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockStates.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.16Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.16Z"
             },
             {
               "$type": "Document",
@@ -769,8 +740,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Content\\WarlockUnlockables.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.165Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.165Z"
             },
             {
               "$type": "Document",
@@ -782,8 +752,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\Components\\WarlockSkillDef.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAIBZwBoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.169Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.169Z"
             },
             {
               "$type": "Document",
@@ -795,8 +764,7 @@
               "RelativeToolTip": "WarlockProject\\Warlock\\SkillStates\\MainState.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-11T23:57:30.172Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-03-11T23:57:30.172Z"
             }
           ]
         }

@@ -37,7 +37,7 @@ namespace WarlockMod.Warlock.SkillStates
             if (NetworkServer.active)
             {
                 reservedMana = characterBody.healthComponent && characterBody.healthComponent.alive &&
-                    TargetValid && originalSkill is CrimsonManaSkillDef && warlockController.TryConsumeCrimsonMana();
+                    TargetValid && originalSkill is CrimsonManaSkillDef && warlockController.TryConsumeCrimsonMana(false);
                 ReceiveResult(reservedMana);
                 if (!isAuthority)
                     new SyncCrimsonManaRefill(GetComponent<NetworkIdentity>().netId, requestId, reservedMana).Send(NetworkDestination.Clients);
@@ -88,6 +88,7 @@ namespace WarlockMod.Warlock.SkillStates
             if (NetworkServer.active)
             {
                 reservedMana = false;
+                Modules.SoundBanks.PlayUseMana(characterBody.corePosition);
                 if (secondary)
                     warlockController.ApplySecondaryEmpowerment(Mathf.Max(1, Slot.maxStock / 2));
                 else

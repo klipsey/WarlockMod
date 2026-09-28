@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 632417707
+CRC: 483527042
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 2c4b55e6bbb182247c6610ea783f0b4e
+    Hash: 6b6021f18fb0644fd15d739d78455269
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 97cd3cbd537010d4139c5e582862dbb4
+    Hash: ff03bc76cd10c6b62a214018645a6efe
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -73,8 +73,6 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 319
   Script: {instanceID: 0}
-- Class: 1773428102
-  Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
 - AssemblyName: Assembly-CSharp
   ClassName: ChildLocator/NameTransformPair
@@ -86,22 +84,23 @@ Assets:
 - Assets/Warlock/Icons/Skill/texWarlockSpecial.png
 - Assets/Warlock/Textures/texWarlockDiffuse.png
 - Assets/Warlock/mdlWarlock.prefab
-- Assets/Warlock/Meshes/meshBody.mesh
 - Assets/Warlock/Icons/Skill/texWarlockUtilityEmpowered.png
 - Assets/Warlock/HUD/Textures/texChargeRing.png
+- Assets/Warlock/Meshes/meshCloak.mesh
 - Assets/Warlock/Projectiles/DriverStunGrenadeImpact.prefab
 - Assets/Warlock/HUD/ChargeBar.prefab
 - Assets/Warlock/Projectiles/texAlphaGradient6Mask.png
-- Assets/Warlock/Projectiles/texRampCoin.png
+- Assets/Warlock/Meshes/meshDagger.mesh
 - Assets/Warlock/Animations/maskWarlockBook.mask
-- Assets/Warlock/VFX/Badass 1/MetalHitEffect.prefab
+- Assets/Warlock/Projectiles/texRampCoin.png
 - Assets/Warlock/Icons/Skill/texWarlockPassive.png
 - Assets/Warlock/Icons/Skill/texWarlockSecondaryEmpowered.png
 - Assets/Warlock/VFX/Badass 1/SmallExplosion.prefab
 - Assets/Warlock/Textures/texWarlockEmission.png
-- Assets/Warlock/VFX/matMagicPortal1.mat
+- Assets/Warlock/VFX/Badass 1/MetalHitEffect.prefab
 - Assets/Warlock/Animations/animWarlock.controller
 - Assets/Warlock/VFX/Materials/matPunchEffect.mat
+- Assets/Warlock/VFX/matMagicPortal1.mat
 - Assets/Warlock/VFX/texBehemothTileMask.png
 - Assets/Warlock/VFX/Materials/matDust.mat
 - Assets/Warlock/VFX/Badass 1/SandHitEffect.prefab
@@ -113,15 +112,14 @@ Assets:
 - Assets/Warlock/VFX/Textures/texSmoke.png
 - Assets/Warlock/VFX/matSpyDefault.mat
 - Assets/Warlock/Projectiles/CoinProjectileGhost.prefab
-- Assets/Warlock/Textures/texDaggerDiffuse.png
-- Assets/Warlock/Meshes/meshBook.mesh
-- Assets/Warlock/VFX/Badass 1/BigExplosion.prefab
 - Assets/Warlock/VFX/BloodSpurtEffect.prefab
-- Assets/Warlock/VFX/Textures/texPunchImpact.png
+- Assets/Warlock/VFX/Textures/texSlash.png
+- Assets/Warlock/Textures/texDaggerDiffuse.png
 - Assets/Warlock/VFX/NoGrab.png
+- Assets/Warlock/VFX/Textures/texPunchImpact.png
+- Assets/Warlock/VFX/Badass 1/BigExplosion.prefab
 - Assets/Warlock/VFX/Textures/texDust.png
 - Assets/Warlock/VFX/EldritchBlastPortal.prefab
-- Assets/Warlock/VFX/Textures/texSlash.png
 - Assets/Warlock/VFX/CritLightning.prefab
 - Assets/Warlock/Materials/WarlockDoubleSided.shader
 - Assets/Warlock/VFX/Badass/WoodHitEffect.prefab
@@ -131,20 +129,20 @@ Assets:
 - Assets/Warlock/VFX/texShockwave.png
 - Assets/Warlock/Animations/animWarlockEmotes.controller
 - Assets/Warlock/VFX/Materials/matFire.mat
+- Assets/Warlock/Meshes/meshRope.mesh
 - Assets/Warlock/VFX/Textures/texFire.tga
 - Assets/Warlock/Materials/matWarlock.mat
-- Assets/Warlock/Meshes/meshRope.mesh
 - Assets/Warlock/Projectiles/CoinProjectile.prefab
+- Assets/Warlock/VFX/Badass/TinyExplosion.prefab
 - Assets/Warlock/VFX/matShockwave2.mat
 - Assets/Warlock/Animations/maskWarlockAim.mask
 - Assets/Warlock/VFX/Badass/SmallExplosion.prefab
-- Assets/Warlock/VFX/Badass/TinyExplosion.prefab
 - Assets/Warlock/VFX/Badass 1/TinyExplosion.prefab
 - Assets/Warlock/VFX/Materials/matPunchImpactShadow.mat
+- Assets/Warlock/VFX/texRampWarlock.png
 - Assets/Warlock/VFX/Materials/matTrail.mat
 - Assets/Warlock/Projectiles/CoinImpactHit.prefab
 - Assets/Warlock/VFX/Textures/texFistSwing.png
-- Assets/Warlock/VFX/texRampWarlock.png
 - Assets/Warlock/VFX/Materials/matSlash.mat
 - Assets/Warlock/VFX/Materials/matEmbers.mat
 - Assets/Warlock/Projectiles/CoinOrbEffect.prefab
@@ -158,7 +156,6 @@ Assets:
 - Assets/Warlock/Projectiles/texRampCoin2.png
 - Assets/Warlock/Textures/texWarlockBookEmission.png
 - Assets/Warlock/VFX/texCloudDifferenceBW1.png
-- Assets/Warlock/Meshes/meshDagger.mesh
 - Assets/Warlock/VFX/BloodSpurtEffect 1.prefab
 - Assets/Warlock/VFX/Materials/matFistSwing.mat
 - Assets/Warlock/HUD/ChargeRing.prefab
@@ -179,13 +176,15 @@ Assets:
 - Assets/Warlock/HUD/Textures/texBulletIndicator.png
 - Assets/Warlock/VFX/Badass 1/StoneHitEffect.prefab
 - Assets/Warlock/Icons/Skill/texWarlockUtility.png
-- Assets/Warlock/VFX/texRampImp.png
+- Assets/Warlock/Meshes/meshBody.mesh
 - Assets/Warlock/VFX/matSpyStreak.mat
 - Assets/Warlock/VFX/Textures/texEmbers.png
+- Assets/Warlock/VFX/texRampImp.png
 - Assets/Warlock/VFX/Badass/MetalHitEffect.prefab
 - Assets/Warlock/Projectiles/meshSapper.mesh
 - Assets/Warlock/VFX/Badass/SandHitEffect.prefab
 - Assets/Warlock/VFX/Textures/texHenrySwing2.png
+- Assets/Warlock/Meshes/meshBook.mesh
 - Assets/Warlock/Materials/matBook.mat
 - Assets/Warlock/VFX/Textures/texHitSpark.png
 - Assets/Warlock/VFX/matWarlockChargeUp.mat
@@ -203,15 +202,15 @@ Assets:
 - Assets/Warlock/Icons/texWarlockIcon.png
 - Assets/Warlock/VFX/Materials/matSmoke.mat
 - Assets/Warlock/VFX/CritLightningMonsoon.prefab
-- Assets/Warlock/VFX/Materials/matHenrySwing2.mat
+- Assets/Warlock/Animations/maskWarlockEye.mask
 - Assets/Warlock/VFX/texEldritchPortal.png
 - Assets/Warlock/VFX/matShockwave.mat
+- Assets/Warlock/VFX/Materials/matHenrySwing2.mat
 - Assets/Warlock/VFX/Textures/texPunchImpactShadow.png
 - Assets/Warlock/Textures/texWarlockBookDiffuse.png
 - Assets/Warlock/Animations/maskWarlockGesture.mask
 - Assets/Warlock/HUD/WeaponChargeBar.prefab
 - Assets/Warlock/Projectiles/mdlSapper.prefab
-- Assets/Warlock/Meshes/meshCloak.mesh
 - Assets/Warlock/VFX/matBlackLightning.mat
 - Assets/Warlock/Materials/matDagger.mat
 Dependencies: []

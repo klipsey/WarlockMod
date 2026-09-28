@@ -7,6 +7,7 @@
     <DeployToTestProfile Condition="'$(DeployToTestProfile)' == ''">true</DeployToTestProfile>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <BundlePath Condition="'$(BundlePath)' == ''">$(MSBuildThisFileDirectory)..\WarlockUnityProject\AssetBundles\StandaloneWindows\warlock</BundlePath>
+    <SoundBankPath Condition="'$(SoundBankPath)' == ''">$(MSBuildThisFileDirectory)..\WarlockWWISE\GeneratedSoundBanks\Windows\warlock_bank.bnk</SoundBankPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -20,12 +21,11 @@
   <ItemGroup>
     <None Remove=".gitignore" />
     <None Remove="nuget.config" />
-    <None Remove="interrogator_bank.bnk" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="$(BundlePath)" LogicalName="WarlockMod.warlock" Link="warlock" />
-    <EmbeddedResource Include="interrogator_bank.bnk" LogicalName="WarlockMod.interrogator_bank.bnk" />
+    <EmbeddedResource Include="$(SoundBankPath)" LogicalName="WarlockMod.warlock_bank.bnk" Link="warlock_bank.bnk" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -72,8 +72,9 @@
 	</ItemGroup>
   <Target Name="ValidateEmbeddedAssets" BeforeTargets="PrepareForBuild" Condition="'$(DesignTimeBuild)' != 'true'">
     <Error Condition="!Exists('$(BundlePath)')" Text="Warlock asset bundle is missing: $(BundlePath). Build it in Unity before building WarlockMod.dll." />
-    <Error Condition="!Exists('$(ProjectDir)interrogator_bank.bnk')" Text="Warlock soundbank is missing: $(ProjectDir)interrogator_bank.bnk." />
+    <Error Condition="!Exists('$(SoundBankPath)')" Text="Warlock soundbank is missing: $(SoundBankPath). Generate warlock_bank for Windows in Wwise before building WarlockMod.dll." />
     <Message Importance="high" Text="Embedding Warlock asset bundle: $(BundlePath)" />
+    <Message Importance="high" Text="Embedding Warlock soundbank: $(SoundBankPath)" />
   </Target>
   <Target Name="PackageMod" AfterTargets="Build" Condition="'$(SkipPackaging)' != 'true' and '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>

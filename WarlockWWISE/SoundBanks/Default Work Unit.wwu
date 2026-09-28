@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{BCF18DB8-7B1E-485F-AE96-3E1C6533D26C}" SchemaVersion="97">
+<WwiseDocument Type="WorkUnit" ID="{BCF18DB8-7B1E-485F-AE96-3E1C6533D26C}" SchemaVersion="119">
 	<SoundBanks>
 		<WorkUnit Name="Default Work Unit" ID="{BCF18DB8-7B1E-485F-AE96-3E1C6533D26C}" PersistMode="Standalone">
 			<ChildrenList>
@@ -8,9 +8,14 @@
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>
 				</SoundBank>
-				<SoundBank Name="interrogator_bank" ID="{1C6F5C60-6512-4D2E-8AF1-B88CF78C2FF5}">
+				<SoundBank Name="warlock_bank" ID="{1C6F5C60-6512-4D2E-8AF1-B88CF78C2FF5}">
 					<ObjectInclusionList>
+						<ObjectRef Name="Play_warlockconsume" ID="{1F91DAA3-EE85-431B-BDAE-3D7BDFAC4B98}" WorkUnitID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_warlock_use_mana" ID="{B7577259-C3F1-431F-A594-DF5C52FC2FFF}" WorkUnitID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Actor-Mixer Hierarchy" ID="{5EA7BBF8-64C0-4A50-8821-A07E8BE21D68}" WorkUnitID="{5EA7BBF8-64C0-4A50-8821-A07E8BE21D68}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_warlock_open_menu" ID="{F4B98C41-913E-4A63-B202-99116D720F69}" WorkUnitID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_deathsquelch" ID="{FC01E1FA-12D5-4B38-A50B-4A8695812225}" WorkUnitID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Play_warlockhex" ID="{4EFE3A9A-380A-4F29-B880-C773E4C84EEA}" WorkUnitID="{0E6DDC47-9831-4C9F-9E50-5872B4A7E01C}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>

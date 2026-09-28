@@ -31,12 +31,9 @@ namespace WarlockMod.Warlock.Components
         public int currentUtilityStock = 1;
 
         public float jamTimer;
-        public float soundTimer = 3f;
 
         public float convictDurationMax;
 
-        public uint soundID1;
-        private bool hasStoppedSound;
         private void Awake()
         {
             this.characterBody = this.GetComponent<CharacterBody>();
@@ -46,13 +43,6 @@ namespace WarlockMod.Warlock.Components
         private void FixedUpdate()
         {
             if(jamTimer > 0f) jamTimer -= Time.fixedDeltaTime;
-
-            if (soundTimer > 0f) soundTimer -= Time.fixedDeltaTime;
-            else if (!hasStoppedSound)
-            {
-                hasStoppedSound = true;
-                if (soundID1 != 0) AkSoundEngine.StopPlayingID(soundID1);
-            }
 
         }
         public void SetupStockSecondary()
@@ -64,12 +54,6 @@ namespace WarlockMod.Warlock.Components
         {
             currentUtilityStock = this.skillLocator.utility.stock;
             maxUtilityStock = this.skillLocator.utility.maxStock;
-        }
-        public void PlaySound()
-        {
-            soundID1 = Util.PlaySound("Play_imp_overlord_teleport_start", this.gameObject);
-            hasStoppedSound = false;
-            soundTimer = 3f;
         }
         public void ReturnSavedStocks()
         {
@@ -86,10 +70,11 @@ namespace WarlockMod.Warlock.Components
             return true;
         }
 
-        internal bool TryConsumeCrimsonMana()
+        internal bool TryConsumeCrimsonMana(bool playSound = true)
         {
             if (!NetworkServer.active || !characterBody.HasBuff(WarlockBuffs.warlockCrimsonManaFullStack)) return false;
             characterBody.RemoveBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+            if (playSound) Modules.SoundBanks.PlayUseMana(characterBody.corePosition);
             return true;
         }
 
@@ -112,6 +97,7 @@ namespace WarlockMod.Warlock.Components
             SetupStockSecondary();
             SetupStockUtility();
             ritualMenuOpen = true;
+            Modules.SoundBanks.PlayOpenMenu(characterBody.corePosition);
             skillLocator.primary.SetSkillOverride(gameObject, WarlockSurvivor.m1EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
             skillLocator.secondary.SetSkillOverride(gameObject, WarlockSurvivor.m2EmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
             skillLocator.utility.SetSkillOverride(gameObject, WarlockSurvivor.utilityEmpowerSkillDef, GenericSkill.SkillOverridePriority.Network);
@@ -128,10 +114,6 @@ namespace WarlockMod.Warlock.Components
             skillLocator.special.UnsetSkillOverride(gameObject, WarlockSurvivor.empowerSkillDef, GenericSkill.SkillOverridePriority.Network);
             if (characterBody.hasEffectiveAuthority) ReturnSavedStocks();
             jamTimer = 0f;
-        }
-        private void OnDestroy()
-        {
-            if (soundID1 != 0) AkSoundEngine.StopPlayingID(soundID1);
         }
     }
 }

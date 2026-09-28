@@ -294,6 +294,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3046440804384396947, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: -2567972042775764250, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8,
         type: 3}
       propertyPath: m_Enabled
@@ -304,6 +309,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: warlock_emoteskeleton
       objectReference: {fileID: 0}
+    - target: {fileID: 4436805663696350335, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8,
         type: 3}
       propertyPath: m_Controller
@@ -313,6 +323,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7442949977826254944, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8545106631772187401, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b8b1fb1e4b780a4b876eb51a19c39a8, type: 3}

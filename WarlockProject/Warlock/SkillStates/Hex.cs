@@ -40,7 +40,6 @@ namespace WarlockMod.Warlock.SkillStates
         {
             if (!CanCharge) return;
             StartAimMode(0.5f);
-            PlayAnimation("Gesture, Override", "Point", "Swing.playbackRate", 0.5f / attackSpeedStat);
             if (NetworkServer.active)
             {
                 empowered = warlockController.secondaryEmpowered;

@@ -10,16 +10,8 @@ AvatarMask:
   m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000000000000000000
   m_Elements:
   - m_Path: 
-    m_Weight: 0
-  - m_Path: meshBody
-    m_Weight: 0
-  - m_Path: meshBook
-    m_Weight: 0
-  - m_Path: meshCloak
-    m_Weight: 0
-  - m_Path: meshDagger
-    m_Weight: 0
-  - m_Path: meshRope
+    m_Weight: 1
+  - m_Path: arp_dummy_mesh
     m_Weight: 0
   - m_Path: root
     m_Weight: 0
@@ -129,8 +121,6 @@ AvatarMask:
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/neck.x/head.x/hood.x/hood.x.001/hood.x.002/hood.x.003/hood.x.004/hood.x.005/hood.x.006
     m_Weight: 1
-  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/neck.x/head.x/HeadHurtbox
-    m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/scarf.l
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/scarf.l/scarf.l.001
@@ -158,6 +148,14 @@ AvatarMask:
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/forearm_twist.l
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/hand.l
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/hand.l/dagger.x
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/hand.l/dagger.x/dagger.x.001
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/hand.l/dagger.x/dagger.x.001/dagger.x.002
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/hand.l/dagger.x/dagger.x.001/dagger.x.002/dagger.x.003
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.l/arm_stretch.l/forearm_stretch.l/hand.l/middle1_base.l
     m_Weight: 1
@@ -201,6 +199,48 @@ AvatarMask:
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r
     m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/book.r
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/book.x
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/book.x/book.l
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/book.x/page.l
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/book.x/page.l/page.l.001
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/book.x/page.l/page.l.001/page.l.002
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x/booktag.x.001
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003/booktag.x.004
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003/booktag.x.004/booktag.x.005
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003/booktag.x.004/booktag.x.005/booktag.x.006
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/c_book.r
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/page.r
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/page.r/page.r.001
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/page.r/page.r.001/page.r.002
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/page.x
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/page.x/page.x.001
+    m_Weight: 1
+  - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x/page.x/page.x.001/page.x.002
+    m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/index1_base.r
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/index1_base.r/index1.r
@@ -239,57 +279,3 @@ AvatarMask:
     m_Weight: 1
   - m_Path: root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/thumb1.r/thumb2.r/thumb3.r
     m_Weight: 1
-  - m_Path: root/c_bookroot.x
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/book.r
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/book.x
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/book.x/book.l
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/book.x/page.l
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/book.x/page.l/page.l.001
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/book.x/page.l/page.l.001/page.l.002
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x/booktag.x.001
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003/booktag.x.004
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003/booktag.x.004/booktag.x.005
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/booktag.x/booktag.x.001/booktag.x.002/booktag.x.003/booktag.x.004/booktag.x.005/booktag.x.006
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/c_book.r
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/page.r
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/page.r/page.r.001
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/page.r/page.r.001/page.r.002
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/page.x
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/page.x/page.x.001
-    m_Weight: 1
-  - m_Path: root/c_bookroot.x/page.x/page.x.001/page.x.002
-    m_Weight: 1
-  - m_Path: root/dagger.x
-    m_Weight: 1
-  - m_Path: root/dagger.x/dagger.x.001
-    m_Weight: 1
-  - m_Path: root/dagger.x/dagger.x.001/dagger.x.002
-    m_Weight: 1
-  - m_Path: root/dagger.x/dagger.x.001/dagger.x.002/dagger.x.003
-    m_Weight: 1
-  - m_Path: MainHurtbox
-    m_Weight: 0
-  - m_Path: MeleeHitbox
-    m_Weight: 0

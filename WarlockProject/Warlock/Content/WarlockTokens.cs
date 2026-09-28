@@ -25,8 +25,8 @@ namespace WarlockMod.Warlock.Content
             desc = desc + "< ! > You can build up infinite <color=#981e33>Crimson Mana</color>, so saving it to unleash a massive barrage of abilities can be extremely powerful." + Environment.NewLine + Environment.NewLine;
 
             string lore = "Warlock";
-            string outro = "..and so he left, warlock.";
-            string outroFailure = "..and so he vanished, warlock.";
+            string outro = "..and so he left, damning souls in his wake.";
+            string outroFailure = "..and so he vanished, just another tool for his patron.";
             
             Language.Add(prefix + "NAME", "Warlock");
             Language.Add(prefix + "DESCRIPTION", desc);

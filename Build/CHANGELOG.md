@@ -1,3 +1,7 @@
+# 1.0.0
+
+- Animations done
+
 # 0.5.2
 
 - Added CSSIdle and Aim cycles

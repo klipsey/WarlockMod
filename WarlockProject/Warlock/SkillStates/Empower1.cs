@@ -10,7 +10,6 @@ namespace WarlockMod.Warlock.SkillStates
         {
             base.OnEnter();
             warlockController.CloseRitualMenu();
-            warlockController.PlaySound();
             if (warlockController.TryConsumeCrimsonMana())
                 characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredM1Buff, WarlockConfig.PrimaryEmpowerDuration);
         }
