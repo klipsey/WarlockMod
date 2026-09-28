@@ -156,6 +156,7 @@ namespace WarlockMod.Warlock.SkillStates
             }
             if (isAuthority) TeleportHelper.TeleportGameObject(gameObject, destination);
             if (destinationEffect) Destroy(destinationEffect);
+            destinationEffect = null;
             Util.PlaySound("Play_imp_overlord_teleport_end", gameObject);
             CreateBlinkEffect(destination);
             if (characterBody.healthComponent && characterBody.healthComponent.alive) FireAOEStun();
@@ -216,8 +217,8 @@ namespace WarlockMod.Warlock.SkillStates
                     temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
                     temporaryOverlay.animateShaderAlpha = true;
                 }
-                if (destinationEffect) Destroy(destinationEffect);
             }
+            if (destinationEffect) Destroy(destinationEffect);
 			if ((bool)characterModel)
 			{
 				characterModel.invisibilityCount--;
