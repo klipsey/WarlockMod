@@ -47,7 +47,7 @@ namespace WarlockMod.Warlock.SkillStates
 			base.OnEnter();
             utilityEmpowered |= crimsonManaEmpowered;
 			Util.PlaySound(targeted ? "Play_imp_overlord_teleport_start" : EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
-			if (!targeted) FireAOEStun();
+			if (!targeted || utilityEmpowered) FireAOEStun(transform.position);
 			modelTransform = GetModelTransform();
 			if ((bool)modelTransform)
 			{
@@ -112,7 +112,7 @@ namespace WarlockMod.Warlock.SkillStates
                 effectData, transmit: false);
 		}
 
-		private void FireAOEStun()
+		private void FireAOEStun(Vector3 position)
 		{
 			if (targeted ? NetworkServer.active : base.isAuthority)
 			{
@@ -122,7 +122,7 @@ namespace WarlockMod.Warlock.SkillStates
 				{
 					radius = blastAttackRadius,
 					procCoefficient = blastAttackProcCoefficient,
-					position = targeted ? destination : base.transform.position,
+					position = position,
 					attacker = base.gameObject,
                     inflictor = base.gameObject,
 					crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
@@ -159,7 +159,7 @@ namespace WarlockMod.Warlock.SkillStates
             destinationEffect = null;
             Util.PlaySound("Play_imp_overlord_teleport_end", gameObject);
             CreateBlinkEffect(destination);
-            if (characterBody.healthComponent && characterBody.healthComponent.alive) FireAOEStun();
+            if (characterBody.healthComponent && characterBody.healthComponent.alive) FireAOEStun(destination);
         }
 
 		public override void FixedUpdate()
@@ -197,7 +197,7 @@ namespace WarlockMod.Warlock.SkillStates
                 CompleteTargetedBlink();
             if (!targeted && this.utilityEmpowered)
             {
-				FireAOEStun();
+				FireAOEStun(transform.position);
             }
             if (!outer.destroying)
 			{
