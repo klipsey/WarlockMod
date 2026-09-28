@@ -65,6 +65,7 @@ namespace WarlockMod.Warlock.Components
 
         private void LateUpdate()
         {
+            if (!animator || !body || !menu) return;
             if (!animator.isActiveAndEnabled || !body.healthComponent || !body.healthComponent.alive)
             {
                 SetBool(BookFlipping, false);

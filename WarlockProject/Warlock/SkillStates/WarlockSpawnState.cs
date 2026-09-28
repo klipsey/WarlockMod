@@ -1,6 +1,5 @@
 using EntityStates;
 using RoR2;
-using RoR2.Audio;
 using UnityEngine;
 using UnityEngine.Networking;
 using ImpBossSpawnState = EntityStates.ImpBossMonster.SpawnState;
@@ -14,6 +13,7 @@ namespace WarlockMod.Warlock.SkillStates
         public static string spawnSoundString = "Play_imp_overlord_spawn";
 
         private Animator modelAnimator;
+        private bool hasPlayedSpawnSound;
 
         public override void OnEnter()
         {
@@ -24,13 +24,10 @@ namespace WarlockMod.Warlock.SkillStates
 
             if (modelAnimator)
             {
-                modelAnimator.SetFloat("MetaMagic.playbackRate", animationPlaybackRate);
+                modelAnimator.SetFloat("MetaMagic.playbackRate", Mathf.Max(0.01f, animationPlaybackRate));
                 modelAnimator.SetBool("creatingMetaMagic", true);
                 PlayCrossfade("FullBody, Override", "CreateMetaMagic", 0.05f);
             }
-            if (NetworkClient.active && !WwiseIntegrationManager.noAudio &&
-                PointSoundManager.EmitSoundLocal(spawnSoundString, characterBody.corePosition) == 0)
-                Log.Warning($"Warlock spawn sound '{spawnSoundString}' failed to post.");
             if (ImpBossSpawnState.spawnEffectPrefab)
             {
                 EffectManager.SpawnEffect(ImpBossSpawnState.spawnEffectPrefab, new EffectData
@@ -55,6 +52,13 @@ namespace WarlockMod.Warlock.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            if (!hasPlayedSpawnSound && fixedAge > 0f)
+            {
+                hasPlayedSpawnSound = true;
+                if (NetworkClient.active && !WwiseIntegrationManager.noAudio &&
+                    Util.PlaySound(spawnSoundString, gameObject) == 0)
+                    Log.Warning($"Warlock spawn sound '{spawnSoundString}' failed to post.");
+            }
             if (fixedAge >= duration && isAuthority)
                 outer.SetNextStateToMain();
         }
@@ -63,10 +67,11 @@ namespace WarlockMod.Warlock.SkillStates
         {
             if (modelAnimator) modelAnimator.SetBool("creatingMetaMagic", false);
             base.OnExit();
-            if (NetworkServer.active)
+            if (NetworkServer.active && characterBody)
             {
                 characterBody.RemoveBuff(RoR2Content.Buffs.HiddenInvincibility);
-                characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 3f);
+                if (!outer.destroying)
+                    characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 3f);
             }
         }
 

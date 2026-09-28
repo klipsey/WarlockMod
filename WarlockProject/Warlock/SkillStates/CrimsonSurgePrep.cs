@@ -34,7 +34,7 @@ namespace WarlockMod.Warlock.SkillStates
             modelAnimator.SetBool("isBlasting", consumedStacks > 0);
             if (CanPlayGestureAnimation(true) && GetAnimationStateHash("Gesture, Override") != BlastCharge)
             {
-                modelAnimator.SetFloat("Blast.playbackRate", attackSpeedStat);
+                modelAnimator.SetFloat("Blast.playbackRate", Mathf.Max(0.01f, attackSpeedStat));
                 PlayCrossfade("Gesture, Override", "BlastCharge", 0.05f);
             }
         }

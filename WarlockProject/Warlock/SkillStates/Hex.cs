@@ -49,7 +49,7 @@ namespace WarlockMod.Warlock.SkillStates
             if (modelAnimator && modelAnimator.isActiveAndEnabled && CanPlayGestureAnimation(false) &&
                 GetAnimationStateHash("Gesture, Override") != HexAnimation)
             {
-                modelAnimator.SetFloat("Hex.playbackRate", attackSpeedStat);
+                modelAnimator.SetFloat("Hex.playbackRate", Mathf.Max(0.01f, attackSpeedStat));
                 PlayCrossfade("Gesture, Override", "Hex", 0.05f);
             }
         }

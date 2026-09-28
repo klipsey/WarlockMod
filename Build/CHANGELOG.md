@@ -2,6 +2,7 @@
 
 - AAAAAH AHAHAHAHHAHA
 - Fixed aimyaw breaking...
+- Fixed ragdoll controller
 - Changed sfx and vfx of Eldrich Surge
 - Changed crimson mana primary to knockback enemies and weaken rather than giving attack speed for a set duration
 - Changed crimson mana utility to only apply on the first cast rather than being a duration based buff

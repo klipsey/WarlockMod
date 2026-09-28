@@ -61,7 +61,7 @@ namespace WarlockMod.Warlock.SkillStates
             }
             modelAnimator.SetBool("creatingMetaMagic", IsCreatingMetaMagic);
             if (animationStarted) return;
-            modelAnimator.SetFloat("MetaMagic.playbackRate", attackSpeedStat);
+            modelAnimator.SetFloat("MetaMagic.playbackRate", Mathf.Max(0.01f, attackSpeedStat));
             PlayCrossfade("FullBody, Override", "CreateMetaMagic", 0.05f);
             animationStarted = true;
         }

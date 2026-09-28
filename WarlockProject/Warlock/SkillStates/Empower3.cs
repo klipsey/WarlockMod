@@ -1,4 +1,5 @@
 using EntityStates;
+using UnityEngine;
 using WarlockMod.Modules.BaseStates;
 using WarlockMod.Warlock.Content;
 
@@ -11,7 +12,7 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnEnter();
             if (modelAnimator && modelAnimator.isActiveAndEnabled)
             {
-                modelAnimator.SetFloat("Mana.playbackRate", attackSpeedStat);
+                modelAnimator.SetFloat("Mana.playbackRate", Mathf.Max(0.01f, attackSpeedStat));
                 PlayCrossfade("Gesture, Override", "UseMana", 0.05f);
             }
             warlockController.CloseRitualMenu();
