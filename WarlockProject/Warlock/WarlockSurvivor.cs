@@ -389,7 +389,7 @@ namespace WarlockMod.Warlock
 
         private void AddUtilitySkills()
         {
-            SkillDef dash = Skills.CreateSkillDef<CrimsonManaSkillDef>(new SkillDefInfo
+            SkillDef dash = Skills.CreateSkillDef<BloodDashSkillDef>(new SkillDefInfo
             {
                 skillName = "Blood Dash",
                 skillNameToken = WARLOCK_PREFIX + "UTILITY_BLOOD_DASH_NAME",
@@ -644,7 +644,14 @@ namespace WarlockMod.Warlock
             if (!NetworkServer.active || !damageReport.attackerBody || !damageReport.victim) return;
             CharacterBody attackerBody = damageReport.attackerBody;
             if (!attackerBody.GetComponent<WarlockController>()) return;
-            attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+            int kills = attackerBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaStack) + 1;
+            if (kills >= WarlockConfig.KillsPerCrimsonMana)
+            {
+                attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, 0);
+                attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+            }
+            else
+                attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, kills);
             var target = Util.FindBodyMainHurtBox(attackerBody);
             if (target)
             {

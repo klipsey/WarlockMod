@@ -10,6 +10,7 @@ namespace WarlockMod.Warlock.Content
         {
             Modules.Content.AddEntityState(typeof(MainState));
             Modules.Content.AddEntityState(typeof(BloodDash));
+            Modules.Content.AddEntityState(typeof(BloodDashPrep));
             Modules.Content.AddEntityState(typeof(CrimsonSurgeFire));
             Modules.Content.AddEntityState(typeof(CrimsonSurgePrep));
             Modules.Content.AddEntityState(typeof(Hex));

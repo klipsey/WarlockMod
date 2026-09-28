@@ -9,9 +9,11 @@ namespace WarlockMod.Warlock.SkillStates
     public class CrimsonSurgePrep : BaseMetamagicCharge
     {
         private bool empoweredAtStart;
+        internal bool HasAppliedMetamagic => consumedStacks > 0;
         protected override bool IsHeld => inputBank && inputBank.skill1.down;
         protected override GameObject ChargeEffectPrefab => WarlockAssets.spawnPrefab;
         protected override float ChargeSpeed => attackSpeedStat / (primaryEmpowered ? 0.85f : 1f);
+        protected override bool WaitForInitialCharge => true;
 
         protected override void BeginCharge()
         {

@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using System;
 using System.Linq;
 using WarlockMod.Modules.BaseStates;
+using WarlockMod.Warlock.Components;
 using WarlockMod.Warlock.Content;
 
 namespace WarlockMod.Warlock.SkillStates
@@ -24,8 +25,10 @@ namespace WarlockMod.Warlock.SkillStates
         public Ray initialAimRay;
         private float fireTimer;
         private Ray aimRay;
+        private WarlockAnimationController animationController;
         internal int ShotsFired => shotCounter;
         internal float ShotInterval => fireInterval;
+        internal bool IsBlasting => maxShots > 1 && shotCounter < maxShots;
 
         public GameObject hitEffectPrefab = WarlockAssets.warlockHitImpactEffect;
         public GameObject tracerEffectPrefab = WarlockAssets.warlockTracerEffect;
@@ -34,6 +37,7 @@ namespace WarlockMod.Warlock.SkillStates
         {
             RefreshState();
             base.OnEnter();
+            animationController = GetComponent<WarlockAnimationController>();
             this.duration = this.baseDuration / base.attackSpeedStat;
             if (empoweredShot)
             {
@@ -42,6 +46,7 @@ namespace WarlockMod.Warlock.SkillStates
             fireInterval = duration / maxShots;
             fireTimer = fireInterval;
             shotCounter = 1;
+            if (animationController) animationController.SetBlasting(IsBlasting);
             aimRay = initialAimRay.direction == Vector3.zero ? GetAimRay() : initialAimRay;
             base.StartAimMode(aimRay, 2f, false);
             Util.PlaySound("Play_imp_overlord_teleport_end", base.gameObject);
@@ -107,6 +112,7 @@ namespace WarlockMod.Warlock.SkillStates
         }
         public override void OnExit()
         {
+            if (animationController) animationController.SetBlasting(false);
             base.OnExit();
         }
 
@@ -116,6 +122,7 @@ namespace WarlockMod.Warlock.SkillStates
             while (shotCounter < maxShots && base.fixedAge >= fireTimer)
             {
                 shotCounter++;
+                if (animationController) animationController.SetBlasting(IsBlasting);
                 this.fireTimer += this.fireInterval;
                 aimRay = base.GetAimRay();
                 base.StartAimMode(aimRay, 2f, false);

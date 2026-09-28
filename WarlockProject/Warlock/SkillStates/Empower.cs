@@ -14,6 +14,8 @@ namespace WarlockMod.Warlock.SkillStates
         private int remainingMana;
         private float nextConversion = 0.5f;
 
+        internal bool IsCreatingMetaMagic => remainingMana > 0 && (!isAuthority || inputBank.skill4.down);
+
         public override void OnEnter()
         {
             base.OnEnter();

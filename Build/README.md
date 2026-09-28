@@ -22,7 +22,7 @@ Contact me on Discord: https://discord.gg/GKFCa8z2y8
 
 ## Credits
 
-tsuyoikenko - Reworked Kit, Code, Animations (So far)
+tsuyoikenko - Reworked Kit, Code, Animations
 
 Ragon - Model
 

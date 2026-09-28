@@ -12,6 +12,14 @@ namespace WarlockMod.Warlock.SkillStates
     public class BloodDash : BaseWarlockSkillState
     {
         public bool crimsonManaEmpowered;
+        public bool targeted;
+        public Vector3 destination;
+        public int metamagicStacks;
+        private Vector3 blinkStart;
+        private bool arrived;
+        private bool motorWasEnabled;
+        private int originalLayer;
+        private GameObject destinationEffect;
 		private Transform modelTransform;
 		private float stopwatch;
 		private Vector3 blinkVector = Vector3.zero;
@@ -38,8 +46,8 @@ namespace WarlockMod.Warlock.SkillStates
 			RefreshState();
 			base.OnEnter();
             utilityEmpowered |= crimsonManaEmpowered;
-			Util.PlaySound(EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
-			FireAOEStun();
+			Util.PlaySound(targeted ? "Play_imp_overlord_teleport_start" : EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
+			if (!targeted) FireAOEStun();
 			modelTransform = GetModelTransform();
 			if ((bool)modelTransform)
 			{
@@ -56,7 +64,19 @@ namespace WarlockMod.Warlock.SkillStates
 				int hurtBoxesDeactivatorCounter = hurtBoxGroup.hurtBoxesDeactivatorCounter + 1;
 				hurtBoxGroup.hurtBoxesDeactivatorCounter = hurtBoxesDeactivatorCounter;
 			}
-			blinkVector = GetBlinkVector();
+            blinkStart = transform.position;
+			blinkVector = targeted ? (destination - blinkStart).normalized : GetBlinkVector();
+            if (targeted && characterMotor)
+            {
+                duration = 0.1f;
+                motorWasEnabled = characterMotor.enabled;
+                characterMotor.enabled = false;
+                originalLayer = gameObject.layer;
+                gameObject.layer = LayerIndex.GetAppropriateFakeLayerForTeam(teamComponent.teamIndex).intVal;
+                characterMotor.Motor.RebuildCollidableLayers();
+                destinationEffect = Object.Instantiate(WarlockAssets.dashBlinkDestinationEffect, destination, Quaternion.identity);
+                destinationEffect.GetComponent<ScaleParticleSystemDuration>().newDuration = duration;
+            }
 			CreateBlinkEffect(Util.GetCorePosition(base.gameObject));
 		}
 
@@ -69,12 +89,18 @@ namespace WarlockMod.Warlock.SkillStates
         {
             base.OnSerialize(writer);
             writer.Write(crimsonManaEmpowered);
+            writer.Write(targeted);
+            writer.Write(destination);
+            writer.Write(metamagicStacks);
         }
 
         public override void OnDeserialize(NetworkReader reader)
         {
             base.OnDeserialize(reader);
             crimsonManaEmpowered = reader.ReadBoolean();
+            targeted = reader.ReadBoolean();
+            destination = reader.ReadVector3();
+            metamagicStacks = Mathf.Max(0, reader.ReadInt32());
         }
 
 		private void CreateBlinkEffect(Vector3 origin)
@@ -82,12 +108,13 @@ namespace WarlockMod.Warlock.SkillStates
 			EffectData effectData = new EffectData();
 			effectData.rotation = Util.QuaternionSafeLookRotation(blinkVector);
 			effectData.origin = origin;
-			EffectManager.SpawnEffect(EntityStates.ImpMonster.BlinkState.blinkPrefab, effectData, transmit: false);
+			EffectManager.SpawnEffect(targeted ? WarlockAssets.dashBlinkEffect : EntityStates.ImpMonster.BlinkState.blinkPrefab,
+                effectData, transmit: false);
 		}
 
 		private void FireAOEStun()
 		{
-			if (base.isAuthority)
+			if (targeted ? NetworkServer.active : base.isAuthority)
 			{
 				DamageTypeCombo damageType = DamageType.Stun1s;
 				damageType.damageSource = DamageSource.Utility;
@@ -95,10 +122,11 @@ namespace WarlockMod.Warlock.SkillStates
 				{
 					radius = blastAttackRadius,
 					procCoefficient = blastAttackProcCoefficient,
-					position = base.transform.position,
+					position = targeted ? destination : base.transform.position,
 					attacker = base.gameObject,
+                    inflictor = base.gameObject,
 					crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
-					baseDamage = base.characterBody.damage * blastAttackDamageCoefficient,
+					baseDamage = base.characterBody.damage * (blastAttackDamageCoefficient + (targeted ? metamagicStacks : 0)),
 					falloffModel = BlastAttack.FalloffModel.None,
 					damageType = damageType,
 					baseForce = blastAttackForce
@@ -107,7 +135,7 @@ namespace WarlockMod.Warlock.SkillStates
 				obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
 				obj.Fire();
 			}
-			if (GroundPound.slamEffectPrefab)
+			if (!targeted && GroundPound.slamEffectPrefab)
 			{
 				EffectData effectData = new EffectData();
 				effectData.rotation = Util.QuaternionSafeLookRotation(blinkVector);
@@ -116,10 +144,40 @@ namespace WarlockMod.Warlock.SkillStates
 			}
 		}
 
+        private void CompleteTargetedBlink()
+        {
+            if (arrived) return;
+            arrived = true;
+            if (characterMotor)
+            {
+                characterMotor.velocity = Vector3.zero;
+                characterMotor.rootMotion = Vector3.zero;
+                characterMotor.Motor.SetPosition(destination);
+            }
+            if (isAuthority) TeleportHelper.TeleportGameObject(gameObject, destination);
+            if (destinationEffect) Destroy(destinationEffect);
+            Util.PlaySound("Play_imp_overlord_teleport_end", gameObject);
+            CreateBlinkEffect(destination);
+            if (characterBody.healthComponent && characterBody.healthComponent.alive) FireAOEStun();
+        }
+
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
 			stopwatch += Time.fixedDeltaTime;
+            if (targeted)
+            {
+                if (characterMotor)
+                {
+                    characterMotor.velocity = Vector3.zero;
+                    characterMotor.rootMotion = Vector3.zero;
+                    characterMotor.Motor.SetPosition(Vector3.Lerp(blinkStart, destination, stopwatch / duration));
+                }
+                if (stopwatch >= duration && !arrived)
+                    CompleteTargetedBlink();
+                if (arrived && isAuthority) outer.SetNextStateToMain();
+                return;
+            }
 			if ((bool)base.characterMotor && (bool)base.characterDirection)
 			{
 				base.characterMotor.velocity = Vector3.zero;
@@ -133,19 +191,20 @@ namespace WarlockMod.Warlock.SkillStates
 
 		public override void OnExit()
 		{
-            if (this.utilityEmpowered)
+            if (targeted && !arrived && !outer.destroying &&
+                characterBody.healthComponent && characterBody.healthComponent.alive)
+                CompleteTargetedBlink();
+            if (!targeted && this.utilityEmpowered)
             {
 				FireAOEStun();
             }
-			if(base.skillLocator.utility.stock == 0 && this.characterBody.HasBuff(WarlockBuffs.warlockMetaMagicBuff))
-			{
-				if (isAuthority) base.skillLocator.utility.Reset();
-				if (NetworkServer.active) this.characterBody.RemoveBuff(WarlockBuffs.warlockMetaMagicBuff);
-			}
             if (!outer.destroying)
 			{
-				Util.PlaySound(EntityStates.ImpMonster.BlinkState.endSoundString, base.gameObject);
-				CreateBlinkEffect(Util.GetCorePosition(base.gameObject));
+                if (!targeted)
+                {
+                    Util.PlaySound(EntityStates.ImpMonster.BlinkState.endSoundString, base.gameObject);
+                    CreateBlinkEffect(Util.GetCorePosition(base.gameObject));
+                }
                 modelTransform = GetModelTransform();
                 if (modelTransform && this.destealthMaterial)
                 {
@@ -157,6 +216,7 @@ namespace WarlockMod.Warlock.SkillStates
                     temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
                     temporaryOverlay.animateShaderAlpha = true;
                 }
+                if (destinationEffect) Destroy(destinationEffect);
             }
 			if ((bool)characterModel)
 			{
@@ -171,8 +231,17 @@ namespace WarlockMod.Warlock.SkillStates
 			if ((bool)base.characterMotor)
 			{
 				base.characterMotor.disableAirControlUntilCollision = false;
+                if (targeted)
+                {
+                    gameObject.layer = originalLayer;
+                    characterMotor.Motor.RebuildCollidableLayers();
+                    characterMotor.enabled = motorWasEnabled;
+                }
 			}
 			base.OnExit();
 		}
+
+        public override InterruptPriority GetMinimumInterruptPriority() =>
+            targeted ? InterruptPriority.PrioritySkill : base.GetMinimumInterruptPriority();
     }
 }

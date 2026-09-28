@@ -83,7 +83,7 @@ namespace WarlockMod.Warlock.SkillStates
         public override void ModifyNextState(EntityState nextState)
         {
             base.ModifyNextState(nextState);
-            castCommitted = accepted && (secondary ? nextState is Hex : nextState is BloodDash);
+            castCommitted = accepted && (secondary ? nextState is Hex : nextState is BloodDash || nextState is BloodDashPrep);
             if (!castCommitted) return;
             if (NetworkServer.active)
             {
@@ -96,6 +96,7 @@ namespace WarlockMod.Warlock.SkillStates
                 if (!isAuthority) Slot.stock = Mathf.Max(0, Slot.maxStock - 1);
             }
             if (nextState is BloodDash dash) dash.crimsonManaEmpowered = true;
+            if (nextState is BloodDashPrep prep) prep.crimsonManaEmpowered = true;
         }
 
         public override void OnExit()

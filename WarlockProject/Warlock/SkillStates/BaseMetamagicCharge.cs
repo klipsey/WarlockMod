@@ -16,11 +16,13 @@ namespace WarlockMod.Warlock.SkillStates
         private float nextConsumption;
         private bool continuing;
         private bool transferringEffect;
+        private bool releasedDuringWindup;
         private GameObject chargeEffect;
 
         protected abstract bool IsHeld { get; }
         protected abstract GameObject ChargeEffectPrefab { get; }
         protected virtual float ChargeSpeed => attackSpeedStat;
+        protected virtual bool WaitForInitialCharge => false;
         protected virtual bool CanCharge => characterBody && characterBody.healthComponent && characterBody.healthComponent.alive;
         protected virtual void BeginCharge() { }
         protected virtual void ApplyConsumedStack() { }
@@ -45,7 +47,7 @@ namespace WarlockMod.Warlock.SkillStates
             if (CanCharge && !chargeEffect)
                 chargeEffect = WarlockAssets.CreateChargeEffect(ChargeEffectPrefab, FindModelChild("Muzzle"), GetAimRay().direction);
 
-            if ((NetworkServer.active || isAuthority) && CanCharge)
+            if (continuing && (NetworkServer.active || isAuthority) && CanCharge)
             {
                 bool consumed = NetworkServer.active
                     ? warlockController.TryConsumeMetaMagic()
@@ -76,7 +78,14 @@ namespace WarlockMod.Warlock.SkillStates
                 outer.SetNextStateToMain();
                 return;
             }
-            if ((hadMetaMagic && (!IsHeld || remainingStacks <= 0)) ||
+            bool released = !IsHeld;
+            if (WaitForInitialCharge && !continuing)
+            {
+                releasedDuringWindup |= released;
+                if (fixedAge < nextConsumption) return;
+                released = releasedDuringWindup;
+            }
+            if ((hadMetaMagic && (released || remainingStacks <= 0)) ||
                 (!hadMetaMagic && fixedAge >= nextConsumption))
             {
                 outer.SetNextState(FinishCharge());

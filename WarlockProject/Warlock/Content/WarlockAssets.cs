@@ -24,6 +24,9 @@ namespace WarlockMod.Warlock.Content
         internal static GameObject warlockHexConsume;
         internal static GameObject warlockTracerEffect;
         internal static GameObject telekinesisTracker;
+        internal static GameObject dashDestinationPreview;
+        internal static GameObject dashBlinkEffect;
+        internal static GameObject dashBlinkDestinationEffect;
         internal static Material destealthMaterial;
         internal static readonly Color warlockColor = new Color(155f / 255f, 55f / 255f, 55f / 255f);
         internal static readonly Color warlockSpecialRed = new Color(36f / 255f, 22f / 255f, 22f / 255f);
@@ -36,6 +39,18 @@ namespace WarlockMod.Warlock.Content
             CreateEffects();
             CreateTracker();
             CreateHexBlast();
+            CreateDashPreview();
+        }
+
+        private static void CreateDashPreview()
+        {
+            dashBlinkEffect = Load<GameObject>("RoR2/Base/ImpBoss/ImpBossBlink.prefab");
+            dashBlinkDestinationEffect = Load<GameObject>("RoR2/Base/Imp/ImpBossBlinkDestination.prefab");
+            dashDestinationPreview = CloneEffect("RoR2/Base/Common/TeamAreaIndicator, FullSphere.prefab", "WarlockDashPreview");
+            Object.DestroyImmediate(dashDestinationPreview.GetComponent<TeamAreaIndicator>());
+            var material = Load<Material>("RoR2/Base/Common/matTeamAreaIndicatorFullMonster.mat");
+            foreach (var renderer in dashDestinationPreview.GetComponentsInChildren<Renderer>())
+                renderer.sharedMaterial = material;
         }
 
         private static T Load<T>(string key) where T : Object

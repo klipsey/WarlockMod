@@ -14,6 +14,9 @@ namespace WarlockMod.Warlock.Components
         private static readonly int BookOpen = Animator.StringToHash("bookOpen");
         private static readonly int BookFlipping = Animator.StringToHash("bookFlipping");
         private static readonly int ChargingBlast = Animator.StringToHash("chargingBlast");
+        private static readonly int ChargingBlink = Animator.StringToHash("chargingBlink");
+        private static readonly int IsBlasting = Animator.StringToHash("isBlasting");
+        private static readonly int CreatingMetaMagic = Animator.StringToHash("creatingMetaMagic");
         private static readonly int BlastRate = Animator.StringToHash("Blast.playbackRate");
         private static readonly int HexRate = Animator.StringToHash("Hex.playbackRate");
         private static readonly int ManaRate = Animator.StringToHash("Mana.playbackRate");
@@ -22,7 +25,11 @@ namespace WarlockMod.Warlock.Components
         private static readonly int HexAnimation = Animator.StringToHash("Hex");
         private static readonly int BlastCharge = Animator.StringToHash("BlastCharge");
         private static readonly int BlastFire = Animator.StringToHash("BlastFire");
+        private static readonly int BlastLoop = Animator.StringToHash("BlastLoop");
         private static readonly int CreateMetaMagic = Animator.StringToHash("CreateMetaMagic");
+        private static readonly int CreateMetaMagicLoop = Animator.StringToHash("CreateMetaMagicLoop");
+        private static readonly int ChargeBlink = Animator.StringToHash("ChargeBlink");
+        private static readonly int ChargeBlinkLoop = Animator.StringToHash("ChargeBlinkLoop");
         private static readonly int IdleAnimation = Animator.StringToHash("Idle");
         private static readonly int IdleIn = Animator.StringToHash("IdleIn");
         private static readonly int IdleInSprint = Animator.StringToHash("IdleInSprint");
@@ -37,8 +44,13 @@ namespace WarlockMod.Warlock.Components
         private static readonly int GestureHex = Animator.StringToHash("Gesture, Override.Hex");
         private static readonly int GestureBlastCharge = Animator.StringToHash("Gesture, Override.BlastCharge");
         private static readonly int GestureBlastFire = Animator.StringToHash("Gesture, Override.BlastFire");
+        private static readonly int GestureBlastLoop = Animator.StringToHash("Gesture, Override.BlastLoop");
         private static readonly int GestureEmpty = Animator.StringToHash("Gesture, Override.BufferEmpty");
         private static readonly int FullBodyMetaMagic = Animator.StringToHash("FullBody, Override.CreateMetaMagic");
+        private static readonly int FullBodyMetaMagicLoop = Animator.StringToHash("FullBody, Override.CreateMetaMagicLoop");
+        private static readonly int FullBodyChargeBlink = Animator.StringToHash("FullBody, Override.ChargeBlink");
+        private static readonly int FullBodyChargeBlinkLoop = Animator.StringToHash("FullBody, Override.ChargeBlinkLoop");
+        private static readonly int FullBodyEmpty = Animator.StringToHash("FullBody, Override.BufferEmpty");
         private static readonly int OpenBook = Animator.StringToHash("Book, Override.BookOpen");
 
         private CharacterBody body;
@@ -54,9 +66,9 @@ namespace WarlockMod.Warlock.Components
         private Gesture previousGesture;
         private EntityState previousManaState;
         private CrimsonSurgeFire previousFireState;
-        private int previousShot;
-        private bool creatingMetaMagic;
+        private bool wasConverting;
         private bool charging;
+        private bool chargingBlink;
         private bool initialized;
 
         private void Start()
@@ -81,16 +93,22 @@ namespace WarlockMod.Warlock.Components
                 !HasParameter(BookOpen, AnimatorControllerParameterType.Bool) ||
                 !HasParameter(BookFlipping, AnimatorControllerParameterType.Bool) ||
                 !HasParameter(ChargingBlast, AnimatorControllerParameterType.Bool) ||
+                !HasParameter(ChargingBlink, AnimatorControllerParameterType.Bool) ||
+                !HasParameter(IsBlasting, AnimatorControllerParameterType.Bool) ||
+                !HasParameter(CreatingMetaMagic, AnimatorControllerParameterType.Bool) ||
                 !HasParameter(BlastRate, AnimatorControllerParameterType.Float) ||
                 !HasParameter(HexRate, AnimatorControllerParameterType.Float) ||
                 !HasParameter(ManaRate, AnimatorControllerParameterType.Float) ||
                 !HasParameter(MetaMagicRate, AnimatorControllerParameterType.Float) ||
                 !animator.HasState(gestureLayer, GestureUseMana) || !animator.HasState(gestureLayer, GestureHex) ||
                 !animator.HasState(gestureLayer, GestureBlastCharge) || !animator.HasState(gestureLayer, GestureBlastFire) ||
+                !animator.HasState(gestureLayer, GestureBlastLoop) || !animator.HasState(fullBodyLayer, FullBodyMetaMagicLoop) ||
                 !animator.HasState(gestureLayer, GestureEmpty) || !animator.HasState(fullBodyLayer, FullBodyMetaMagic) ||
+                !animator.HasState(fullBodyLayer, FullBodyChargeBlink) || !animator.HasState(fullBodyLayer, FullBodyChargeBlinkLoop) ||
+                !animator.HasState(fullBodyLayer, FullBodyEmpty) ||
                 !animator.HasState(bookLayer, OpenBook))
             {
-                Log.Error("Warlock's animator is missing the configured book/Blast parameters or skill states. Rebuild the Unity bundle and DLL.");
+                Log.Error("Warlock's animator is missing the configured book/skill parameters or animation states. Rebuild the Unity bundle and DLL.");
                 enabled = false;
                 return;
             }
@@ -103,6 +121,7 @@ namespace WarlockMod.Warlock.Components
                 return;
             }
             initialized = true;
+            ResetControls();
         }
 
         private bool HasParameter(int hash, AnimatorControllerParameterType type)
@@ -128,12 +147,24 @@ namespace WarlockMod.Warlock.Components
                 animator.CrossFadeInFixedTime(GestureEmpty, 0.05f, gestureLayer);
             charging = nextCharging;
 
-            bool nextCreating = menu.state is Empower;
-            if (nextCreating && (!creatingMetaMagic || EffectiveState(fullBodyLayer) != CreateMetaMagic))
+            bool nextChargingBlink = secondary.state is BloodDashPrep;
+            SetBool(ChargingBlink, nextChargingBlink);
+            if (nextChargingBlink && !chargingBlink)
+                animator.CrossFadeInFixedTime(FullBodyChargeBlink, 0.05f, fullBodyLayer, 0f);
+            else if (chargingBlink && !nextChargingBlink && EffectiveState(fullBodyLayer) == ChargeBlink)
+                animator.CrossFadeInFixedTime(FullBodyEmpty, 0.05f, fullBodyLayer);
+            chargingBlink = nextChargingBlink;
+
+            var empower = menu.state as Empower;
+            bool nextCreating = !nextChargingBlink && empower != null && empower.IsCreatingMetaMagic;
+            SetBool(CreatingMetaMagic, nextCreating);
+            if (!nextChargingBlink && empower != null && !wasConverting)
                 Play(FullBodyMetaMagic, fullBodyLayer, MetaMagicRate, body.attackSpeed);
-            creatingMetaMagic = nextCreating;
+            wasConverting = !nextChargingBlink && empower != null;
 
             var fire = primary.state as CrimsonSurgeFire;
+            SetBlasting((primary.state is CrimsonSurgePrep prep && prep.HasAppliedMetamagic) ||
+                (fire != null && fire.IsBlasting));
             bool usingMana = menu.state is Empower1 || menu.state is Empower2 || menu.state is Empower3;
             Gesture gesture = usingMana ? Gesture.UseMana : secondary.state is Hex ? Gesture.Hex :
                 nextCharging ? Gesture.BlastCharge : fire != null ? Gesture.BlastFire : Gesture.None;
@@ -152,17 +183,17 @@ namespace WarlockMod.Warlock.Components
                         Play(GestureBlastCharge, gestureLayer, BlastRate, body.attackSpeed);
                     break;
                 case Gesture.BlastFire:
-                    if (previousGesture != gesture || previousFireState != fire || previousShot != fire.ShotsFired)
+                    if (previousGesture != gesture || previousFireState != fire)
                         Play(GestureBlastFire, gestureLayer, BlastRate, blastFireLength / Mathf.Max(0.01f, fire.ShotInterval));
                     break;
             }
             previousGesture = gesture;
             previousManaState = menu.state;
             previousFireState = fire;
-            previousShot = fire != null ? fire.ShotsFired : 0;
 
             BookMode mode;
-            if (nextCreating || EffectiveState(fullBodyLayer) == CreateMetaMagic)
+            int fullBodyState = EffectiveState(fullBodyLayer);
+            if (nextChargingBlink || nextCreating || fullBodyState == CreateMetaMagic || fullBodyState == CreateMetaMagicLoop)
                 mode = BookMode.Flipping;
             else if (gesture != Gesture.None)
                 mode = gesture == Gesture.UseMana || gesture == Gesture.BlastCharge ? BookMode.Flipping : BookMode.Open;
@@ -171,7 +202,7 @@ namespace WarlockMod.Warlock.Components
                 mode = GetBookMode(EffectiveState(gestureLayer));
                 if (mode == BookMode.Unchanged) mode = GetBookMode(EffectiveState(bodyLayer));
             }
-            bool open = menu.state is RitualPrep ||
+            bool open = menu.state is RitualPrep || empower != null ||
                 (mode == BookMode.Unchanged ? animator.GetBool(BookOpen) : mode != BookMode.Closed);
             bool flipping = mode == BookMode.Flipping;
             SetBool(BookOpen, open);
@@ -188,8 +219,10 @@ namespace WarlockMod.Warlock.Components
 
         private static BookMode GetBookMode(int state)
         {
-            if (state == UseMana || state == BlastCharge || state == CreateMetaMagic) return BookMode.Flipping;
-            if (state == HexAnimation || state == BlastFire || state == IdleAnimation || state == IdleIn || state == IdleInSprint)
+            if (state == UseMana || state == BlastCharge || state == ChargeBlink || state == ChargeBlinkLoop ||
+                state == CreateMetaMagic || state == CreateMetaMagicLoop)
+                return BookMode.Flipping;
+            if (state == HexAnimation || state == BlastFire || state == BlastLoop || state == IdleAnimation || state == IdleIn || state == IdleInSprint)
                 return BookMode.Open;
             if (state == Run || state == Sprint || state == AscendDescend || state == Jump) return BookMode.Closed;
             return BookMode.Unchanged;
@@ -206,14 +239,22 @@ namespace WarlockMod.Warlock.Components
             if (animator.GetBool(hash) != value) animator.SetBool(hash, value);
         }
 
+        internal void SetBlasting(bool value)
+        {
+            if (initialized && isActiveAndEnabled && animator) SetBool(IsBlasting, value);
+        }
+
         private void ResetControls()
         {
             SetBool(ChargingBlast, false);
+            SetBool(ChargingBlink, false);
+            SetBool(IsBlasting, false);
+            SetBool(CreatingMetaMagic, false);
             SetBool(BookFlipping, false);
             previousGesture = Gesture.None;
             previousManaState = null;
             previousFireState = null;
-            creatingMetaMagic = charging = false;
+            wasConverting = charging = chargingBlink = false;
         }
 
         private void OnDisable()
