@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 4141376986
+CRC: 281383573
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a9e1a8e6aa266e0ec333948951e2fd67
+    Hash: c05d49ce20ab5241b9a4bf3624bee170
   TypeTreeHash:
     serializedVersion: 2
     Hash: ff03bc76cd10c6b62a214018645a6efe
@@ -152,8 +152,8 @@ Assets:
 - Assets/Warlock/VFX/texSeamSlashMask.png
 - Assets/Warlock/Icons/Skill/texWarlockPrimaryEmpowered.png
 - Assets/Warlock/VFX/Materials/matRipple.mat
-- Assets/Warlock/Textures/texMetaMagicStackingBuff.png
 - Assets/Warlock/Projectiles/texRampCoin2.png
+- Assets/Warlock/Textures/texMetaMagicStackingBuff.png
 - Assets/Warlock/Textures/texWarlockBookEmission.png
 - Assets/Warlock/VFX/texCloudDifferenceBW1.png
 - Assets/Warlock/VFX/BloodSpurtEffect 1.prefab
@@ -167,8 +167,8 @@ Assets:
 - Assets/Warlock/Animations/maskWarlockImpact.mask
 - Assets/Warlock/HUD/Textures/texWhite.png
 - Assets/Warlock/VFX/texBlackLightning.png
-- Assets/Warlock/Textures/texMetaMagicBuff.png
 - Assets/Warlock/Textures/texDaggerNormals.png
+- Assets/Warlock/Textures/texMetaMagicBuff.png
 - Assets/Warlock/VFX/texRampWarlockTrail.png
 - Assets/Warlock/VFX/texCloudOrganicNormal.png
 - Assets/Warlock/VFX/texSpyStreak.png
@@ -187,9 +187,9 @@ Assets:
 - Assets/Warlock/Meshes/meshBook.mesh
 - Assets/Warlock/Materials/matBook.mat
 - Assets/Warlock/VFX/Textures/texHitSpark.png
-- Assets/Warlock/VFX/matWarlockChargeUp.mat
-- Assets/Warlock/Animations/animWarlockCSS.controller
 - Assets/Warlock/VFX/Grab.png
+- Assets/Warlock/Animations/animWarlockCSS.controller
+- Assets/Warlock/VFX/matWarlockChargeUp.mat
 - Assets/Warlock/VFX/Textures/texRipple.png
 - Assets/Warlock/VFX/Badass/StoneHitEffect.prefab
 - Assets/Warlock/Projectiles/DriverStunGrenadeGhost.prefab

@@ -520,11 +520,18 @@ public static class WarlockAssetSetup
         EditorSceneManager.SaveScene(scene);
     }
 
-    [MenuItem("Tools/Warlock/Refresh Emote Skeleton and Build")]
-    public static void RefreshEmoteSkeletonAndBuild()
+    [MenuItem("Tools/Warlock/Refresh Emote Skeleton")]
+    public static void RefreshEmoteSkeleton()
     {
         SetupEmoteSkeleton();
         AssetDatabase.SaveAssets();
+        ValidateEmoteSkeleton();
+    }
+
+    [MenuItem("Tools/Warlock/Refresh Emote Skeleton and Build")]
+    public static void RefreshEmoteSkeletonAndBuild()
+    {
+        RefreshEmoteSkeleton();
         BuildBundle();
     }
 
@@ -603,21 +610,32 @@ public static class WarlockAssetSetup
         {
             Object.DestroyImmediate(instance);
         }
-        var emote = Require<GameObject>(Root + "warlock_emoteskeleton.prefab").GetComponent<Animator>();
-        if (!emote.avatar || !emote.avatar.isHuman || !emote.avatar.isValid) throw new InvalidOperationException("Invalid emote avatar.");
-        if (emote.GetComponentsInChildren<SkinnedMeshRenderer>().Length == 0 ||
-            emote.GetComponentsInChildren<Renderer>(true).Any(renderer => renderer.enabled))
-            throw new InvalidOperationException("Emote renderer objects must be active for bone discovery while their renderers stay hidden.");
-        var mappingRenderer = Find(emote.gameObject, "meshBody").GetComponent<SkinnedMeshRenderer>();
-        var bodyRenderer = Find(model, "meshBody").GetComponent<SkinnedMeshRenderer>();
-        if (!mappingRenderer || mappingRenderer.sharedMesh != bodyRenderer.sharedMesh || mappingRenderer.bones.Any(bone => !bone) ||
-            !mappingRenderer.bones.Select(bone => bone.name).SequenceEqual(bodyRenderer.bones.Select(bone => bone.name)))
-            throw new InvalidOperationException("Emote bone mapping is stale. Refresh the emote skeleton variant after reimporting the rig.");
-        if (emote.cullingMode != AnimatorCullingMode.AlwaysAnimate)
-            throw new InvalidOperationException("The hidden emote skeleton must animate even when its renderers are invisible.");
+        ValidateEmoteSkeleton();
         ValidatePhysics(model);
         ValidatePhysics(display);
         Debug.Log("Warlock validation passed: three linked prefab variants, eight dynamic chains on model/display, current rig and masks, CSS controller and valid humanoid avatar.");
+    }
+
+    [MenuItem("Tools/Warlock/Validate Emote Skeleton")]
+    public static void ValidateEmoteSkeleton()
+    {
+        var emote = Require<GameObject>(Root + "warlock_emoteskeleton.prefab").GetComponent<Animator>();
+        if (!emote || !emote.avatar || !emote.avatar.isHuman || !emote.avatar.isValid) throw new InvalidOperationException("Invalid emote avatar.");
+        if (emote.GetComponentsInChildren<SkinnedMeshRenderer>().Length == 0 ||
+            emote.GetComponentsInChildren<Renderer>(true).Any(renderer => renderer.enabled))
+            throw new InvalidOperationException("Emote renderer objects must be active for bone discovery while their renderers stay hidden.");
+        var model = Require<GameObject>(Root + "mdlWarlock.prefab");
+        var mappingRenderer = Find(emote.gameObject, "meshBody").GetComponent<SkinnedMeshRenderer>();
+        var bodyRenderer = Find(model, "meshBody").GetComponent<SkinnedMeshRenderer>();
+        if (!mappingRenderer || !bodyRenderer || !bodyRenderer.sharedMesh || mappingRenderer.sharedMesh != bodyRenderer.sharedMesh ||
+            mappingRenderer.bones.Length == 0 || mappingRenderer.bones.Any(bone => !bone) || bodyRenderer.bones.Any(bone => !bone) ||
+            !mappingRenderer.bones.Select(bone => AnimationUtility.CalculateTransformPath(bone, emote.transform))
+                .SequenceEqual(bodyRenderer.bones.Select(bone => AnimationUtility.CalculateTransformPath(bone, model.transform))))
+            throw new InvalidOperationException("Emote bone mapping is stale. Refresh the emote skeleton variant after reimporting the rig.");
+        Find(emote.gameObject, "dagger.x");
+        if (emote.cullingMode != AnimatorCullingMode.AlwaysAnimate)
+            throw new InvalidOperationException("The hidden emote skeleton must animate even when its renderers are invisible.");
+        Debug.Log("Warlock emote skeleton validated: humanoid avatar, hidden renderers and bone mapping matching the current model hierarchy.");
     }
 
     private static AnimationClip LoadImportedIdle() => AssetDatabase.LoadAllAssetsAtPath("Assets/FBX/mdlWarlock_Idle.fbx")

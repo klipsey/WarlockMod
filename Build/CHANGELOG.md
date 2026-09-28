@@ -1,3 +1,11 @@
+# 1.0.2
+
+- Fixed emotes
+
+# 1.0.1
+
+- Visual thing
+
 # 1.0.0
 
 - Animations done

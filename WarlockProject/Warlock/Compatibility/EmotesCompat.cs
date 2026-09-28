@@ -43,10 +43,11 @@ namespace WarlockMod.Warlock.Compatibility
                         string.Join(", ", Array.ConvertAll(emoteRenderers, renderer =>
                             $"{renderer.name}/{(renderer.sharedMesh ? renderer.sharedMesh.name : "no mesh")}/{renderer.bones.Length} bones")));
                 var emoteBodyRenderer = emoteRenderers[bodyMeshIndex];
-                var daggerRoot = Array.Find(emoteBodyRenderer.bones, bone => bone && bone.name == "dagger.x");
+                if (Array.Exists(emoteBodyRenderer.bones, bone => !bone))
+                    throw new InvalidOperationException("Warlock emote bone mapping is stale. Refresh the emote skeleton in Unity and rebuild the bundle.");
+                var daggerRoot = Array.Find(skeleton.GetComponentsInChildren<Transform>(true), bone => bone.name == "dagger.x");
                 if (!daggerRoot)
                     throw new InvalidOperationException("Warlock emote skeleton is missing its dagger root.");
-                // Keep weapon bones out of humanoid retargeting.
                 emoteBodyRenderer.bones = Array.FindAll(emoteBodyRenderer.bones,
                     bone => bone != daggerRoot && !bone.IsChildOf(daggerRoot));
                 CustomEmotesAPI.ImportArmature(WarlockSurvivor.characterPrefab, skeleton, bodyMeshIndex);
@@ -55,7 +56,6 @@ namespace WarlockMod.Warlock.Compatibility
                     throw new InvalidOperationException("CustomEmotesAPI did not initialize Warlock's bone mapper.");
                 mapper.a2.cullingMode = AnimatorCullingMode.AlwaysAnimate;
                 mapper.revertTransform = true;
-                // FBX variants can change renderer order, so select the body explicitly.
                 mapper.smr1 = emoteBodyRenderer;
                 mapper.smr2 = bodyRenderer;
                 var visibility = skeleton.AddComponent<EmotePropVisibility>();
