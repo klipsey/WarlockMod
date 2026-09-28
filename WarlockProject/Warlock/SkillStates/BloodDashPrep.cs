@@ -8,7 +8,8 @@ namespace WarlockMod.Warlock.SkillStates
 {
     public class BloodDashPrep : BaseMetamagicCharge
     {
-        public bool crimsonManaEmpowered;
+        private static readonly int ChargeBlink = Animator.StringToHash("ChargeBlink");
+        private static readonly int ChargeBlinkLoop = Animator.StringToHash("ChargeBlinkLoop");
         private Vector3 destination;
         private bool hasDestination;
         private bool transferring;
@@ -28,13 +29,13 @@ namespace WarlockMod.Warlock.SkillStates
 
         protected override void BeginCharge()
         {
-            crimsonManaEmpowered |= utilityEmpowered;
             StartAimMode(0.5f);
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
+            UpdateAnimation();
             if (characterMotor && !movementLocked)
             {
                 movementLocked = true;
@@ -58,6 +59,7 @@ namespace WarlockMod.Warlock.SkillStates
         public override void Update()
         {
             base.Update();
+            UpdateAnimation();
             if (!isAuthority) return;
             chargeAge += Time.deltaTime;
             if (cameraTargetParams)
@@ -73,6 +75,15 @@ namespace WarlockMod.Warlock.SkillStates
                     priority = 0.1f
                 }, 0f);
             }
+        }
+
+        private void UpdateAnimation()
+        {
+            if (!modelAnimator || !modelAnimator.isActiveAndEnabled) return;
+            modelAnimator.SetBool("chargingBlink", true);
+            int state = GetAnimationStateHash("FullBody, Override");
+            if (state != ChargeBlink && state != ChargeBlinkLoop)
+                PlayCrossfade("FullBody, Override", "ChargeBlink", 0.05f);
         }
 
         public override void FixedUpdate()
@@ -136,7 +147,6 @@ namespace WarlockMod.Warlock.SkillStates
             if (consumedStacks == 0)
                 return new BloodDash
                 {
-                    crimsonManaEmpowered = crimsonManaEmpowered,
                     activatorSkillSlot = activatorSkillSlot
                 };
             if (!hasDestination)
@@ -149,7 +159,6 @@ namespace WarlockMod.Warlock.SkillStates
                 targeted = true,
                 destination = destination,
                 metamagicStacks = consumedStacks,
-                crimsonManaEmpowered = crimsonManaEmpowered,
                 activatorSkillSlot = activatorSkillSlot
             };
         }
@@ -160,7 +169,6 @@ namespace WarlockMod.Warlock.SkillStates
             if (nextState is BloodDashPrep next)
             {
                 transferring = true;
-                next.crimsonManaEmpowered = crimsonManaEmpowered;
                 next.destination = destination;
                 next.hasDestination = hasDestination;
                 next.chargeAge = chargeAge;
@@ -174,7 +182,6 @@ namespace WarlockMod.Warlock.SkillStates
             if (nextState is BloodDash dash && (NetworkServer.active || isAuthority))
             {
                 dash.metamagicStacks = consumedStacks;
-                dash.crimsonManaEmpowered = crimsonManaEmpowered;
             }
             refunding = nextState is Idle;
         }
@@ -183,6 +190,12 @@ namespace WarlockMod.Warlock.SkillStates
         {
             if (!transferring)
             {
+                if (modelAnimator)
+                {
+                    modelAnimator.SetBool("chargingBlink", false);
+                    if (modelAnimator.isActiveAndEnabled && GetAnimationStateHash("FullBody, Override") == ChargeBlink)
+                        PlayCrossfade("FullBody, Override", "BufferEmpty", 0.05f);
+                }
                 if (preview) Destroy(preview);
                 if (cameraTargetParams) cameraTargetParams.RemoveParamsOverride(cameraOverride, 0.25f);
                 if (characterMotor && movementLocked) characterMotor.enabled = motorWasEnabled;
@@ -197,16 +210,5 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnExit();
         }
 
-        public override void OnSerialize(NetworkWriter writer)
-        {
-            base.OnSerialize(writer);
-            writer.Write(crimsonManaEmpowered);
-        }
-
-        public override void OnDeserialize(NetworkReader reader)
-        {
-            base.OnDeserialize(reader);
-            crimsonManaEmpowered = reader.ReadBoolean();
-        }
     }
 }

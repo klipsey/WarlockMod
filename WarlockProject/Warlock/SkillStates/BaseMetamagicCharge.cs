@@ -19,6 +19,7 @@ namespace WarlockMod.Warlock.SkillStates
         private bool releasedDuringWindup;
         private GameObject chargeEffect;
 
+        protected bool IsContinuingCharge => transferringEffect;
         protected abstract bool IsHeld { get; }
         protected abstract GameObject ChargeEffectPrefab { get; }
         protected virtual float ChargeSpeed => attackSpeedStat;

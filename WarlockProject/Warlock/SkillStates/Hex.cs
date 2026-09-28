@@ -9,6 +9,7 @@ namespace WarlockMod.Warlock.SkillStates
 {
     public class Hex : BaseMetamagicCharge
     {
+        private static readonly int HexAnimation = Animator.StringToHash("Hex");
         private HurtBox victim;
         private bool empowered;
         private bool continuingHex;
@@ -29,10 +30,27 @@ namespace WarlockMod.Warlock.SkillStates
             tracker = GetComponent<WarlockTracker>();
             if (!continuingHex && isAuthority) victim = tracker.GetTrackingTarget();
             base.OnEnter();
+            UpdateAnimation();
             if (victim)
             {
                 tracker.SetChargeTarget(victim);
                 if (cameraTargetParams) aimRequest = cameraTargetParams.RequestAimType(CameraTargetParams.AimType.Aura);
+            }
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            UpdateAnimation();
+        }
+
+        private void UpdateAnimation()
+        {
+            if (modelAnimator && modelAnimator.isActiveAndEnabled && CanPlayGestureAnimation(false) &&
+                GetAnimationStateHash("Gesture, Override") != HexAnimation)
+            {
+                modelAnimator.SetFloat("Hex.playbackRate", attackSpeedStat);
+                PlayCrossfade("Gesture, Override", "Hex", 0.05f);
             }
         }
 
@@ -42,8 +60,7 @@ namespace WarlockMod.Warlock.SkillStates
             StartAimMode(0.5f);
             if (NetworkServer.active)
             {
-                empowered = warlockController.secondaryEmpowered;
-                if (empowered) characterBody.RemoveBuff(WarlockBuffs.warlockEmpoweredM2Buff);
+                empowered = warlockController.TryConsumeEmpowerment(WarlockBuffs.warlockEmpoweredM2Buff);
                 ApplyHex(false);
             }
         }

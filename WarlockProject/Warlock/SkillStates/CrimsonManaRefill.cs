@@ -95,8 +95,6 @@ namespace WarlockMod.Warlock.SkillStates
                     warlockController.ApplyUtilityEmpowerment();
                 if (!isAuthority) Slot.stock = Mathf.Max(0, Slot.maxStock - 1);
             }
-            if (nextState is BloodDash dash) dash.crimsonManaEmpowered = true;
-            if (nextState is BloodDashPrep prep) prep.crimsonManaEmpowered = true;
         }
 
         public override void OnExit()

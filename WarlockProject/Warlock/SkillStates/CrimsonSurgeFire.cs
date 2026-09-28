@@ -1,7 +1,7 @@
 using EntityStates;
+using EntityStates.Treebot.Weapon;
 using RoR2;
 using UnityEngine;
-using EntityStates.GolemMonster;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using System;
@@ -21,14 +21,12 @@ namespace WarlockMod.Warlock.SkillStates
         private float fireInterval;
         public int maxShots = 1;
         private int shotCounter;
-        public bool empoweredShot;
+        private bool empoweredShot;
         public Ray initialAimRay;
         private float fireTimer;
         private Ray aimRay;
-        private WarlockAnimationController animationController;
-        internal int ShotsFired => shotCounter;
-        internal float ShotInterval => fireInterval;
-        internal bool IsBlasting => maxShots > 1 && shotCounter < maxShots;
+        private bool animationStarted;
+        private bool IsBlasting => maxShots > 1 && shotCounter < maxShots;
 
         public GameObject hitEffectPrefab = WarlockAssets.warlockHitImpactEffect;
         public GameObject tracerEffectPrefab = WarlockAssets.warlockTracerEffect;
@@ -37,32 +35,47 @@ namespace WarlockMod.Warlock.SkillStates
         {
             RefreshState();
             base.OnEnter();
-            animationController = GetComponent<WarlockAnimationController>();
             this.duration = this.baseDuration / base.attackSpeedStat;
-            if (empoweredShot)
-            {
-                this.duration *= 0.85f;
-            }
+            empoweredShot = warlockController.TryConsumeEmpowerment(WarlockBuffs.warlockEmpoweredM1Buff);
             fireInterval = duration / maxShots;
             fireTimer = fireInterval;
             shotCounter = 1;
-            if (animationController) animationController.SetBlasting(IsBlasting);
+            UpdateAnimation();
             aimRay = initialAimRay.direction == Vector3.zero ? GetAimRay() : initialAimRay;
             base.StartAimMode(aimRay, 2f, false);
             Util.PlaySound("Play_imp_overlord_teleport_end", base.gameObject);
-            if (FireLaser.effectPrefab)
-            {
-                EffectManager.SimpleMuzzleFlash(FireLaser.effectPrefab, base.gameObject, "Muzzle", false);
-            }
-
             Fire();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            UpdateAnimation();
+        }
+
+        private void UpdateAnimation()
+        {
+            if (!modelAnimator || !modelAnimator.isActiveAndEnabled)
+            {
+                animationStarted = false;
+                return;
+            }
+            modelAnimator.SetBool("isBlasting", IsBlasting);
+            if (!CanPlayGestureAnimation(true))
+            {
+                animationStarted = false;
+                return;
+            }
+            if (animationStarted) return;
+            PlayCrossfade("Gesture, Override", "BlastFire", "Blast.playbackRate",
+                Mathf.Max(0.01f, fireInterval), 0.05f);
+            animationStarted = true;
         }
 
         public override void OnSerialize(NetworkWriter writer)
         {
             base.OnSerialize(writer);
             writer.Write(maxShots);
-            writer.Write(empoweredShot);
             writer.Write(aimRay.origin);
             writer.Write(aimRay.direction);
         }
@@ -71,13 +84,13 @@ namespace WarlockMod.Warlock.SkillStates
         {
             base.OnDeserialize(reader);
             maxShots = Mathf.Max(1, reader.ReadInt32());
-            empoweredShot = reader.ReadBoolean();
             initialAimRay = new Ray(reader.ReadVector3(), reader.ReadVector3());
         }
 
         private void Fire()
         {
-            DamageTypeCombo damageType = DamageType.Generic;
+            EffectManager.SimpleMuzzleFlash(WarlockAssets.warlockSurgeMuzzleEffect, gameObject, "Muzzle", false);
+            DamageTypeCombo damageType = empoweredShot ? DamageType.WeakOnHit : DamageType.Generic;
             damageType.damageSource = DamageSource.Primary;
 
             BulletAttack bulletAttack = new BulletAttack();
@@ -91,7 +104,7 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.bulletCount = 1;
             bulletAttack.procCoefficient = WarlockConfig.CrimsonSurgeProc;
             bulletAttack.damage = damageCoefficient * damageStat;
-            bulletAttack.force = selfKnockbackForce;
+            bulletAttack.force = 0f;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
             bulletAttack.tracerEffectPrefab = this.tracerEffectPrefab;
             bulletAttack.muzzleName = "Muzzle";
@@ -102,6 +115,7 @@ namespace WarlockMod.Warlock.SkillStates
             bulletAttack.smartCollision = true;
             bulletAttack.maxDistance = 500f;
             bulletAttack.damageType = damageType;
+            if (empoweredShot) bulletAttack.hitCallback = EmpoweredHit;
             if (NetworkServer.active) bulletAttack.Fire();
 
             if (isAuthority && !characterMotor.isGrounded)
@@ -110,9 +124,31 @@ namespace WarlockMod.Warlock.SkillStates
                 base.characterBody.characterMotor.ApplyForce(-shotKnockbackForce * aimRay.direction, true);
             }
         }
+
+        private static bool EmpoweredHit(BulletAttack attack, ref BulletAttack.BulletHit hit)
+        {
+            bool pierce = BulletAttack.defaultHitCallback(attack, ref hit);
+            var health = hit.hitHurtBox ? hit.hitHurtBox.healthComponent : null;
+            if (NetworkServer.active && health && health.alive && health.body &&
+                FriendlyFireManager.ShouldDirectHitProceed(health, TeamComponent.GetObjectTeam(attack.owner)))
+            {
+                var body = health.body;
+                var rigidbody = health.GetComponent<Rigidbody>();
+                float mass = body.characterMotor ? body.characterMotor.mass : rigidbody ? rigidbody.mass : 1f;
+                float suitability = FireSonicBoom.shoveSuitabilityCurve.Evaluate(mass);
+                body.RecalculateStats();
+                // Use REX's lift and mass resistance, but never pull distant targets inward.
+                Vector3 direction = Vector3.ProjectOnPlane(hit.direction, Vector3.up).normalized;
+                float speed = Trajectory.CalculateInitialYSpeedForHeight(30f, -body.acceleration);
+                Vector3 velocity = direction * speed + Vector3.up * 3f;
+                health.TakeDamageForce(velocity * (mass * suitability), alwaysApply: true, disableAirControlUntilCollision: true);
+            }
+            return pierce;
+        }
+
         public override void OnExit()
         {
-            if (animationController) animationController.SetBlasting(false);
+            if (modelAnimator) modelAnimator.SetBool("isBlasting", false);
             base.OnExit();
         }
 
@@ -122,7 +158,7 @@ namespace WarlockMod.Warlock.SkillStates
             while (shotCounter < maxShots && base.fixedAge >= fireTimer)
             {
                 shotCounter++;
-                if (animationController) animationController.SetBlasting(IsBlasting);
+                if (modelAnimator) modelAnimator.SetBool("isBlasting", IsBlasting);
                 this.fireTimer += this.fireInterval;
                 aimRay = base.GetAimRay();
                 base.StartAimMode(aimRay, 2f, false);

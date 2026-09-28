@@ -1,3 +1,17 @@
+# 1.0.4
+
+- AAAAAH AHAHAHAHHAHA
+- Fixed aimyaw breaking...
+- Changed sfx and vfx of Eldrich Surge
+- Changed crimson mana primary to knockback enemies and weaken rather than giving attack speed for a set duration
+- Changed crimson mana utility to only apply on the first cast rather than being a duration based buff
+- Removed damage on Blood Dash unless empowered
+- Changed spawn effect
+
+# 1.0.3
+
+- Fixed Tokens...
+
 # 1.0.2
 
 - Fixed emotes

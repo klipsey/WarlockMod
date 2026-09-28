@@ -38,6 +38,17 @@ namespace WarlockMod.Warlock.Components
         {
             this.characterBody = this.GetComponent<CharacterBody>();
             this.skillLocator = this.GetComponent<SkillLocator>();
+            var locator = GetComponent<ModelLocator>();
+            var animator = locator && locator.modelTransform ? locator.modelTransform.GetComponent<Animator>() : null;
+            if (!animator)
+            {
+                Log.Error("Warlock requires a model Animator to initialize its skill animation parameters.");
+                return;
+            }
+            animator.SetBool("chargingBlast", false);
+            animator.SetBool("chargingBlink", false);
+            animator.SetBool("creatingMetaMagic", false);
+            animator.SetBool("isBlasting", false);
         }
 
         private void FixedUpdate()
@@ -85,10 +96,23 @@ namespace WarlockMod.Warlock.Components
                 characterBody.GetBuffCount(WarlockBuffs.warlockEmpoweredM2Buff) + charges);
         }
 
+        internal void ApplyPrimaryEmpowerment()
+        {
+            if (NetworkServer.active)
+                characterBody.AddBuff(WarlockBuffs.warlockEmpoweredM1Buff);
+        }
+
         internal void ApplyUtilityEmpowerment()
         {
             if (NetworkServer.active)
-                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredUtilityBuff, WarlockConfig.UtilityEmpowerDuration);
+                characterBody.AddBuff(WarlockBuffs.warlockEmpoweredUtilityBuff);
+        }
+
+        internal bool TryConsumeEmpowerment(BuffDef buff)
+        {
+            if (!NetworkServer.active || !characterBody.HasBuff(buff)) return false;
+            characterBody.RemoveBuff(buff);
+            return true;
         }
 
         internal void OpenRitualMenu()

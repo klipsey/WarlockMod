@@ -7,10 +7,8 @@ namespace WarlockMod.Warlock.Content
         public static int KillsPerCrimsonMana { get; private set; }
         public static float CrimsonSurgeDamage { get; private set; }
         public static float CrimsonSurgeProc { get; private set; }
-        public static float PrimaryEmpowerDuration { get; private set; }
         public static float BloodDashDamage { get; private set; }
         public static float BloodDashProc { get; private set; }
-        public static float UtilityEmpowerDuration { get; private set; }
         public static float HexDamage { get; private set; }
         public static float HexProcMultiplier { get; private set; }
         public static float HexDuration { get; private set; }
@@ -25,10 +23,8 @@ namespace WarlockMod.Warlock.Content
             KillsPerCrimsonMana = Stack("01 - Crimson Mana", "Kills per Crimson Mana", 2, "Number of kills required to gain one stack of Crimson Mana.");
             CrimsonSurgeDamage = Damage("02 - Crimson Surge", "Damage coefficient", 4f, "Damage per shot, as a multiple of base damage.");
             CrimsonSurgeProc = Proc("02 - Crimson Surge", "Proc coefficient", 1f, "Proc coefficient per shot.");
-            PrimaryEmpowerDuration = Duration("02 - Crimson Surge", "Empower duration", 7f, "Duration in seconds of Crimson Mana's primary fire-rate empowerment.");
-            BloodDashDamage = Damage("03 - Blood Dash", "Damage coefficient", 2f, "Damage per blast, including the empowered exit blast, as a multiple of base damage.");
+            BloodDashDamage = Damage("03 - Blood Dash", "Damage coefficient", 2f, "Damage per Crimson Mana blast or Meta Magic arrival blast, as a multiple of base damage.");
             BloodDashProc = Proc("03 - Blood Dash", "Proc coefficient", 1f, "Proc coefficient of each dash blast.");
-            UtilityEmpowerDuration = Duration("03 - Blood Dash", "Empower duration", 7f, "Duration in seconds of Crimson Mana's empowerment that adds an arrival blast.");
             HexDamage = Damage("04 - Hex", "Damage coefficient", 0.5f, "Bonus damage per Hex stack, as a multiple of the triggering hit's damage.");
             HexProcMultiplier = Proc("04 - Hex", "Proc coefficient multiplier", 1f, "Multiplies the triggering hit's proc coefficient for Hex bonus damage. Does not add new on-hit item callbacks.");
             HexDuration = Duration("04 - Hex", "Duration", 7f, "Duration in seconds of normal Hex, empowered Hex and its metamagic bleed mark.");

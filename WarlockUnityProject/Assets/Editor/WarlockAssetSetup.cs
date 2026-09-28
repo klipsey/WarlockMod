@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using RoR2;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
@@ -15,11 +16,34 @@ public static class WarlockAssetSetup
 {
     private const string Root = "Assets/Warlock/";
     private static readonly string[] PhysicsRoots = { "cloak.l", "cloak.r", "cloak.x", "hood.x", "c_feeler_00.l", "c_feeler_00.r", "scarf.l", "scarf.r" };
-    private const string BookRoot = "root/c_bookroot.x";
+    private const string BookRoot = "root/base/spine_01.x/spine_02.x/spine_03.x/shoulder.r/arm_stretch.r/forearm_stretch.r/hand.r/c_bookroot.x";
     private static readonly Dictionary<string, (string hand, string grip)> PropHands = new Dictionary<string, (string hand, string grip)>
     {
         { "c_bookroot.x", ("hand.r", "BookGrip") },
         { "dagger.x", ("hand.l", "DaggerGrip") }
+    };
+    private static readonly Dictionary<string, string> RagdollProps = new Dictionary<string, string>
+    {
+        { "c_bookroot.x", "meshBook" },
+        { "dagger.x", "meshDagger" }
+    };
+    private static readonly (string bone, string parent, string tip, float radius)[] RagdollBones =
+    {
+        ("root.x", null, "spine_01.x", 0.09f),
+        ("spine_01.x", "root.x", "neck.x", 0.11f),
+        ("head.x", "spine_01.x", null, 0.14f),
+        ("arm_stretch.l", "spine_01.x", "forearm_stretch.l", 0.045f),
+        ("forearm_stretch.l", "arm_stretch.l", "hand.l", 0.04f),
+        ("hand.l", "forearm_stretch.l", "middle1.l", 0.045f),
+        ("arm_stretch.r", "spine_01.x", "forearm_stretch.r", 0.045f),
+        ("forearm_stretch.r", "arm_stretch.r", "hand.r", 0.04f),
+        ("hand.r", "forearm_stretch.r", "middle1.r", 0.045f),
+        ("thigh_stretch.l", "root.x", "leg_stretch.l", 0.055f),
+        ("leg_stretch.l", "thigh_stretch.l", "foot.l", 0.04f),
+        ("foot.l", "leg_stretch.l", "toes_01.l", 0.035f),
+        ("thigh_stretch.r", "root.x", "leg_stretch.r", 0.055f),
+        ("leg_stretch.r", "thigh_stretch.r", "foot.r", 0.04f),
+        ("foot.r", "leg_stretch.r", "toes_01.r", 0.035f)
     };
     private static readonly string[] SkillIconNames =
     {
@@ -57,7 +81,7 @@ public static class WarlockAssetSetup
             SetupRenderers(model);
             SetupChildLocator(model);
             SetupDynamicBones(model, existing);
-            SetupPropConstraints(model);
+            SetupRagdoll(model);
             SaveVariant(model, Root + "mdlWarlock.prefab", "Assets/FBX/mdlWarlock.fbx");
         }
         finally
@@ -78,7 +102,6 @@ public static class WarlockAssetSetup
             animator.runtimeAnimatorController = Require<AnimatorController>(Root + "Animations/animWarlockCSS.controller");
             PrefabUtility.RecordPrefabInstancePropertyModifications(animator);
             SetupDynamicBones(display, existing);
-            DisablePropConstraints(display);
             SaveVariant(display, Root + "WarlockDisplay.prefab", Root + "mdlWarlock.prefab");
         }
         finally
@@ -236,14 +259,20 @@ public static class WarlockAssetSetup
     [MenuItem("Tools/Warlock/Validate Prop Constraints")]
     public static void ValidatePropConstraints()
     {
+        var source = Require<GameObject>("Assets/FBX/mdlWarlock.fbx");
         foreach (string name in new[] { "mdlWarlock", "WarlockDisplay" })
         {
             var prefab = Require<GameObject>(Root + name + ".prefab");
-            if (prefab.GetComponentsInChildren<ParentConstraint>(true).Length != PropHands.Count)
+            int constraintCount = prefab.GetComponentsInChildren<ParentConstraint>(true).Length;
+            if (constraintCount != 0 && constraintCount != PropHands.Count)
                 throw new InvalidOperationException("Expected two prop constraints on " + name);
             foreach (var pair in PropHands)
             {
                 var prop = Find(prefab, pair.Key);
+                if (AnimationUtility.CalculateTransformPath(prop, prefab.transform) !=
+                    AnimationUtility.CalculateTransformPath(Find(source, pair.Key), source.transform))
+                    throw new InvalidOperationException("Prop hierarchy was changed: " + name + "/" + pair.Key);
+                if (constraintCount == 0) continue;
                 var grip = Find(prefab, pair.Value.grip);
                 var constraint = prop.GetComponent<ParentConstraint>();
                 if (!constraint || constraint.enabled != (name == "mdlWarlock") || !constraint.constraintActive ||
@@ -253,11 +282,9 @@ public static class WarlockAssetSetup
                     grip.parent != Find(prefab, pair.Value.hand) || grip.localScale != Vector3.one ||
                     constraint.translationAxis != (Axis.X | Axis.Y | Axis.Z) || constraint.rotationAxis != (Axis.X | Axis.Y | Axis.Z))
                     throw new InvalidOperationException("Invalid prop constraint: " + name + "/" + pair.Key);
-                if (prop.parent != Find(prefab, "root"))
-                    throw new InvalidOperationException("Prop hierarchy was changed: " + name + "/" + pair.Key);
             }
         }
-        Debug.Log("Warlock prop constraints validated: book/right hand, dagger/left hand, disabled on character select.");
+        Debug.Log("Warlock prop hierarchy and any optional hand constraints validated.");
     }
 
     private static void SetupTexturesAndMaterials()
@@ -475,6 +502,150 @@ public static class WarlockAssetSetup
         }
     }
 
+    [MenuItem("Tools/Warlock/Refresh Ragdoll and Build")]
+    public static void RefreshRagdollAndBuild()
+    {
+        string path = Root + "mdlWarlock.prefab";
+        var model = PrefabUtility.LoadPrefabContents(path);
+        try
+        {
+            SetupRagdoll(model);
+            SaveVariant(model, path, "Assets/FBX/mdlWarlock.fbx");
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(model);
+        }
+        AssetDatabase.SaveAssets();
+        ValidateRagdoll();
+        BuildBundleAssets();
+    }
+
+    private static void SetupRagdoll(GameObject model)
+    {
+        var controller = model.GetComponent<RagdollController>();
+        if (!controller) controller = model.AddComponent<RagdollController>();
+        controller.bones = RagdollBones.Select(spec => Find(model, spec.bone))
+            .Concat(RagdollProps.Keys.Select(name => Find(model, name))).ToArray();
+        controller.componentsToDisableOnRagdoll = Array.Empty<MonoBehaviour>();
+        PrefabUtility.RecordPrefabInstancePropertyModifications(controller);
+        foreach (var spec in RagdollBones)
+        {
+            var bone = Find(model, spec.bone);
+            var body = bone.GetComponent<Rigidbody>();
+            if (!body) body = bone.gameObject.AddComponent<Rigidbody>();
+            body.isKinematic = true;
+            body.useGravity = true;
+            var collider = bone.GetComponent<CapsuleCollider>();
+            if (!collider)
+            {
+                collider = bone.gameObject.AddComponent<CapsuleCollider>();
+                collider.radius = spec.radius * Mathf.Abs(model.transform.lossyScale.x / bone.lossyScale.x);
+                var tip = spec.tip == null ? Vector3.up * collider.radius * 2f :
+                    bone.InverseTransformPoint(Find(model, spec.tip).position);
+                collider.center = tip * 0.5f;
+                collider.height = Mathf.Max(Mathf.Abs(tip.y) * 0.9f, collider.radius * 2f);
+                collider.direction = 1;
+            }
+            collider.enabled = false;
+            collider.isTrigger = false;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(body);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(collider);
+        }
+        foreach (var pair in RagdollProps)
+        {
+            var prop = Find(model, pair.Key);
+            var body = prop.GetComponent<Rigidbody>();
+            if (!body) body = prop.gameObject.AddComponent<Rigidbody>();
+            body.isKinematic = true;
+            body.useGravity = true;
+            var collider = prop.GetComponent<BoxCollider>();
+            if (!collider)
+            {
+                var renderer = Find(model, pair.Value).GetComponent<SkinnedMeshRenderer>();
+                var mesh = new Mesh();
+                try
+                {
+                    renderer.BakeMesh(mesh);
+                    var vertices = mesh.vertices;
+                    if (vertices.Length == 0) throw new InvalidOperationException("Empty ragdoll prop mesh: " + pair.Value);
+                    var bounds = new Bounds(prop.InverseTransformPoint(renderer.transform.TransformPoint(vertices[0])), Vector3.zero);
+                    foreach (var vertex in vertices)
+                        bounds.Encapsulate(prop.InverseTransformPoint(renderer.transform.TransformPoint(vertex)));
+                    collider = prop.gameObject.AddComponent<BoxCollider>();
+                    collider.center = bounds.center;
+                    collider.size = bounds.size;
+                }
+                finally
+                {
+                    Object.DestroyImmediate(mesh);
+                }
+            }
+            collider.enabled = false;
+            collider.isTrigger = false;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(body);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(collider);
+        }
+        foreach (var spec in RagdollBones.Where(spec => spec.parent != null))
+        {
+            var bone = Find(model, spec.bone);
+            var joint = bone.GetComponent<CharacterJoint>();
+            if (!joint)
+            {
+                joint = bone.gameObject.AddComponent<CharacterJoint>();
+                joint.lowTwistLimit = new SoftJointLimit { limit = -20f };
+                joint.highTwistLimit = new SoftJointLimit { limit = 70f };
+                joint.swing1Limit = new SoftJointLimit { limit = 40f };
+                joint.swing2Limit = new SoftJointLimit { limit = 40f };
+            }
+            // The spine and pelvis are siblings in this rig, so ancestry alone cannot connect the torso.
+            joint.connectedBody = Find(model, spec.parent).GetComponent<Rigidbody>();
+            joint.enableCollision = false;
+            joint.enableProjection = true;
+            joint.projectionDistance = 0.025f;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(joint);
+        }
+    }
+
+    [MenuItem("Tools/Warlock/Validate Ragdoll")]
+    public static void ValidateRagdoll()
+    {
+        foreach (string name in new[] { "mdlWarlock", "WarlockDisplay" })
+        {
+            var model = Require<GameObject>(Root + name + ".prefab");
+            var controller = model.GetComponent<RagdollController>();
+            if (!controller || !controller.enabled || controller.bones == null ||
+                !controller.bones.SequenceEqual(RagdollBones.Select(spec => Find(model, spec.bone))
+                    .Concat(RagdollProps.Keys.Select(prop => Find(model, prop)))) ||
+                controller.componentsToDisableOnRagdoll == null ||
+                controller.componentsToDisableOnRagdoll.Any(component => !component))
+                throw new InvalidOperationException("Missing or invalid ragdoll controller: " + name);
+            foreach (var spec in RagdollBones)
+            {
+                var bone = Find(model, spec.bone);
+                var body = bone.GetComponent<Rigidbody>();
+                var collider = bone.GetComponent<CapsuleCollider>();
+                var joint = bone.GetComponent<CharacterJoint>();
+                if (!body || !body.isKinematic || !body.useGravity || !collider || collider.enabled ||
+                    collider.isTrigger || collider.radius <= 0f || collider.height < collider.radius * 2f)
+                    throw new InvalidOperationException("Invalid ragdoll physics: " + name + "/" + spec.bone);
+                if (spec.parent == null ? joint != null :
+                    !joint || joint.connectedBody != Find(model, spec.parent).GetComponent<Rigidbody>() || joint.enableCollision)
+                    throw new InvalidOperationException("Invalid ragdoll joint: " + name + "/" + spec.bone);
+            }
+            foreach (string propName in RagdollProps.Keys)
+            {
+                var prop = Find(model, propName);
+                var body = prop.GetComponent<Rigidbody>();
+                var collider = prop.GetComponent<BoxCollider>();
+                if (!body || !body.isKinematic || !body.useGravity || !collider || collider.enabled ||
+                    collider.isTrigger || collider.size.x <= 0f || collider.size.y <= 0f || collider.size.z <= 0f ||
+                    prop.GetComponent<Joint>() || prop.GetComponent<ParentConstraint>())
+                    throw new InvalidOperationException("Ragdoll prop must be free to drop: " + name + "/" + propName);
+            }
+        }
+    }
+
     private static void SetupEmoteSkeleton()
     {
         const string path = "Assets/FBX/mdlWarlock_aapose.fbx";
@@ -539,6 +710,7 @@ public static class WarlockAssetSetup
     public static void Validate()
     {
         ValidatePropConstraints();
+        ValidateRagdoll();
         foreach (string name in SkillIconNames)
             Require<Sprite>(Root + "Icons/Skill/" + name + ".png");
         foreach (var pair in new Dictionary<string, string>
@@ -835,6 +1007,11 @@ public static class WarlockAssetSetup
     public static void BuildBundle()
     {
         Validate();
+        BuildBundleAssets();
+    }
+
+    private static void BuildBundleAssets()
+    {
         string output = "AssetBundles/StandaloneWindows";
         Directory.CreateDirectory(output);
         var assets = new[]

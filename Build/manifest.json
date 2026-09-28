@@ -1,9 +1,9 @@
 {
     "name": "Warlock",
     "author": "tsuyoikenko",
-    "version_number": "1.0.3",
+    "version_number": "1.0.4",
     "website_url": "https://github.com/klipsey/WarlockMod",
-    "description": "Warlock is small but powerful survivor that uses blood to cast abilities.",
+    "description": "Warlock is a small but powerful survivor that uses blood to cast abilities.",
     "dependencies": [
         "bbepis-BepInExPack-5.4.2109",
         "RiskofThunder-RoR2BepInExPack-1.43.0",

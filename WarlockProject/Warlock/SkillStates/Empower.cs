@@ -11,10 +11,11 @@ namespace WarlockMod.Warlock.SkillStates
     {
         private bool repeating;
         private bool continuing;
+        private bool animationStarted;
         private int remainingMana;
         private float nextConversion = 0.5f;
 
-        internal bool IsCreatingMetaMagic => remainingMana > 0 && (!isAuthority || inputBank.skill4.down);
+        private bool IsCreatingMetaMagic => remainingMana > 0 && (!isAuthority || inputBank.skill4.down);
 
         public override void OnEnter()
         {
@@ -36,6 +37,33 @@ namespace WarlockMod.Warlock.SkillStates
             }
             else if (isAuthority)
                 remainingMana = Mathf.Max(0, remainingMana - 1);
+            UpdateAnimation();
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            UpdateAnimation();
+        }
+
+        private void UpdateAnimation()
+        {
+            if (!modelAnimator || !modelAnimator.isActiveAndEnabled)
+            {
+                animationStarted = false;
+                return;
+            }
+            if (FindSiblingStateMachine("Weapon2")?.state is BloodDashPrep)
+            {
+                modelAnimator.SetBool("creatingMetaMagic", false);
+                animationStarted = false;
+                return;
+            }
+            modelAnimator.SetBool("creatingMetaMagic", IsCreatingMetaMagic);
+            if (animationStarted) return;
+            modelAnimator.SetFloat("MetaMagic.playbackRate", attackSpeedStat);
+            PlayCrossfade("FullBody, Override", "CreateMetaMagic", 0.05f);
+            animationStarted = true;
         }
 
         public override void FixedUpdate()
@@ -55,6 +83,7 @@ namespace WarlockMod.Warlock.SkillStates
             {
                 continuing = true;
                 next.repeating = true;
+                next.animationStarted = animationStarted;
                 next.activatorSkillSlot = activatorSkillSlot;
                 if (NetworkServer.active || isAuthority)
                 {
@@ -66,7 +95,11 @@ namespace WarlockMod.Warlock.SkillStates
 
         public override void OnExit()
         {
-            if (!continuing) warlockController.CloseRitualMenu();
+            if (!continuing)
+            {
+                if (modelAnimator) modelAnimator.SetBool("creatingMetaMagic", false);
+                warlockController.CloseRitualMenu();
+            }
             base.OnExit();
         }
 

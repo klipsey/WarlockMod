@@ -23,6 +23,7 @@ namespace WarlockMod.Warlock.Content
         internal static GameObject bloodExplosionEffect;
         internal static GameObject warlockHexConsume;
         internal static GameObject warlockTracerEffect;
+        internal static GameObject warlockSurgeMuzzleEffect;
         internal static GameObject telekinesisTracker;
         internal static GameObject dashDestinationPreview;
         internal static GameObject dashBlinkEffect;
@@ -81,23 +82,6 @@ namespace WarlockMod.Warlock.Content
             Object.DestroyImmediate(warlockHexConsume.transform.Find("Visual, Consumed/PulseEffect, Slash").gameObject);
             Modules.Content.CreateAndAddEffectDef(warlockHexConsume);
 
-            warlockTracerEffect = CloneEffect("RoR2/Base/Golem/TracerGolem.prefab", "WarlockTracer");
-            var beam = warlockTracerEffect.transform.Find("SmokeBeam");
-            var color = beam.GetComponent<ParticleSystem>().colorOverLifetime;
-            var gradient = new Gradient();
-            gradient.SetKeys(new[]
-            {
-                new GradientColorKey(Color.black, 0f), new GradientColorKey(Color.black, 0.1f),
-                new GradientColorKey(warlockColor, 0.34f), new GradientColorKey(Color.black, 1f)
-            }, new[]
-            {
-                new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.5f),
-                new GradientAlphaKey(0.75f, 1f)
-            });
-            color.color = gradient;
-            beam.GetComponent<ParticleSystemRenderer>().material.SetTexture("_RemapTex", null);
-            Modules.Content.CreateAndAddEffectDef(warlockTracerEffect);
-
             spawnPrefab = CloneEffect("RoR2/Base/ImpBoss/ImpBossDeathEffect.prefab", "WarlockChargeEffect");
             var effect = spawnPrefab.GetComponent<EffectComponent>();
             effect.applyScale = true;
@@ -113,6 +97,9 @@ namespace WarlockMod.Warlock.Content
 
             var impDustMaterial = Load<Material>("RoR2/Base/Imp/matImpDust.mat");
             var impRamp = impDustMaterial.GetTexture("_RemapTex");
+            warlockTracerEffect = CreateSurgeEffect("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamTracer.prefab", "WarlockTracer", impRamp);
+            warlockSurgeMuzzleEffect = CreateSurgeEffect("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamMuzzleflash.prefab", "WarlockSurgeMuzzle", impRamp);
+            Object.DestroyImmediate(warlockSurgeMuzzleEffect.transform.Find("Ring").gameObject);
             bloodExplosionEffect = CloneEffect("RoR2/Base/ImpBoss/ImpBossBlink.prefab", "WarlockBloodExplosion");
             foreach (var child in new[] { "LongLifeNoiseTrails, Bright", "Dash, Bright", "Flash, Red" })
                 SetParticleTint(bloodExplosionEffect.transform.Find("Particles/" + child).GetComponent<ParticleSystem>(), warlockColor);
@@ -131,14 +118,21 @@ namespace WarlockMod.Warlock.Content
             foreach (var shake in warlockHitImpactEffect.GetComponentsInChildren<ShakeEmitter>(true))
                 Object.DestroyImmediate(shake);
             warlockHitImpactEffect.GetComponent<OmniEffect>().enabled = false;
-            var impactMaterial = Object.Instantiate(Load<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat"));
-            impactMaterial.SetColor("_TintColor", warlockColor);
-            SetImpactMaterial("Scaled Hitspark 3, Radial (Random Color)", impactMaterial);
+            SetImpactMaterial("Scaled Hitspark 3, Radial (Random Color)", Load<Material>("RoR2/Base/Merc/matOmniHitspark3Merc.mat"));
             SetImpactMaterial("Flash, Hard", Load<Material>("RoR2/DLC1/VoidSurvivor/matVoidSurvivorBlasterFireCorrupted.mat"));
             SetImpactMaterial("Impact Slash", Load<Material>("RoR2/Base/Imp/matImpSlashImpact.mat"));
             SetImpactMaterial("ScaledSmokeRing, Mesh", Load<Material>("RoR2/Base/Imp/matImpDust.mat"));
             SetImpactMaterial("Scaled Hitspark 2 (Random Color)/Scaled Hitspark 4, Directional (Random Color) (1)", Load<Material>("RoR2/DLC1/Common/Void/matOmniHitspark1Void.mat"));
             SetImpactMaterial("Scaled Hitspark 2 (Random Color)", Load<Material>("RoR2/DLC1/Common/Void/matOmniHitspark2Void.mat"));
+            foreach (var particles in warlockHitImpactEffect.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                var renderer = particles.GetComponent<ParticleSystemRenderer>();
+                var material = Object.Instantiate(renderer.sharedMaterial);
+                material.SetTexture("_RemapTex", impRamp);
+                material.SetColor("_TintColor", Color.white);
+                renderer.sharedMaterial = material;
+                SetParticleTint(particles, Color.white);
+            }
             warlockHitImpactEffect.transform.Find("Scaled Hitspark 3, Radial (Random Color)").localScale = Vector3.one * 1.5f;
             warlockHitImpactEffect.transform.Find("Flash, Hard").localScale = Vector3.one * 1.5f;
             warlockHitImpactEffect.transform.Find("ScaledSmokeRing, Mesh").localScale = Vector3.one * 3f;
@@ -187,6 +181,52 @@ namespace WarlockMod.Warlock.Content
             orb.endEffect = arrivalEffect;
             orb.endEffectCopiesRotation = true;
             Modules.Content.CreateAndAddEffectDef(consumeOrb);
+        }
+
+        private static GameObject CreateSurgeEffect(string key, string name, Texture ramp)
+        {
+            const float visualScale = 3f;
+            var effect = CloneEffect(key, name);
+            foreach (var renderer in effect.GetComponentsInChildren<Renderer>(true))
+            {
+                var materials = renderer.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (!materials[i]) continue;
+                    var material = Object.Instantiate(materials[i]);
+                    material.SetTexture("_RemapTex", ramp);
+                    material.SetColor("_TintColor", Color.white);
+                    material.SetFloat("_Boost", 1f);
+                    material.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
+                    material.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+                    material.SetFloat("_InternalSimpleBlendMode", 1f);
+                    material.SetInt("_ZWrite", 0);
+                    materials[i] = material;
+                }
+                renderer.sharedMaterials = materials;
+            }
+            // Scale thickness without moving the tracer's world-space endpoints.
+            foreach (var line in effect.GetComponentsInChildren<LineRenderer>(true))
+                line.widthMultiplier *= visualScale;
+            foreach (var particles in effect.GetComponentsInChildren<ParticleSystem>(true))
+            {
+                var main = particles.main;
+                if (main.startSize3D)
+                {
+                    main.startSizeXMultiplier *= visualScale;
+                    main.startSizeYMultiplier *= visualScale;
+                    main.startSizeZMultiplier *= visualScale;
+                }
+                else
+                {
+                    main.startSizeMultiplier *= visualScale;
+                }
+                SetParticleTint(particles, Color.white);
+            }
+            foreach (var light in effect.GetComponentsInChildren<Light>(true))
+                light.color = warlockColor;
+            Modules.Content.CreateAndAddEffectDef(effect);
+            return effect;
         }
 
         private static void MakeContinuous(GameObject effect)

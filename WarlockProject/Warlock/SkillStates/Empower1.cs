@@ -9,9 +9,14 @@ namespace WarlockMod.Warlock.SkillStates
         public override void OnEnter()
         {
             base.OnEnter();
+            if (modelAnimator && modelAnimator.isActiveAndEnabled)
+            {
+                modelAnimator.SetFloat("Mana.playbackRate", attackSpeedStat);
+                PlayCrossfade("Gesture, Override", "UseMana", 0.05f);
+            }
             warlockController.CloseRitualMenu();
             if (warlockController.TryConsumeCrimsonMana())
-                characterBody.AddTimedBuff(WarlockBuffs.warlockEmpoweredM1Buff, WarlockConfig.PrimaryEmpowerDuration);
+                warlockController.ApplyPrimaryEmpowerment();
         }
 
         public override void FixedUpdate()

@@ -54,7 +54,8 @@ namespace WarlockMod.Warlock
             sortPosition = 99f,
 
             crosshair = Modules.Assets.LoadCrosshair("Standard"),
-            podPrefab = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
+            podPrefab = null,
+            initialStateType = new SerializableEntityStateType(typeof(WarlockSpawnState)),
 
             maxHealth = 100f,
             armor = 0f,
@@ -148,7 +149,7 @@ namespace WarlockMod.Warlock
             AddHitboxes();
             bodyPrefab.AddComponent<WarlockController>();
             bodyPrefab.AddComponent<WarlockTracker>();
-            bodyPrefab.AddComponent<WarlockAnimationController>();
+            bodyPrefab.AddComponent<WarlockBookController>();
         }
         public void AddHitboxes()
         {

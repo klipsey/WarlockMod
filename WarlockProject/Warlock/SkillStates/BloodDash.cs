@@ -11,7 +11,7 @@ namespace WarlockMod.Warlock.SkillStates
 {
     public class BloodDash : BaseWarlockSkillState
     {
-        public bool crimsonManaEmpowered;
+        private bool crimsonManaEmpowered;
         public bool targeted;
         public Vector3 destination;
         public int metamagicStacks;
@@ -45,9 +45,9 @@ namespace WarlockMod.Warlock.SkillStates
 		{
 			RefreshState();
 			base.OnEnter();
-            utilityEmpowered |= crimsonManaEmpowered;
+            crimsonManaEmpowered = warlockController.TryConsumeEmpowerment(WarlockBuffs.warlockEmpoweredUtilityBuff);
 			Util.PlaySound(targeted ? "Play_imp_overlord_teleport_start" : EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
-			if (!targeted || utilityEmpowered) FireAOEStun(transform.position);
+			if (crimsonManaEmpowered) FireAOEStun(transform.position);
 			modelTransform = GetModelTransform();
 			if ((bool)modelTransform)
 			{
@@ -88,7 +88,6 @@ namespace WarlockMod.Warlock.SkillStates
         public override void OnSerialize(NetworkWriter writer)
         {
             base.OnSerialize(writer);
-            writer.Write(crimsonManaEmpowered);
             writer.Write(targeted);
             writer.Write(destination);
             writer.Write(metamagicStacks);
@@ -97,7 +96,6 @@ namespace WarlockMod.Warlock.SkillStates
         public override void OnDeserialize(NetworkReader reader)
         {
             base.OnDeserialize(reader);
-            crimsonManaEmpowered = reader.ReadBoolean();
             targeted = reader.ReadBoolean();
             destination = reader.ReadVector3();
             metamagicStacks = Mathf.Max(0, reader.ReadInt32());
@@ -114,7 +112,7 @@ namespace WarlockMod.Warlock.SkillStates
 
 		private void FireAOEStun(Vector3 position)
 		{
-			if (targeted ? NetworkServer.active : base.isAuthority)
+			if (NetworkServer.active)
 			{
 				DamageTypeCombo damageType = DamageType.Stun1s;
 				damageType.damageSource = DamageSource.Utility;
@@ -135,12 +133,12 @@ namespace WarlockMod.Warlock.SkillStates
 				obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
 				obj.Fire();
 			}
-			if (!targeted && GroundPound.slamEffectPrefab)
+			if (NetworkServer.active && !targeted && GroundPound.slamEffectPrefab)
 			{
 				EffectData effectData = new EffectData();
 				effectData.rotation = Util.QuaternionSafeLookRotation(blinkVector);
 				effectData.origin = Util.GetCorePosition(base.gameObject);
-				EffectManager.SpawnEffect(GroundPound.slamEffectPrefab, effectData, transmit: false);
+				EffectManager.SpawnEffect(GroundPound.slamEffectPrefab, effectData, transmit: true);
 			}
 		}
 
@@ -195,7 +193,7 @@ namespace WarlockMod.Warlock.SkillStates
             if (targeted && !arrived && !outer.destroying &&
                 characterBody.healthComponent && characterBody.healthComponent.alive)
                 CompleteTargetedBlink();
-            if (!targeted && this.utilityEmpowered)
+            if (!targeted && crimsonManaEmpowered)
             {
 				FireAOEStun(transform.position);
             }

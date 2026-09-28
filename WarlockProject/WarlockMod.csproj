@@ -3,19 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Configurations>Release;Debug</Configurations>
+    <LangVersion>7.3</LangVersion>
     <TestProfilePath Condition="'$(TestProfilePath)' == ''">F:\WebfishingMods\RiskOfRain2\profiles\testing</TestProfilePath>
     <DeployToTestProfile Condition="'$(DeployToTestProfile)' == ''">true</DeployToTestProfile>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <BundlePath Condition="'$(BundlePath)' == ''">$(MSBuildThisFileDirectory)..\WarlockUnityProject\AssetBundles\StandaloneWindows\warlock</BundlePath>
     <SoundBankPath Condition="'$(SoundBankPath)' == ''">$(MSBuildThisFileDirectory)..\WarlockWWISE\GeneratedSoundBanks\Windows\warlock_bank.bnk</SoundBankPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,66 +21,61 @@
     <EmbeddedResource Include="$(SoundBankPath)" LogicalName="WarlockMod.warlock_bank.bnk" Link="warlock_bank.bnk" />
   </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="BepInEx.Core" Version="5.*" />
-		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0" />
-		<PackageReference Include="MMHOOK.RoR2" Version="2025.12.9" NoWarn="NU1701" />
-		<PackageReference Include="RoR2BepInExPack" Version="1.41.0" />
-		<PackageReference Include="R2API.Core" Version="*" />
-		<PackageReference Include="R2API.Prefab" Version="*" />
-		<PackageReference Include="R2API.Loadout" Version="*" />
-		<PackageReference Include="R2API.RecalculateStats" Version="*" />
-		<PackageReference Include="R2API.Language" Version="*" />
-		<PackageReference Include="R2API.DamageType" Version="*" />
-		<PackageReference Include="R2API.TempVisualEffect" Version="*" />
-		<PackageReference Include="R2API.Dot" Version="*" />
-		<PackageReference Include="R2API.Networking" Version="*" />
-		<PackageReference Include="R2API.Sound" Version="*" />
-		<PackageReference Include="Rune580.Mods.RiskOfRain2.RiskOfOptions" Version="2.8.6" PrivateAssets="all" IncludeAssets="compile" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.4.1-r.0" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2025.12.9" NoWarn="NU1701" />
+    <PackageReference Include="RoR2BepInExPack" Version="1.41.0" />
+    <PackageReference Include="R2API.Core" Version="*" />
+    <PackageReference Include="R2API.Prefab" Version="*" />
+    <PackageReference Include="R2API.Loadout" Version="*" />
+    <PackageReference Include="R2API.RecalculateStats" Version="*" />
+    <PackageReference Include="R2API.Language" Version="*" />
+    <PackageReference Include="R2API.DamageType" Version="*" />
+    <PackageReference Include="R2API.TempVisualEffect" Version="*" />
+    <PackageReference Include="R2API.Dot" Version="*" />
+    <PackageReference Include="R2API.Networking" Version="*" />
+    <PackageReference Include="R2API.Sound" Version="*" />
+    <PackageReference Include="Rune580.Mods.RiskOfRain2.RiskOfOptions" Version="2.8.6" PrivateAssets="all" IncludeAssets="compile" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="ShaderSwapper">
-			<HintPath>libs\ShaderSwapper.dll</HintPath>
-		</Reference>
-		<Reference Include="Unity.Postprocessing.Runtime">
-			<HintPath>libs\Unity.Postprocessing.Runtime.dll</HintPath>
-		</Reference>
-		<Reference Include="CustomEmotesAPI">
-			<HintPath>libs\CustomEmotesAPI.dll</HintPath>
-			<HintPath Condition="Exists('$(TestProfilePath)\BepInEx\plugins\MetrosexualFruitcake-CustomEmotesAPI\CustomEmotesAPI.dll')">$(TestProfilePath)\BepInEx\plugins\MetrosexualFruitcake-CustomEmotesAPI\CustomEmotesAPI.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="RiskOfOptions">
-			<HintPath>libs\RiskOfOptions.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-			<Reference Include="AncientScepter">
-			<HintPath>libs\AncientScepter.dll</HintPath>
-		</Reference>
-	</ItemGroup>
+  <ItemGroup>
+    <Reference Include="ShaderSwapper">
+      <HintPath>libs\ShaderSwapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>libs\Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomEmotesAPI">
+      <HintPath>libs\CustomEmotesAPI.dll</HintPath>
+      <HintPath Condition="Exists('$(TestProfilePath)\BepInEx\plugins\MetrosexualFruitcake-CustomEmotesAPI\CustomEmotesAPI.dll')">$(TestProfilePath)\BepInEx\plugins\MetrosexualFruitcake-CustomEmotesAPI\CustomEmotesAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RiskOfOptions">
+      <HintPath>libs\RiskOfOptions.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="AncientScepter">
+      <HintPath>libs\AncientScepter.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <Target Name="ValidateEmbeddedAssets" BeforeTargets="PrepareForBuild" Condition="'$(DesignTimeBuild)' != 'true'">
     <Error Condition="!Exists('$(BundlePath)')" Text="Warlock asset bundle is missing: $(BundlePath). Build it in Unity before building WarlockMod.dll." />
     <Error Condition="!Exists('$(SoundBankPath)')" Text="Warlock soundbank is missing: $(SoundBankPath). Generate warlock_bank for Windows in Wwise before building WarlockMod.dll." />
     <Message Importance="high" Text="Embedding Warlock asset bundle: $(BundlePath)" />
     <Message Importance="high" Text="Embedding Warlock soundbank: $(SoundBankPath)" />
   </Target>
-  <Target Name="PackageMod" AfterTargets="Build" Condition="'$(SkipPackaging)' != 'true' and '$(DesignTimeBuild)' != 'true'">
-    <PropertyGroup>
-      <PluginOutput>$(ProjectDir)..\Build\plugins</PluginOutput>
-    </PropertyGroup>
-    <MakeDir Directories="$(PluginOutput)" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginOutput)" SkipUnchangedFiles="true" />
-    <Delete Files="$(PluginOutput)\AssetBundles\warlock;$(PluginOutput)\Soundbanks\interrogator_bank.bnk" />
-  </Target>
-  <Target Name="DeployMod" AfterTargets="PackageMod" Condition="'$(DeployToTestProfile)' == 'true' and '$(SkipPackaging)' != 'true' and '$(DesignTimeBuild)' != 'true'">
-    <Error Condition="!Exists('$(TestProfilePath)\BepInEx\plugins')" Text="Test profile does not exist: $(TestProfilePath)" />
-    <Copy SourceFiles="$(PluginOutput)\WarlockMod.dll" DestinationFolder="$(TestProfilePath)\BepInEx\plugins\kenko-Warlock" SkipUnchangedFiles="true" />
-    <Delete Files="$(TestProfilePath)\BepInEx\plugins\kenko-Warlock\AssetBundles\warlock;$(TestProfilePath)\BepInEx\plugins\kenko-Warlock\Soundbanks\interrogator_bank.bnk" />
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT' and '$(Username)' == 'mario' and '$(SkipPackaging)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <MakeDir Directories="$(ProjectDir)..\Build\plugins" />
+    <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Build\plugins\$(TargetFileName)&quot;" />
+    <Error Condition="'$(DeployToTestProfile)' == 'true' and !Exists('$(TestProfilePath)\BepInEx\plugins')" Text="Test profile does not exist: $(TestProfilePath)" />
+    <Exec Condition="'$(DeployToTestProfile)' == 'true'" Command="Xcopy /E /I /Y &quot;$(ProjectDir)..\Build\plugins&quot; &quot;$(TestProfilePath)\BepInEx\plugins\kenko-Warlock\&quot;" />
   </Target>
 
 </Project>
