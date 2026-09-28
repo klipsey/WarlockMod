@@ -649,20 +649,20 @@ namespace WarlockMod.Warlock
             {
                 attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, 0);
                 attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
+                var target = Util.FindBodyMainHurtBox(attackerBody);
+                if (target)
+                {
+                    RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
+                    {
+                        origin = damageReport.victim.transform.position,
+                        target = target
+                    });
+                }
+                if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
+                    new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
             }
             else
                 attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, kills);
-            var target = Util.FindBodyMainHurtBox(attackerBody);
-            if (target)
-            {
-                RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
-                {
-                    origin = damageReport.victim.transform.position,
-                    target = target
-                });
-            }
-            if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
-                new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
         }
     }
 }
