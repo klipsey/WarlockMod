@@ -21,9 +21,9 @@ namespace WarlockMod
     [BepInDependency(NetworkingAPI.PluginGUID)]
     [BepInDependency(PrefabAPI.PluginGUID)]
     [BepInDependency(DamageAPI.PluginGUID)]
-    [BepInDependency(DotAPI.PluginGUID, DotAPI.PluginVersion)]
     [BepInDependency(LanguageAPI.PluginGUID)]
     [BepInDependency(SoundAPI.PluginGUID)]
+    [BepInDependency(TempVisualEffectAPI.PluginGUID)]
     [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.weliveinasociety.CustomEmotesAPI", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
@@ -80,7 +80,6 @@ namespace WarlockMod
             Warlock.WarlockSurvivor.instance?.RemoveHooks();
             contentPacks?.Shutdown();
             DamageTypes.Unhook();
-            Dots.Unhook();
             if (emotesInstalled) Warlock.Compatibility.EmotesCompat.Shutdown();
         }
     }

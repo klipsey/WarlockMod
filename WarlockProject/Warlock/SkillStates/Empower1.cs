@@ -10,6 +10,7 @@ namespace WarlockMod.Warlock.SkillStates
         public override void OnEnter()
         {
             base.OnEnter();
+            if (isAuthority) warlockController.primaryRequiresRelease = true;
             if (modelAnimator && modelAnimator.isActiveAndEnabled)
             {
                 modelAnimator.SetFloat("Mana.playbackRate", Mathf.Max(0.01f, attackSpeedStat));

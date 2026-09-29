@@ -20,6 +20,7 @@ namespace WarlockMod.Warlock.Content
             public HealthComponent victim;
             public DamageInfo damage;
             public int bleedStacks;
+            public float bleedDamageMultiplier;
         }
 
         internal static void Init()
@@ -69,7 +70,7 @@ namespace WarlockMod.Warlock.Content
                     if (!pending.victim || !pending.victim.alive) continue;
                     pending.victim.TakeDamage(pending.damage);
                     if (pending.victim && !pending.damage.rejected)
-                        Dots.InflictBleed(pending.victim.gameObject, pending.damage.attacker, pending.bleedStacks, pending.damage.procCoefficient);
+                        Dots.InflictBleed(pending.victim.gameObject, pending.damage.attacker, pending.bleedStacks, pending.bleedDamageMultiplier);
                 }
             }
             finally
@@ -88,7 +89,7 @@ namespace WarlockMod.Warlock.Content
             if (damage.HasModdedDamageType(HexMask))
             {
                 var blast = damage.inflictor ? damage.inflictor.GetComponent<DelayBlastWarlock>() : null;
-                if (blast) Dots.InflictBleed(report.victim.gameObject, damage.attacker, blast.bleedStacks, damage.procCoefficient);
+                if (blast) Dots.InflictBleed(report.victim.gameObject, damage.attacker, blast.bleedStacks);
                 return;
             }
 
@@ -96,9 +97,6 @@ namespace WarlockMod.Warlock.Content
             int stacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedDebuff);
             int empoweredStacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedEmpoweredDebuff);
             int bleedStacks = victim.GetBuffCount(WarlockBuffs.warlockHexxedMetaMagicDebuff);
-            if (WarlockConfig.BleedProc > 0f && damage.procChainMask.HasProc(ProcType.BleedOnHit))
-                bleedStacks = 0;
-
             if (empoweredStacks > 0)
             {
                 DamageTypeCombo damageType = DamageType.Stun1s;
@@ -129,7 +127,7 @@ namespace WarlockMod.Warlock.Content
 
                 var bonus = new DamageInfo
                 {
-                    procCoefficient = damage.procCoefficient * WarlockConfig.HexProcMultiplier,
+                    procCoefficient = 0.5f,
                     procChainMask = damage.procChainMask,
                     position = victim.corePosition,
                     attacker = damage.attacker,
@@ -145,7 +143,8 @@ namespace WarlockMod.Warlock.Content
                 {
                     victim = victim.healthComponent,
                     damage = bonus,
-                    bleedStacks = bleedStacks
+                    bleedStacks = bleedStacks,
+                    bleedDamageMultiplier = damage.procCoefficient
                 });
             }
         }

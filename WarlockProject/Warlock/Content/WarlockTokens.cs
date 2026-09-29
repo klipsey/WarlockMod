@@ -76,7 +76,7 @@ namespace WarlockMod.Warlock.Content
 
             #region Special
             Language.Add(prefix + "SPECIAL_RITUAL_NAME", "Ritual");
-            Language.Add(prefix + "SPECIAL_RITUAL_DESCRIPTION", "Open a menu to restore a selected skill's charges and empower it. Recast <color=#981e33>Ritual</color> to gain " +
+            Language.Add(prefix + "SPECIAL_RITUAL_DESCRIPTION", "Open a menu to restore a selected skill's charges and empower it. Recasting then hold <color=#981e33>Ritual</color> to gain " +
                 "<color=#b97f8a>1 stack of Meta Magic</color> at the cost of <color=#981e33>1 Crimson Mana</color>.");
             Language.Add(prefix + "SPECIAL_EMPOWER_NAME", "Gain Meta Magic");
             Language.Add(prefix + "SPECIAL_EMPOWER_DESCRIPTION", "Spend <color=#981e33>1 Crimson Mana</color> to gain <color=#b97f8a>1 stack of Meta Magic</color>.");

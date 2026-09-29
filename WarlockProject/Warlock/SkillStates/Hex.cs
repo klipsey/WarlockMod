@@ -12,6 +12,7 @@ namespace WarlockMod.Warlock.SkillStates
         private static readonly int HexAnimation = Animator.StringToHash("Hex");
         private HurtBox victim;
         private bool empowered;
+        private bool hasAppliedHex;
         private bool continuingHex;
         private WarlockTracker tracker;
         private CameraTargetParams.AimRequest aimRequest;
@@ -19,17 +20,23 @@ namespace WarlockMod.Warlock.SkillStates
 
         protected override bool IsHeld => inputBank && inputBank.skill2.down;
         protected override GameObject ChargeEffectPrefab => WarlockAssets.hexChargeEffect;
-        protected override bool CanCharge => base.CanCharge && victim && victim.healthComponent &&
-            victim.healthComponent.alive && victim.healthComponent.body &&
-            victim.healthComponent.body.teamComponent.teamIndex != characterBody.teamComponent.teamIndex &&
-            Vector3.Distance(inputBank.aimOrigin, victim.healthComponent.body.corePosition) <=
-                tracker.maxTrackingDistance + victim.healthComponent.body.radius;
+        protected override float InitialChargeDuration => 0.5f;
+        protected override bool FinishOnRelease => true;
+        protected override bool CanCharge => base.CanCharge && IsTargetValid(victim, characterBody, tracker);
+
+        internal static bool IsTargetValid(HurtBox target, CharacterBody caster, WarlockTracker tracker) =>
+            tracker && target && target.healthComponent && target.healthComponent.alive && target.healthComponent.body &&
+            target.healthComponent.body.teamComponent.teamIndex != caster.teamComponent.teamIndex &&
+            Vector3.Distance(caster.inputBank.aimOrigin, target.healthComponent.body.corePosition) <=
+                tracker.maxTrackingDistance + target.healthComponent.body.radius;
 
         public override void OnEnter()
         {
             tracker = GetComponent<WarlockTracker>();
             if (!continuingHex && isAuthority) victim = tracker.GetTrackingTarget();
             base.OnEnter();
+            if (continuingHex && NetworkServer.active && !hasAppliedHex && CanCharge)
+                ApplyHex(false);
             UpdateAnimation();
             if (victim)
             {
@@ -58,18 +65,21 @@ namespace WarlockMod.Warlock.SkillStates
         {
             if (!CanCharge) return;
             StartAimMode(0.5f);
-            if (NetworkServer.active)
-            {
-                empowered = warlockController.TryConsumeEmpowerment(WarlockBuffs.warlockEmpoweredM2Buff);
-                ApplyHex(false);
-            }
         }
 
         protected override void ApplyConsumedStack() => ApplyHex(true);
 
         private void ApplyHex(bool metamagic)
         {
-            var targetBody = victim.healthComponent.body;
+            if (!hasAppliedHex)
+                empowered = warlockController.TryConsumeEmpowerment(WarlockBuffs.warlockEmpoweredM2Buff);
+            hasAppliedHex = true;
+            ApplyHex(victim, empowered, metamagic);
+        }
+
+        internal static void ApplyHex(HurtBox target, bool empowered, bool metamagic)
+        {
+            var targetBody = target.healthComponent.body;
             targetBody.AddTimedBuff(empowered ? WarlockBuffs.warlockHexxedEmpoweredDebuff : WarlockBuffs.warlockHexxedDebuff,
                 WarlockConfig.HexDuration);
             if (metamagic)
@@ -83,7 +93,9 @@ namespace WarlockMod.Warlock.SkillStates
 
         protected override BaseMetamagicCharge NextStep() => new Hex();
 
-        protected override EntityState FinishCharge() => new Idle();
+        protected override EntityState FinishCharge() => consumedStacks > 0 || hasAppliedHex
+            ? (EntityState)new Idle()
+            : new HexFire { target = victim, activatorSkillSlot = activatorSkillSlot };
 
         public override void ModifyNextState(EntityState nextState)
         {
@@ -94,6 +106,7 @@ namespace WarlockMod.Warlock.SkillStates
                 next.continuingHex = true;
                 next.victim = victim;
                 next.empowered = empowered;
+                next.hasAppliedHex = hasAppliedHex;
             }
         }
 
@@ -109,6 +122,7 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnSerialize(writer);
             writer.Write(HurtBoxReference.FromHurtBox(victim));
             writer.Write(empowered);
+            writer.Write(hasAppliedHex);
             writer.Write(continuingHex);
         }
 
@@ -117,6 +131,7 @@ namespace WarlockMod.Warlock.SkillStates
             base.OnDeserialize(reader);
             victim = reader.ReadHurtBoxReference().ResolveHurtBox();
             empowered = reader.ReadBoolean();
+            hasAppliedHex = reader.ReadBoolean();
             continuingHex = reader.ReadBoolean();
         }
     }

@@ -17,6 +17,7 @@ namespace WarlockMod.Warlock.Components
         private SkillLocator skillLocator;
         private bool ritualMenuOpen;
         private uint refillRequestId;
+        internal bool primaryRequiresRelease;
 
         internal uint NextRefillRequestId() => ++refillRequestId;
 

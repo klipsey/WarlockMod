@@ -15,6 +15,7 @@ namespace WarlockMod.Warlock.Content
             Modules.Content.AddEntityState(typeof(CrimsonSurgeFire));
             Modules.Content.AddEntityState(typeof(CrimsonSurgePrep));
             Modules.Content.AddEntityState(typeof(Hex));
+            Modules.Content.AddEntityState(typeof(HexFire));
             Modules.Content.AddEntityState(typeof(CrimsonManaRefill));
             Modules.Content.AddEntityState(typeof(RitualPrep));
 

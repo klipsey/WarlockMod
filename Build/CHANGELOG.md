@@ -1,3 +1,10 @@
+# 1.0.5
+
+- Made fighting bosses playable
+- Added vfx to hexxed enemies
+- Cleaned up sfx from some vfx
+- Removed proc coefficient from hex
+
 # 1.0.4
 
 - AAAAAH AHAHAHAHHAHA

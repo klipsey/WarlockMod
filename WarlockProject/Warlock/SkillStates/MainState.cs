@@ -3,16 +3,19 @@ using RoR2;
 using EntityStates;
 using BepInEx.Configuration;
 using WarlockMod.Modules;
+using WarlockMod.Warlock.Components;
 
 namespace WarlockMod.Warlock.SkillStates
 {
     public class MainState : GenericCharacterMain
     {
         private Animator animator;
+        private WarlockController warlockController;
         public LocalUser localUser;
         public override void OnEnter()
         {
             base.OnEnter();
+            warlockController = GetComponent<WarlockController>();
             this.animator = this.modelAnimator;
             this.FindLocalUser();
         }
@@ -47,6 +50,16 @@ namespace WarlockMod.Warlock.SkillStates
                 if (this.isGrounded) this.animator.SetFloat("airBlend", 0f);
                 else this.animator.SetFloat("airBlend", 1f);
             }
+        }
+
+        public override bool CanExecuteSkill(GenericSkill skillSlot)
+        {
+            if (skillSlot == skillLocator.primary && warlockController.primaryRequiresRelease)
+            {
+                if (inputBank.skill1.hasPressBeenClaimed) return false;
+                warlockController.primaryRequiresRelease = false;
+            }
+            return base.CanExecuteSkill(skillSlot);
         }
 
         public override void ProcessJump()

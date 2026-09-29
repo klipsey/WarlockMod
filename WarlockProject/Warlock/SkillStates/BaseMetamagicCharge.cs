@@ -23,7 +23,9 @@ namespace WarlockMod.Warlock.SkillStates
         protected abstract bool IsHeld { get; }
         protected abstract GameObject ChargeEffectPrefab { get; }
         protected virtual float ChargeSpeed => attackSpeedStat;
+        protected virtual float InitialChargeDuration => interval;
         protected virtual bool WaitForInitialCharge => false;
+        protected virtual bool FinishOnRelease => false;
         protected virtual bool CanCharge => characterBody && characterBody.healthComponent && characterBody.healthComponent.alive;
         protected virtual void BeginCharge() { }
         protected virtual void ApplyConsumedStack() { }
@@ -41,7 +43,7 @@ namespace WarlockMod.Warlock.SkillStates
                     remainingStacks = characterBody.GetBuffCount(WarlockBuffs.warlockMetaMagicBuff);
                     hadMetaMagic = remainingStacks > 0;
                     interval = Mathf.Max(0.05f, 0.5f / Mathf.Max(0.01f, ChargeSpeed));
-                    nextConsumption = interval;
+                    nextConsumption = InitialChargeDuration;
                 }
                 BeginCharge();
             }
@@ -86,7 +88,7 @@ namespace WarlockMod.Warlock.SkillStates
                 if (fixedAge < nextConsumption) return;
                 released = releasedDuringWindup;
             }
-            if ((hadMetaMagic && (released || remainingStacks <= 0)) ||
+            if ((FinishOnRelease && released) || (hadMetaMagic && (released || remainingStacks <= 0)) ||
                 (!hadMetaMagic && fixedAge >= nextConsumption))
             {
                 outer.SetNextState(FinishCharge());

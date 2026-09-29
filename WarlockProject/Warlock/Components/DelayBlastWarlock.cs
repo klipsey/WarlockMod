@@ -46,8 +46,6 @@ namespace WarlockMod.Warlock.Components
         [HideInInspector]
         public DamageType damageType;
 
-        [HideInInspector]
-        public float procCoefficient = 1f;
         public ProcChainMask procChainMask;
         public int bleedStacks;
 
@@ -120,7 +118,7 @@ namespace WarlockMod.Warlock.Components
             blastAttack.damageColorIndex = damageColorIndex;
             blastAttack.damageType = damageType;
             blastAttack.falloffModel = falloffModel;
-            blastAttack.procCoefficient = procCoefficient;
+            blastAttack.procCoefficient = 0.5f;
             blastAttack.procChainMask = procChainMask;
             blastAttack.attackerFiltering = AttackerFiltering.NeverHitSelf;
             foreach (DamageAPI.ModdedDamageType i in moddedDamageTypeHolder)

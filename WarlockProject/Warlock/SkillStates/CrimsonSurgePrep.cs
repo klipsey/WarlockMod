@@ -10,6 +10,7 @@ namespace WarlockMod.Warlock.SkillStates
     {
         private static readonly int BlastCharge = Animator.StringToHash("BlastCharge");
         private bool firing;
+        private uint chargeSoundId;
 
         protected override bool IsHeld => inputBank && inputBank.skill1.down;
         protected override GameObject ChargeEffectPrefab => WarlockAssets.spawnPrefab;
@@ -42,7 +43,7 @@ namespace WarlockMod.Warlock.SkillStates
         protected override void BeginCharge()
         {
             StartAimMode(0.5f);
-            Util.PlayAttackSpeedSound("Play_voidDevastator_m1_chargeUp", gameObject, attackSpeedStat);
+            chargeSoundId = Util.PlayAttackSpeedSound("Play_voidDevastator_m1_chargeUp", gameObject, attackSpeedStat);
         }
 
         protected override BaseMetamagicCharge NextStep() => new CrimsonSurgePrep();
@@ -53,6 +54,7 @@ namespace WarlockMod.Warlock.SkillStates
         {
             base.ModifyNextState(nextState);
             firing = nextState is CrimsonSurgeFire;
+            if (nextState is CrimsonSurgePrep prep) prep.chargeSoundId = chargeSoundId;
             if (nextState is CrimsonSurgeFire fire && (NetworkServer.active || isAuthority))
             {
                 fire.maxShots = consumedStacks + 1;
@@ -63,6 +65,7 @@ namespace WarlockMod.Warlock.SkillStates
 
         public override void OnExit()
         {
+            if (!IsContinuingCharge && chargeSoundId != 0) AkSoundEngine.StopPlayingID(chargeSoundId);
             if (!IsContinuingCharge && modelAnimator)
             {
                 modelAnimator.SetBool("chargingBlast", false);

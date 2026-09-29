@@ -130,7 +130,6 @@ namespace WarlockMod.Warlock
             WarlockAssets.InitAssets();
 
             WarlockBuffs.Init(assetBundle);
-            Dots.Init();
 
             InitializeEntityStateMachines();
             InitializeSkills();
@@ -150,6 +149,7 @@ namespace WarlockMod.Warlock
             bodyPrefab.AddComponent<WarlockController>();
             bodyPrefab.AddComponent<WarlockTracker>();
             bodyPrefab.AddComponent<WarlockBookController>();
+            bodyPrefab.AddComponent<WarlockEyeController>();
         }
         public void AddHitboxes()
         {
@@ -182,7 +182,7 @@ namespace WarlockMod.Warlock
             AddSecondarySkills();
             AddUtilitySkills();
             AddSpecialSkills();
-            if (WarlockPlugin.scepterInstalled) InitializeScepter();
+            //if (WarlockPlugin.scepterInstalled) InitializeScepter();
         }
 
         private Sprite LoadSkillIcon(string name) => assetBundle.LoadAsset<Sprite>(name)
@@ -594,6 +594,7 @@ namespace WarlockMod.Warlock
             On.RoR2.UI.LoadoutPanelController.Rebuild += LoadoutPanelController_Rebuild;
             //On.RoR2.HealthComponent.TakeDamage += new On.RoR2.HealthComponent.hook_TakeDamage(HealthComponent_TakeDamage);
             GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            GlobalEventManager.onServerDamageDealt += GlobalEventManager_onServerDamageDealt;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
 
             if (WarlockPlugin.emotesInstalled)
@@ -610,6 +611,7 @@ namespace WarlockMod.Warlock
         {
             On.RoR2.UI.LoadoutPanelController.Rebuild -= LoadoutPanelController_Rebuild;
             GlobalEventManager.onCharacterDeathGlobal -= GlobalEventManager_onCharacterDeathGlobal;
+            GlobalEventManager.onServerDamageDealt -= GlobalEventManager_onServerDamageDealt;
             On.RoR2.CharacterBody.RecalculateStats -= CharacterBody_RecalculateStats;
             On.RoR2.SurvivorCatalog.Init -= SurvivorCatalog_Init;
             RoR2.ContentManagement.ContentManager.onContentPacksAssigned -= SetItemDisplays;
@@ -642,23 +644,47 @@ namespace WarlockMod.Warlock
         }
         private static void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
         {
+            AddCrimsonManaProgress(damageReport);
+        }
+
+        private static void GlobalEventManager_onServerDamageDealt(DamageReport damageReport)
+        {
+            // Killing blows receive their one progress point through the death event.
+            if (!NetworkServer.active || !damageReport.victim || !damageReport.victim.alive ||
+                !(damageReport.victimIsBoss || damageReport.victimIsChampion) || damageReport.isFriendlyFire) return;
+
+            var damage = damageReport.damageInfo;
+            // Warlock's beam and dash use its body as the inflictor; item procs and Hex damage do not.
+            if (damage.rejected || damageReport.damageDealt <= 0f || damage.dotIndex != DotController.DotIndex.None ||
+                damage.delayedDamageSecondHalf || (damage.damageType.damageSource & DamageSource.SkillMask) == 0 ||
+                damage.inflictor != damage.attacker || damage.HasModdedDamageType(DamageTypes.HexMask)) return;
+
+            AddCrimsonManaProgress(damageReport);
+        }
+
+        private static void AddCrimsonManaProgress(DamageReport damageReport)
+        {
             if (!NetworkServer.active || !damageReport.attackerBody || !damageReport.victim) return;
             CharacterBody attackerBody = damageReport.attackerBody;
             if (!attackerBody.GetComponent<WarlockController>()) return;
             int kills = attackerBody.GetBuffCount(WarlockBuffs.warlockCrimsonManaStack) + 1;
             if (kills >= WarlockConfig.KillsPerCrimsonMana)
             {
-                attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, 0);
-                attackerBody.AddBuff(WarlockBuffs.warlockCrimsonManaFullStack);
                 var target = Util.FindBodyMainHurtBox(attackerBody);
-                if (target)
+                var orbManager = RoR2.Orbs.OrbManager.instance;
+                if (!target || !orbManager)
                 {
-                    RoR2.Orbs.OrbManager.instance.AddOrb(new ConsumeOrb
-                    {
-                        origin = damageReport.victim.transform.position,
-                        target = target
-                    });
+                    attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, kills);
+                    Log.Warning("Cannot launch a Crimson Mana orb without a target hurtbox and OrbManager; progress retained.");
+                    return;
                 }
+                attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex,
+                    kills - WarlockConfig.KillsPerCrimsonMana);
+                orbManager.AddOrb(new ConsumeOrb
+                {
+                    origin = damageReport.victim.transform.position,
+                    target = target
+                });
                 if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
                     new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
             }

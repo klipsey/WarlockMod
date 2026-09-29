@@ -40,7 +40,89 @@ namespace WarlockMod.Warlock.Content
             CreateEffects();
             CreateTracker();
             CreateHexBlast();
+            CreateHexDebuffEffects();
             CreateDashPreview();
+        }
+
+        private static void CreateHexDebuffEffects()
+        {
+            CreateHexDebuffEffect("WarlockHexDebuffEffect", 1f, Color.black, Color.black,
+                body => body.HasBuff(WarlockBuffs.warlockHexxedDebuff));
+            CreateHexDebuffEffect("WarlockEmpoweredHexDebuffEffect", 1.2f, Color.black, warlockColor,
+                body => body.HasBuff(WarlockBuffs.warlockHexxedEmpoweredDebuff));
+            CreateHexDebuffEffect("WarlockMetaMagicHexDebuffEffect", 1.4f, warlockColor, warlockColor,
+                body => body.HasBuff(WarlockBuffs.warlockHexxedMetaMagicDebuff));
+        }
+
+        private static void CreateHexDebuffEffect(string name, float radiusMultiplier, Color shadowColor,
+            Color highlightColor, TempVisualEffectAPI.EffectCondition condition)
+        {
+            var effect = CloneEffect("RoR2/Base/DeathMark/DeathMarkEffect.prefab", name);
+            foreach (var sound in effect.GetComponentsInChildren<AkEvent>(true))
+                Object.DestroyImmediate(sound);
+
+            if (SystemInfo.graphicsDeviceType != GraphicsDeviceType.Null)
+            {
+                var sourceRamp = Load<Material>("RoR2/Base/DeathMark/matDeathMarkFire.mat").GetTexture("_RemapTex");
+                var ramp = CreateHexDebuffRamp(sourceRamp, name + "Ramp", shadowColor, highlightColor);
+                foreach (var renderer in effect.GetComponentsInChildren<Renderer>(true))
+                {
+                    var material = Object.Instantiate(renderer.sharedMaterial);
+                    material.SetTexture("_RemapTex", ramp);
+                    renderer.sharedMaterial = material;
+                }
+            }
+
+            if (!TempVisualEffectAPI.AddTemporaryVisualEffect(effect,
+                body => body.radius * radiusMultiplier,
+                body => body.healthComponent && body.healthComponent.alive && condition(body)))
+                throw new InvalidOperationException($"Could not register Warlock's Hex visual effect '{name}'.");
+        }
+
+        private static Texture2D CreateHexDebuffRamp(Texture source, string name, Color shadowColor, Color highlightColor)
+        {
+            if (!source) throw new InvalidOperationException("Death Mark's color ramp is missing.");
+            var ramp = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false, true)
+            {
+                name = name,
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+            var previousTarget = RenderTexture.active;
+            bool previousSrgbWrite = GL.sRGBWrite;
+            var target = RenderTexture.GetTemporary(source.width, source.height, 0,
+                RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            bool completed = false;
+            try
+            {
+                GL.sRGBWrite = false;
+                Graphics.Blit(source, target);
+                RenderTexture.active = target;
+                ramp.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+                if (QualitySettings.activeColorSpace == ColorSpace.Linear)
+                {
+                    shadowColor = shadowColor.linear;
+                    highlightColor = highlightColor.linear;
+                }
+                var pixels = ramp.GetPixels();
+                for (int i = 0; i < pixels.Length; i++)
+                {
+                    var color = Color.Lerp(shadowColor, highlightColor, pixels[i].maxColorComponent);
+                    color.a = pixels[i].a;
+                    pixels[i] = color;
+                }
+                ramp.SetPixels(pixels);
+                ramp.Apply(false, true);
+                completed = true;
+                return ramp;
+            }
+            finally
+            {
+                RenderTexture.active = previousTarget;
+                GL.sRGBWrite = previousSrgbWrite;
+                RenderTexture.ReleaseTemporary(target);
+                if (!completed) Object.Destroy(ramp);
+            }
         }
 
         private static void CreateDashPreview()
@@ -115,6 +197,7 @@ namespace WarlockMod.Warlock.Content
             Modules.Content.CreateAndAddEffectDef(bloodExplosionEffect);
 
             warlockHitImpactEffect = CloneEffect("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab", "WarlockHitImpact");
+            warlockHitImpactEffect.GetComponent<EffectComponent>().soundName = "";
             foreach (var shake in warlockHitImpactEffect.GetComponentsInChildren<ShakeEmitter>(true))
                 Object.DestroyImmediate(shake);
             warlockHitImpactEffect.GetComponent<OmniEffect>().enabled = false;
@@ -187,6 +270,7 @@ namespace WarlockMod.Warlock.Content
         {
             const float visualScale = 3f;
             var effect = CloneEffect(key, name);
+            effect.GetComponent<EffectComponent>().soundName = "";
             foreach (var renderer in effect.GetComponentsInChildren<Renderer>(true))
             {
                 var materials = renderer.sharedMaterials;
@@ -307,7 +391,6 @@ namespace WarlockMod.Warlock.Content
             var blast = warlockHexExplodeEffect.AddComponent<DelayBlastWarlock>();
             blast.explosionEffect = original.explosionEffect;
             blast.timerStagger = original.timerStagger;
-            blast.procCoefficient = WarlockConfig.EmpoweredHexProc;
             Object.DestroyImmediate(original);
             Object.DestroyImmediate(warlockHexExplodeEffect.GetComponent<NetworkIdentity>());
         }

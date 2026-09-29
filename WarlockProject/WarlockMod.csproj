@@ -37,7 +37,6 @@
     <PackageReference Include="R2API.Language" Version="*" />
     <PackageReference Include="R2API.DamageType" Version="*" />
     <PackageReference Include="R2API.TempVisualEffect" Version="*" />
-    <PackageReference Include="R2API.Dot" Version="*" />
     <PackageReference Include="R2API.Networking" Version="*" />
     <PackageReference Include="R2API.Sound" Version="*" />
     <PackageReference Include="Rune580.Mods.RiskOfRain2.RiskOfOptions" Version="2.8.6" PrivateAssets="all" IncludeAssets="compile" />
