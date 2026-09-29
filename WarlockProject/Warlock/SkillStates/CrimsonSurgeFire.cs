@@ -90,33 +90,36 @@ namespace WarlockMod.Warlock.SkillStates
         private void Fire()
         {
             EffectManager.SimpleMuzzleFlash(WarlockAssets.warlockSurgeMuzzleEffect, gameObject, "Muzzle", false);
-            DamageTypeCombo damageType = empoweredShot ? DamageType.WeakOnHit : DamageType.Generic;
-            damageType.damageSource = DamageSource.Primary;
+            if (NetworkServer.active)
+            {
+                DamageTypeCombo damageType = empoweredShot ? DamageType.WeakOnHit : DamageType.Generic;
+                damageType.damageSource = DamageSource.Primary;
 
-            BulletAttack bulletAttack = new BulletAttack();
-            bulletAttack.owner = base.gameObject;
-            bulletAttack.weapon = base.gameObject;
-            bulletAttack.origin = aimRay.origin;
-            bulletAttack.aimVector = aimRay.direction;
-            bulletAttack.minSpread = 0f;
-            bulletAttack.maxSpread = base.characterBody.spreadBloomAngle;
-            bulletAttack.radius = 2f;
-            bulletAttack.bulletCount = 1;
-            bulletAttack.procCoefficient = WarlockConfig.CrimsonSurgeProc;
-            bulletAttack.damage = damageCoefficient * damageStat;
-            bulletAttack.force = 0f;
-            bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
-            bulletAttack.tracerEffectPrefab = this.tracerEffectPrefab;
-            bulletAttack.muzzleName = "Muzzle";
-            bulletAttack.hitEffectPrefab = this.hitEffectPrefab;
-            bulletAttack.isCrit = base.RollCrit();
-            bulletAttack.HitEffectNormal = false;
-            bulletAttack.stopperMask = LayerIndex.world.mask;
-            bulletAttack.smartCollision = true;
-            bulletAttack.maxDistance = 500f;
-            bulletAttack.damageType = damageType;
-            if (empoweredShot) bulletAttack.hitCallback = EmpoweredHit;
-            if (NetworkServer.active) bulletAttack.Fire();
+                BulletAttack bulletAttack = new BulletAttack();
+                bulletAttack.owner = base.gameObject;
+                bulletAttack.weapon = base.gameObject;
+                bulletAttack.origin = aimRay.origin;
+                bulletAttack.aimVector = aimRay.direction;
+                bulletAttack.minSpread = 0f;
+                bulletAttack.maxSpread = base.characterBody.spreadBloomAngle;
+                bulletAttack.radius = 2f;
+                bulletAttack.bulletCount = 1;
+                bulletAttack.procCoefficient = WarlockConfig.CrimsonSurgeProc;
+                bulletAttack.damage = damageCoefficient * damageStat;
+                bulletAttack.force = 0f;
+                bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
+                bulletAttack.tracerEffectPrefab = this.tracerEffectPrefab;
+                bulletAttack.muzzleName = "Muzzle";
+                bulletAttack.hitEffectPrefab = this.hitEffectPrefab;
+                bulletAttack.isCrit = base.RollCrit();
+                bulletAttack.HitEffectNormal = false;
+                bulletAttack.stopperMask = LayerIndex.world.mask;
+                bulletAttack.smartCollision = true;
+                bulletAttack.maxDistance = 500f;
+                bulletAttack.damageType = damageType;
+                if (empoweredShot) bulletAttack.hitCallback = EmpoweredHit;
+                bulletAttack.Fire();
+            }
 
             if (isAuthority && !characterMotor.isGrounded)
             {

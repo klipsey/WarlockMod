@@ -23,10 +23,7 @@ namespace WarlockMod.Warlock.SkillStates
         private RoR2.Skills.SkillDef originalSkill;
         private GenericSkill Slot => secondary ? skillLocator.secondary : skillLocator.utility;
 
-        private bool TargetValid => !secondary || (target && target.healthComponent && target.healthComponent.alive &&
-            target.healthComponent.body && target.healthComponent.body.teamComponent.teamIndex != characterBody.teamComponent.teamIndex &&
-            Vector3.Distance(inputBank.aimOrigin, target.healthComponent.body.corePosition) <=
-                tracker.maxTrackingDistance + target.healthComponent.body.radius);
+        private bool TargetValid => !secondary || Hex.IsTargetValid(target, characterBody, tracker);
 
         public override void OnEnter()
         {

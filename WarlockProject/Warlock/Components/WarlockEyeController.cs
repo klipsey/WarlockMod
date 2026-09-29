@@ -13,13 +13,6 @@ namespace WarlockMod.Warlock.Components
         private const float YawRange = 48.3f;
         private const float PitchRange = 20f;
 
-        private readonly BullseyeSearch search = new BullseyeSearch
-        {
-            filterByLoS = false,
-            sortMode = BullseyeSearch.SortMode.Distance,
-            maxAngleFilter = 180f
-        };
-
         private CharacterBody body;
         private Animator animator;
         private Transform head;
@@ -55,7 +48,6 @@ namespace WarlockMod.Warlock.Components
                 enabled = false;
                 return;
             }
-            search.viewer = body;
             initialized = true;
             ResetEyes();
         }
@@ -70,8 +62,7 @@ namespace WarlockMod.Warlock.Components
         private void Update()
         {
             if (!initialized || !body || !animator || !head || !eye) return;
-            if (!animator.isActiveAndEnabled || !body.healthComponent || !body.healthComponent.alive ||
-                (body.outOfCombat && body.outOfDanger))
+            if (!animator.isActiveAndEnabled || !body.healthComponent || !body.healthComponent.alive)
             {
                 target = null;
                 searchTimer = 0f;
@@ -83,18 +74,7 @@ namespace WarlockMod.Warlock.Components
             if (searchTimer <= 0f)
             {
                 searchTimer = SearchInterval;
-                search.teamMaskFilter = TeamMask.allButNeutral;
-                search.teamMaskFilter.RemoveTeam(body.teamComponent.teamIndex);
-                search.searchOrigin = eye.position;
-                search.searchDirection = head.forward;
-                search.RefreshCandidates();
-                target = null;
-                foreach (var candidate in search.GetResults())
-                {
-                    if (!candidate || !candidate.healthComponent || !candidate.healthComponent.alive) continue;
-                    target = candidate;
-                    break;
-                }
+                SearchForTarget();
             }
 
             float pitch = 0.5f;
@@ -116,6 +96,28 @@ namespace WarlockMod.Warlock.Components
             float weight = Mathf.Clamp01(animator.GetFloat(EyeWeight));
             animator.SetLayerWeight(pitchLayer, weight);
             animator.SetLayerWeight(yawLayer, weight);
+        }
+
+        private void SearchForTarget()
+        {
+            var teams = TeamMask.allButNeutral;
+            teams.RemoveTeam(body.teamComponent.teamIndex);
+            Vector3 origin = eye.position;
+            float closestDistanceSquared = body.visionDistance * body.visionDistance;
+            var candidates = HurtBox.readOnlyBullseyesList;
+            target = null;
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                var candidate = candidates[i];
+                if (!candidate || !teams.HasTeam(candidate.teamIndex)) continue;
+                var health = candidate.healthComponent;
+                if (!health || !health.alive) continue;
+                float distanceSquared = (candidate.transform.position - origin).sqrMagnitude;
+                if (distanceSquared > closestDistanceSquared || (target && distanceSquared == closestDistanceSquared)) continue;
+                if (health.body && health.body.GetVisibilityLevel(body) < VisibilityLevel.Revealed) continue;
+                closestDistanceSquared = distanceSquared;
+                target = candidate;
+            }
         }
 
         private void ResetEyes()

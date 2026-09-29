@@ -24,11 +24,17 @@ namespace WarlockMod.Warlock.SkillStates
         protected override bool FinishOnRelease => true;
         protected override bool CanCharge => base.CanCharge && IsTargetValid(victim, characterBody, tracker);
 
-        internal static bool IsTargetValid(HurtBox target, CharacterBody caster, WarlockTracker tracker) =>
-            tracker && target && target.healthComponent && target.healthComponent.alive && target.healthComponent.body &&
-            target.healthComponent.body.teamComponent.teamIndex != caster.teamComponent.teamIndex &&
-            Vector3.Distance(caster.inputBank.aimOrigin, target.healthComponent.body.corePosition) <=
-                tracker.maxTrackingDistance + target.healthComponent.body.radius;
+        internal static bool IsTargetValid(HurtBox target, CharacterBody caster, WarlockTracker tracker)
+        {
+            if (!tracker || !caster || !caster.teamComponent || !caster.inputBank ||
+                !target || !target.healthComponent || !target.healthComponent.alive) return false;
+            var targetBody = target.healthComponent.body;
+            if (!targetBody || !targetBody.teamComponent ||
+                targetBody.teamComponent.teamIndex == caster.teamComponent.teamIndex) return false;
+            float maxDistance = tracker.maxTrackingDistance + targetBody.radius;
+            return maxDistance >= 0f &&
+                (caster.inputBank.aimOrigin - targetBody.corePosition).sqrMagnitude <= maxDistance * maxDistance;
+        }
 
         public override void OnEnter()
         {

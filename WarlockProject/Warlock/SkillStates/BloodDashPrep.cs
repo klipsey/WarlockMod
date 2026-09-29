@@ -68,12 +68,14 @@ namespace WarlockMod.Warlock.SkillStates
                 {
                     idealLocalCameraPos = initialCameraPosition + new Vector3(0f, chargeAge, -4f * chargeAge)
                 };
-                cameraTargetParams.RemoveParamsOverride(cameraOverride, 0f);
-                cameraOverride = cameraTargetParams.AddParamsOverride(new CameraTargetParams.CameraParamsOverrideRequest
-                {
-                    cameraParamsData = data,
-                    priority = 0.1f
-                }, 0f);
+                if (cameraOverride.isValid)
+                    cameraOverride.target.cameraParamsData = data;
+                else
+                    cameraOverride = cameraTargetParams.AddParamsOverride(new CameraTargetParams.CameraParamsOverrideRequest
+                    {
+                        cameraParamsData = data,
+                        priority = 0.1f
+                    }, 0f);
             }
         }
 

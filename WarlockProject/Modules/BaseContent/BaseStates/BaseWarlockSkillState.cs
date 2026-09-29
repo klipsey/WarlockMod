@@ -15,6 +15,8 @@ namespace WarlockMod.Modules.BaseStates
     {
         protected WarlockController warlockController;
         protected Animator modelAnimator;
+        protected EntityStateMachine metaMenuStateMachine;
+        protected EntityStateMachine secondaryStateMachine;
 
         protected bool primaryEmpowered;
         protected bool secondaryEmpowered;
@@ -28,6 +30,8 @@ namespace WarlockMod.Modules.BaseStates
             RefreshState();
             base.OnEnter();
             modelAnimator = GetModelAnimator();
+            metaMenuStateMachine = FindSiblingStateMachine("MetaMenu");
+            secondaryStateMachine = FindSiblingStateMachine("Weapon2");
         }
         public override void FixedUpdate()
         {
@@ -36,9 +40,9 @@ namespace WarlockMod.Modules.BaseStates
 
         protected bool CanPlayGestureAnimation(bool primary)
         {
-            var menu = FindSiblingStateMachine("MetaMenu")?.state;
+            var menu = metaMenuStateMachine ? metaMenuStateMachine.state : null;
             if (menu is Empower1 || menu is Empower2 || menu is Empower3) return false;
-            return !primary || !(FindSiblingStateMachine("Weapon2")?.state is Hex);
+            return !primary || !secondaryStateMachine || !(secondaryStateMachine.state is Hex);
         }
 
         protected int GetAnimationStateHash(string layerName)

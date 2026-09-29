@@ -686,7 +686,8 @@ namespace WarlockMod.Warlock
                     target = target
                 });
                 if (damageReport.victim.gameObject.TryGetComponent<NetworkIdentity>(out var identity))
-                    new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position).Send(NetworkDestination.Clients);
+                    new SyncBloodExplosion(identity.netId, damageReport.victim.transform.position,
+                        !damageReport.victim.alive).Send(NetworkDestination.Clients);
             }
             else
                 attackerBody.SetBuffCount(WarlockBuffs.warlockCrimsonManaStack.buffIndex, kills);

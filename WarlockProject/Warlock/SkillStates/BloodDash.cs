@@ -16,6 +16,7 @@ namespace WarlockMod.Warlock.SkillStates
         public Vector3 destination;
         public int metamagicStacks;
         private Vector3 blinkStart;
+        private bool hasBlinkMotion;
         private bool arrived;
         private bool motorWasEnabled;
         private int originalLayer;
@@ -45,9 +46,15 @@ namespace WarlockMod.Warlock.SkillStates
 		{
 			RefreshState();
 			base.OnEnter();
+            if (!hasBlinkMotion)
+            {
+                blinkStart = transform.position;
+                blinkVector = targeted ? (destination - blinkStart).normalized : GetBlinkVector();
+                hasBlinkMotion = true;
+            }
             crimsonManaEmpowered = warlockController.TryConsumeEmpowerment(WarlockBuffs.warlockEmpoweredUtilityBuff);
 			Util.PlaySound(targeted ? "Play_imp_overlord_teleport_start" : EntityStates.ImpMonster.BlinkState.beginSoundString, base.gameObject);
-			if (crimsonManaEmpowered) FireAOEStun(transform.position);
+			if (crimsonManaEmpowered) FireAOEStun(blinkStart);
 			modelTransform = GetModelTransform();
 			if ((bool)modelTransform)
 			{
@@ -64,8 +71,6 @@ namespace WarlockMod.Warlock.SkillStates
 				int hurtBoxesDeactivatorCounter = hurtBoxGroup.hurtBoxesDeactivatorCounter + 1;
 				hurtBoxGroup.hurtBoxesDeactivatorCounter = hurtBoxesDeactivatorCounter;
 			}
-            blinkStart = transform.position;
-			blinkVector = targeted ? (destination - blinkStart).normalized : GetBlinkVector();
             if (targeted && characterMotor)
             {
                 duration = 0.1f;
@@ -91,6 +96,8 @@ namespace WarlockMod.Warlock.SkillStates
             writer.Write(targeted);
             writer.Write(destination);
             writer.Write(metamagicStacks);
+            writer.Write(blinkStart);
+            writer.Write(blinkVector);
         }
 
         public override void OnDeserialize(NetworkReader reader)
@@ -99,6 +106,9 @@ namespace WarlockMod.Warlock.SkillStates
             targeted = reader.ReadBoolean();
             destination = reader.ReadVector3();
             metamagicStacks = Mathf.Max(0, reader.ReadInt32());
+            blinkStart = reader.ReadVector3();
+            blinkVector = reader.ReadVector3();
+            hasBlinkMotion = true;
         }
 
 		private void CreateBlinkEffect(Vector3 origin)

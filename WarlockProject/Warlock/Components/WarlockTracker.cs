@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using RoR2;
 using UnityEngine.Networking;
 using WarlockMod.Warlock;
@@ -31,7 +30,6 @@ namespace WarlockMod.Warlock.Components
 
         private Indicator indicator;
 
-        private bool onCooldown;
         private bool chargeLocked;
         private HurtBox chargeTarget;
 
@@ -83,36 +81,29 @@ namespace WarlockMod.Warlock.Components
                 indicator.active = false;
                 return;
             }
-            indicator.active = true;
             if (chargeLocked)
             {
+                indicator.active = true;
                 indicator.targetTransform = chargeTarget ? chargeTarget.transform : null;
                 return;
             }
+            if (characterBody.skillLocator.secondary.stock <= 0 &&
+                !characterBody.HasBuff(WarlockBuffs.warlockCrimsonManaFullStack))
+            {
+                // A pending Hex must still read its target after the last stock is spent.
+                indicator.active = false;
+                indicator.targetTransform = null;
+                trackerUpdateStopwatch = 1f / trackerUpdateFrequency;
+                return;
+            }
+            indicator.active = true;
             trackerUpdateStopwatch += Time.fixedDeltaTime;
             if (trackerUpdateStopwatch >= 1f / trackerUpdateFrequency)
             {
-                trackerUpdateStopwatch -= 1f / trackerUpdateFrequency;
-                _ = trackingTarget;
+                trackerUpdateStopwatch %= 1f / trackerUpdateFrequency;
                 Ray aimRay = new Ray(inputBank.aimOrigin, inputBank.aimDirection);
                 SearchForTarget(aimRay);
-                if (trackingTarget != null)
-                {
-                    onCooldown = characterBody.skillLocator.secondary.stock <= 0 &&
-                        !characterBody.HasBuff(WarlockBuffs.warlockCrimsonManaFullStack);
-                }
-                else
-                {
-                    onCooldown = false;
-                }
-                if (onCooldown)
-                {
-                    indicator.targetTransform = null;
-                }
-                else
-                {
-                    indicator.targetTransform = trackingTarget ? trackingTarget.transform : null;
-                }
+                indicator.targetTransform = trackingTarget ? trackingTarget.transform : null;
             }
         }
 
@@ -127,7 +118,13 @@ namespace WarlockMod.Warlock.Components
             search.maxAngleFilter = maxTrackingAngle;
             search.RefreshCandidates();
             search.FilterOutGameObject(gameObject);
-            trackingTarget = search.GetResults().FirstOrDefault();
+            trackingTarget = null;
+            foreach (var candidate in search.GetResults())
+            {
+                if (!candidate || !candidate.healthComponent || !candidate.healthComponent.alive) continue;
+                trackingTarget = candidate;
+                break;
+            }
         }
     }
 }

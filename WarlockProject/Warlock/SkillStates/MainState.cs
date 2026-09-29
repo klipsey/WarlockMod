@@ -132,7 +132,7 @@ namespace WarlockMod.Warlock.SkillStates
                     }
 
                     base.characterMotor.jumpCount++;
-
+                    base.characterBody.TriggerJumpEventGlobally();
                 }
             }
         }

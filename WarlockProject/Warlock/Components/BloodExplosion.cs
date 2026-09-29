@@ -10,7 +10,7 @@ namespace WarlockMod.Warlock.Components
         private void Awake()
         {
             var body = GetComponent<CharacterBody>();
-            if (body && body.healthComponent && !body.healthComponent.alive && body.modelLocator && body.modelLocator.modelTransform)
+            if (body && body.modelLocator && body.modelLocator.modelTransform)
             {
                 model = body.modelLocator.modelTransform.GetComponent<CharacterModel>();
                 if (model) model.invisibilityCount++;

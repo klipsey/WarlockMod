@@ -53,7 +53,7 @@ namespace WarlockMod.Warlock.SkillStates
                 animationStarted = false;
                 return;
             }
-            if (FindSiblingStateMachine("Weapon2")?.state is BloodDashPrep)
+            if (secondaryStateMachine && secondaryStateMachine.state is BloodDashPrep)
             {
                 modelAnimator.SetBool("creatingMetaMagic", false);
                 animationStarted = false;

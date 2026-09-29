@@ -66,6 +66,11 @@ namespace WarlockMod.Modules
             tempMat.SetTexture("_EmTex", emissionMap);
             tempMat.EnableKeyword("DITHER");
 
+            if (warlockShader)
+            {
+                tempMat.SetSpecular(0.2857f, 20f);
+            }
+
             if (bumpScale != null)
             {
                 tempMat.SetFloat("_NormalStrength", (float)bumpScale);
@@ -141,7 +146,7 @@ namespace WarlockMod.Modules
         public static Material SetSpecular(this Material material, float strength, float exponent)
         {
             material.SetFloat("_SpecularStrength", strength);
-            material.SetFloat("SpecularExponent", exponent);
+            material.SetFloat("_SpecularExponent", exponent);
             return material;
         }
     }
