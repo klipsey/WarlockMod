@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 166373701
+CRC: 2690627013
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: cad0f6cab42656dd1b4a5c630c0db8a1
+    Hash: 3d08c7d37f0813716da92eeb6fd0aa66
   TypeTreeHash:
     serializedVersion: 2
     Hash: 13145553c73702fea597d503c4b7c759
@@ -91,23 +91,24 @@ Assets:
 - Assets/Warlock/Textures/texWarlockDiffuse.png
 - Assets/Warlock/mdlWarlock.prefab
 - Assets/Warlock/Icons/Skill/texWarlockUtilityEmpowered.png
-- Assets/Warlock/HUD/Textures/texChargeRing.png
 - Assets/Warlock/Meshes/meshCloak.mesh
+- Assets/Warlock/HUD/Textures/texChargeRing.png
 - Assets/Warlock/Projectiles/DriverStunGrenadeImpact.prefab
 - Assets/Warlock/HUD/ChargeBar.prefab
 - Assets/Warlock/Projectiles/texAlphaGradient6Mask.png
-- Assets/Warlock/Meshes/meshDagger.mesh
-- Assets/Warlock/Animations/maskWarlockBook.mask
 - Assets/Warlock/Projectiles/texRampCoin.png
+- Assets/Warlock/Animations/maskWarlockBook.mask
+- Assets/Warlock/VFX/Badass 1/MetalHitEffect.prefab
 - Assets/Warlock/Icons/Skill/texWarlockPassive.png
 - Assets/Warlock/Icons/Skill/texWarlockSecondaryEmpowered.png
 - Assets/Warlock/VFX/Badass 1/SmallExplosion.prefab
 - Assets/Warlock/Textures/texWarlockEmission.png
-- Assets/Warlock/VFX/Badass 1/MetalHitEffect.prefab
+- Assets/Warlock/Meshes/meshRope.mesh
 - Assets/Warlock/Animations/animWarlock.controller
 - Assets/Warlock/VFX/Materials/matPunchEffect.mat
 - Assets/Warlock/VFX/matMagicPortal1.mat
 - Assets/Warlock/VFX/texBehemothTileMask.png
+- Assets/Warlock/Meshes/meshBody.mesh
 - Assets/Warlock/VFX/Materials/matDust.mat
 - Assets/Warlock/VFX/Badass 1/SandHitEffect.prefab
 - Assets/Warlock/HUD/Textures/texSniperBulletIndicator.png
@@ -115,17 +116,18 @@ Assets:
 - Assets/Warlock/VFX/texSeamSlashMask 1.png
 - Assets/Warlock/VFX/Textures/texLightning.tif
 - Assets/Warlock/Icons/Skill/texWarlockSecondary.png
+- Assets/Warlock/Meshes/meshDagger.mesh
 - Assets/Warlock/VFX/Textures/texSmoke.png
 - Assets/Warlock/VFX/matSpyDefault.mat
 - Assets/Warlock/Projectiles/CoinProjectileGhost.prefab
-- Assets/Warlock/VFX/BloodSpurtEffect.prefab
-- Assets/Warlock/VFX/Textures/texSlash.png
 - Assets/Warlock/Textures/texDaggerDiffuse.png
+- Assets/Warlock/VFX/BloodSpurtEffect.prefab
+- Assets/Warlock/VFX/Badass 1/BigExplosion.prefab
 - Assets/Warlock/VFX/NoGrab.png
 - Assets/Warlock/VFX/Textures/texPunchImpact.png
-- Assets/Warlock/VFX/Badass 1/BigExplosion.prefab
 - Assets/Warlock/VFX/Textures/texDust.png
 - Assets/Warlock/VFX/EldritchBlastPortal.prefab
+- Assets/Warlock/VFX/Textures/texSlash.png
 - Assets/Warlock/VFX/CritLightning.prefab
 - Assets/Warlock/Materials/WarlockDoubleSided.shader
 - Assets/Warlock/VFX/Badass/WoodHitEffect.prefab
@@ -135,7 +137,6 @@ Assets:
 - Assets/Warlock/VFX/texShockwave.png
 - Assets/Warlock/Animations/animWarlockEmotes.controller
 - Assets/Warlock/VFX/Materials/matFire.mat
-- Assets/Warlock/Meshes/meshRope.mesh
 - Assets/Warlock/VFX/Textures/texFire.tga
 - Assets/Warlock/Materials/matWarlock.mat
 - Assets/Warlock/Projectiles/CoinProjectile.prefab
@@ -182,15 +183,13 @@ Assets:
 - Assets/Warlock/HUD/Textures/texBulletIndicator.png
 - Assets/Warlock/VFX/Badass 1/StoneHitEffect.prefab
 - Assets/Warlock/Icons/Skill/texWarlockUtility.png
-- Assets/Warlock/Meshes/meshBody.mesh
+- Assets/Warlock/VFX/texRampImp.png
 - Assets/Warlock/VFX/matSpyStreak.mat
 - Assets/Warlock/VFX/Textures/texEmbers.png
-- Assets/Warlock/VFX/texRampImp.png
 - Assets/Warlock/VFX/Badass/MetalHitEffect.prefab
 - Assets/Warlock/Projectiles/meshSapper.mesh
 - Assets/Warlock/VFX/Badass/SandHitEffect.prefab
 - Assets/Warlock/VFX/Textures/texHenrySwing2.png
-- Assets/Warlock/Meshes/meshBook.mesh
 - Assets/Warlock/Materials/matBook.mat
 - Assets/Warlock/VFX/Textures/texHitSpark.png
 - Assets/Warlock/VFX/matWarlockChargeUp.mat
@@ -211,6 +210,7 @@ Assets:
 - Assets/Warlock/Animations/maskWarlockEye.mask
 - Assets/Warlock/VFX/texEldritchPortal.png
 - Assets/Warlock/VFX/matShockwave.mat
+- Assets/Warlock/Meshes/meshBook.mesh
 - Assets/Warlock/VFX/Materials/matHenrySwing2.mat
 - Assets/Warlock/VFX/Textures/texPunchImpactShadow.png
 - Assets/Warlock/Textures/texWarlockBookDiffuse.png

@@ -1,3 +1,11 @@
+# 1.0.7
+
+- Lore: Plnk!
+
+# 1.0.6
+
+
+
 # 1.0.5
 
 - Fixed faraday spur....

@@ -30,6 +30,8 @@ Goodguy - Icons
 
 Popobawa - Concept Art
 
+Plnk - Lore / Logbook
+
 Blur - Original Concept and Kit
 
 KoalaWalls - Koala

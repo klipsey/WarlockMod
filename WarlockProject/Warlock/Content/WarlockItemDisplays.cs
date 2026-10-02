@@ -1471,6 +1471,7 @@ namespace WarlockMod.Warlock.Content
                     new Vector3(1F, 1F, 1F)
                     )
                 ));
+            /*
             itemDisplayRules.Add(ItemDisplays.CreateDisplayRuleGroupWithRules(ItemDisplays.KeyAssets["AttackSpeedPerNearbyAllyOrEnemy"],
                 ItemDisplays.CreateDisplayRule(ItemDisplays.LoadDisplay("DisplayRageCrystal"),
                     "Chest",
@@ -1860,6 +1861,7 @@ namespace WarlockMod.Warlock.Content
                     new Vector3(1, 1, 1)
                     )
                 ));
+            */
         }
     }
 }
