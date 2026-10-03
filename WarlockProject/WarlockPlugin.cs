@@ -18,23 +18,14 @@ namespace WarlockMod
 {
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(MODUID, MODNAME, MODVERSION)]
-    [BepInDependency(NetworkingAPI.PluginGUID)]
-    [BepInDependency(PrefabAPI.PluginGUID)]
-    [BepInDependency(DamageAPI.PluginGUID)]
-    [BepInDependency(LanguageAPI.PluginGUID)]
-    [BepInDependency(SoundAPI.PluginGUID)]
-    [BepInDependency(TempVisualEffectAPI.PluginGUID)]
     [BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.weliveinasociety.CustomEmotesAPI", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     public class WarlockPlugin : BaseUnityPlugin
     {
-        // if you do not change this, you are giving permission to deprecate the mod-
-        //  please change the names to your own stuff, thanks
-        //   this shouldn't even have to be said
         public const string MODUID = "com.kenko.Warlock";
         public const string MODNAME = "Warlock";
-        public const string MODVERSION = "1.0.6";
+        public const string MODVERSION = "1.0.0";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "KENKO";

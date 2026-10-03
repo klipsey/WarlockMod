@@ -116,6 +116,10 @@ namespace WarlockMod.Warlock
             WarlockUnlockables.Init();
 
             base.InitializeCharacter();
+
+            foreach (var rendererInfo in prefabCharacterModel.baseRendererInfos)
+                rendererInfo.defaultMaterial.SetCull(false).SetSpecular(0.2857f, 20f);
+
             if (WarlockPlugin.riskOfOptionsInstalled) Modules.Config.InitializeOptions(prefabCharacterBody.portraitIcon);
 
             CameraParams.InitializeParams();
@@ -590,6 +594,7 @@ namespace WarlockMod.Warlock
 
         private void AddHooks()
         {
+            Achievements.WarlockUnlockAchievement.InstallDamageTracking();
             //HUD.onHudTargetChangedGlobal += HUDSetup;
             On.RoR2.UI.LoadoutPanelController.Rebuild += LoadoutPanelController_Rebuild;
             //On.RoR2.HealthComponent.TakeDamage += new On.RoR2.HealthComponent.hook_TakeDamage(HealthComponent_TakeDamage);
@@ -609,6 +614,7 @@ namespace WarlockMod.Warlock
 
         internal void RemoveHooks()
         {
+            Achievements.WarlockUnlockAchievement.UninstallDamageTracking();
             On.RoR2.UI.LoadoutPanelController.Rebuild -= LoadoutPanelController_Rebuild;
             GlobalEventManager.onCharacterDeathGlobal -= GlobalEventManager_onCharacterDeathGlobal;
             GlobalEventManager.onServerDamageDealt -= GlobalEventManager_onServerDamageDealt;

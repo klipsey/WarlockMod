@@ -35,6 +35,7 @@
     <PackageReference Include="R2API.Loadout" Version="*" />
     <PackageReference Include="R2API.RecalculateStats" Version="*" />
     <PackageReference Include="R2API.Language" Version="*" />
+    <PackageReference Include="R2API.Skins" Version="1.4.7" />
     <PackageReference Include="R2API.DamageType" Version="*" />
     <PackageReference Include="R2API.TempVisualEffect" Version="*" />
     <PackageReference Include="R2API.Networking" Version="*" />

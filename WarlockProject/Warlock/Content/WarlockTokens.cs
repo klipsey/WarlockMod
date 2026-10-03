@@ -89,10 +89,9 @@ namespace WarlockMod.Warlock.Content
             #region Achievements
             Language.Add(Tokens.GetAchievementNameToken(WarlockMasterAchievement.identifier), "Warlock: Mastery");
             Language.Add(Tokens.GetAchievementDescriptionToken(WarlockMasterAchievement.identifier), "As Warlock, beat the game or obliterate on Monsoon.");
-            /*
-            Language.Add(Tokens.GetAchievementNameToken(SpyUnlockAchievement.identifier), "Dressed to Kill");
-            Language.Add(Tokens.GetAchievementDescriptionToken(SpyUnlockAchievement.identifier), "Get a Backstab.");
-            */
+            Language.Add(Tokens.GetAchievementNameToken(WarlockUnlockAchievement.identifier), "Your Eminence");
+            Language.Add(Tokens.GetAchievementDescriptionToken(WarlockUnlockAchievement.identifier),
+                "Kill an Imp Overlord within 5 seconds of its first damaging hit.");
             #endregion
 
             #endregion

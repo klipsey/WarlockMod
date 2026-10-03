@@ -1,3 +1,7 @@
+# 1.0.8
+
+- Fixed dependencies
+
 # 1.0.7
 
 - Lore: Plnk!

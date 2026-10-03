@@ -34,6 +34,58 @@ namespace WarlockMod.Warlock.Content
 
         public static void Init(AssetBundle assetBundle) => mainAssetBundle = assetBundle;
 
+        internal static Sprite CreateUnlockIcon()
+        {
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null) return null;
+
+            var portrait = mainAssetBundle.LoadAsset<Texture>("texWarlockIcon");
+            if (!portrait) throw new InvalidOperationException("Missing required Warlock portrait 'texWarlockIcon'.");
+            var background = Load<Texture2D>("RoR2/Base/Common/texSurvivorBGIcon.png");
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = "texWarlockUnlockIcon",
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+            var previousTarget = RenderTexture.active;
+            bool previousSrgbWrite = GL.sRGBWrite;
+            var target = RenderTexture.GetTemporary(size, size, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+            bool completed = false;
+            try
+            {
+                GL.sRGBWrite = false;
+                Graphics.Blit(background, target);
+                RenderTexture.active = target;
+                texture.ReadPixels(new Rect(0, 0, size, size), 0, 0);
+                var backgroundPixels = texture.GetPixels();
+
+                Graphics.Blit(portrait, target);
+                texture.ReadPixels(new Rect(0, 0, size, size), 0, 0);
+                var portraitPixels = texture.GetPixels();
+                for (int i = 0; i < backgroundPixels.Length; i++)
+                {
+                    var color = Color.Lerp(backgroundPixels[i], portraitPixels[i], portraitPixels[i].a);
+                    color.a = portraitPixels[i].a + backgroundPixels[i].a * (1f - portraitPixels[i].a);
+                    backgroundPixels[i] = QualitySettings.activeColorSpace == ColorSpace.Linear ? color.gamma : color;
+                }
+                texture.SetPixels(backgroundPixels);
+                texture.Apply(false, true);
+                var icon = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f),
+                    100f, 0, SpriteMeshType.FullRect);
+                icon.name = texture.name;
+                completed = true;
+                return icon;
+            }
+            finally
+            {
+                RenderTexture.active = previousTarget;
+                GL.sRGBWrite = previousSrgbWrite;
+                RenderTexture.ReleaseTemporary(target);
+                if (!completed) Object.Destroy(texture);
+            }
+        }
+
         public static void InitAssets()
         {
             destealthMaterial = Load<Material>("RoR2/Base/Imp/matImpBossDissolve.mat");

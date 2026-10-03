@@ -1,7 +1,7 @@
 {
     "name": "Warlock",
     "author": "tsuyoikenko",
-    "version_number": "1.0.7",
+    "version_number": "1.0.8",
     "website_url": "https://github.com/klipsey/WarlockMod",
     "description": "Warlock is a small but powerful survivor that uses blood to cast abilities.",
     "dependencies": [
@@ -10,6 +10,7 @@
         "RiskofThunder-R2API_Core-5.3.0",
         "RiskofThunder-R2API_Prefab-1.1.1",
         "RiskofThunder-R2API_Language-1.1.0",
+        "RiskofThunder-R2API_Skins-1.4.7",
         "RiskofThunder-R2API_Sound-1.0.3",
         "RiskofThunder-R2API_TempVisualEffect-1.0.3",
         "RiskofThunder-R2API_DamageType-1.1.7",

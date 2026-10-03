@@ -4,11 +4,11 @@
 
 ### The Warlock
 
-[![icon.png](https://i.postimg.cc/26hvx3F5/icon.png)](https://postimg.cc/tZRYqqc0)
+[![tex-Warlock-Icon.png](https://i.postimg.cc/rpnrmyHL/tex-Warlock-Icon.png)](https://postimg.cc/R3tFpm9P)
 
 ## Skills
 
-[![Screenshot-2026-09-26-053214.png](https://i.postimg.cc/yYpqFT15/Screenshot-2026-09-26-053214.png)](https://postimg.cc/QH7nD1Wk)
+[![image.png](https://i.postimg.cc/T3PmXWkN/image.png)](https://postimg.cc/GHZ9F9nv)
 
 [![concept1.png](https://i.postimg.cc/2yF2501m/concept1.png)](https://postimg.cc/XBqwHcKD)
 
